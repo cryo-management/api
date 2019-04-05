@@ -23,7 +23,7 @@ type Schema struct {
 func postSchema(w http.ResponseWriter, r *http.Request) {
 
 	/*
-		TODO
+		TODO create validation. Check if is better to use middleware
 		err := validate.Run(r.Header.Get("userId"), validate.CreateSchema)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
