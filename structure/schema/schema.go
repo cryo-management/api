@@ -6,9 +6,9 @@ import (
 
 //Schema docs
 type Schema struct {
-	ID          string `json:"id" sql:"id" editable:"false"`
-	Name        string `json:"name" table:"translations" alias:"name" sql:"value" on:"name.structure_id = schema.id and name.structure_field = 'name'" embedded:"true" persist:"true"`
-	Description string `json:"description" table:"translations" alias:"description" sql:"value" on:"description.parent_id = schema.id and description.structure_field = 'description'" embedded:"true" persist:"true"`
+	ID          string `json:"id" sql:"id" pk:"true"`
+	Name        string `json:"name" type:"schemas" table:"translations" alias:"name" sql:"value" on:"name.structure_id = schema.id and name.structure_field = 'name'" external:"true" persist:"true"`
+	Description string `json:"description" type:"schemas" table:"translations" alias:"description" sql:"value" on:"description.parent_id = schema.id and description.structure_field = 'description'" external:"true" persist:"true"`
 	Code        string `json:"code" sql:"code"`
 	Module      bool   `json:"module" sql:"module"`
 	Active      bool   `json:"active" sql:"active"`
@@ -16,7 +16,7 @@ type Schema struct {
 
 //Create docs
 func (s *Schema) Create() (string, error) {
-	query, args := db.GenerateInsertQuery(s)
+	query, args := db.GenerateInsertQuery("schemas", *s)
 	conn := new(db.Database)
 	id, err := conn.Insert(query, args...)
 	if err != nil {
