@@ -41,8 +41,8 @@ func postSchema(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db := new(db.Database)
-	id, err := db.Insert("insert into schemas (code, module, active) values ($1, $2, $3)", s.Code, s.Module, s.Active)
+	conn := new(db.Database)
+	id, err := conn.Insert("insert into schemas (code, module, active) values ($1, $2, $3)", s.Code, s.Module, s.Active)
 	fmt.Println(s)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -53,14 +53,14 @@ func postSchema(w http.ResponseWriter, r *http.Request) {
 
 	query := "insert into translations (structure_type, structure_id, structure_code, value, language_code) values ($1, $2, $3, $4, $5)"
 
-	id, err = db.Insert(query, "schemas", s.ID, "name", s.Name, r.Header.Get("languageCode"))
+	id, err = conn.Insert(query, "schemas", s.ID, "name", s.Name, r.Header.Get("languageCode"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, err.Error())
 		return
 	}
 
-	id, err = db.Insert(query, "schemas", s.ID, "description", s.Description, r.Header.Get("languageCode"))
+	id, err = conn.Insert(query, "schemas", s.ID, "description", s.Description, r.Header.Get("languageCode"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, err.Error())
