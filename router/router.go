@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/cryo-management/api/structure/schema"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
-	"github.com/cryo-management/api/structure/schema"
 )
 
 //Setup docs
@@ -15,7 +15,7 @@ func Setup() *chi.Mux {
 		middleware.Logger,
 		middleware.DefaultCompress,
 		middleware.RedirectSlashes,
-		middleware.Recoverer,	
+		middleware.Recoverer,
 	)
 
 	router.Route("/v1", func(r chi.Router) {

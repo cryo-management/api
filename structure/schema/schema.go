@@ -1,42 +1,44 @@
 package schema
 
 import (
-	"fmt"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+
 	"github.com/cryo-management/api/db"
 	"github.com/go-chi/render"
 )
 
 //Schema docs
 type Schema struct {
-	ID     		string `json:"id"`
-	Name   		string `json:"name"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
-	Code   		string `json:"code"`
-	Module 		bool   `json:"module"`
-	Active 		bool   `json:"active"`
+	Code        string `json:"code"`
+	Module      bool   `json:"module"`
+	Active      bool   `json:"active"`
 }
 
 func postSchema(w http.ResponseWriter, r *http.Request) {
 
 	/*
-	TODO
-	err := validate.Run(r.Header.Get("userId"), validate.CreateSchema)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, err.Error())
-		return 
-	}
-*/
+		TODO
+		err := validate.Run(r.Header.Get("userId"), validate.CreateSchema)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			render.JSON(w, r, err.Error())
+			return
+		}
+	*/
+
 	var s Schema
 	body, err := ioutil.ReadAll(r.Body)
 	err = json.Unmarshal(body, &s)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, err.Error())
-		return 
+		return
 	}
 
 	db := new(db.Database)
@@ -64,6 +66,6 @@ func postSchema(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, err.Error())
 		return
 	}
-	
+
 	render.JSON(w, r, s)
 }
