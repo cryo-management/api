@@ -30,6 +30,53 @@ func GenerateInsertQuery(table string, obj interface{}) (string, []interface{}) 
 	return query, args
 }
 
+//GenerateSelectQuery docs
+func GenerateSelectQuery(table string, obj interface{}) string {
+	t := reflect.TypeOf(obj)
+
+	query := ""
+	fields := []string{}
+	translationFields := []string{}
+	pivotFields := []string{}
+
+	for i := 0; i < t.NumField(); i++ {
+		if t.Field(i).Tag.Get("sql") != "" {
+			if t.Field(i).Tag.Get("table") != "" {
+				field := t.Field(i).Tag.Get("alias")
+				translationFields = append(translationFields, field)
+			} else {
+				field := t.Field(i).Tag.Get("sql")
+				tableAndField := fmt.Sprintf("%s.%s", table, field)
+				fieldType := t.Field(i).Tag.Get("sqlType")
+				pivotField := fmt.Sprintf("%s %s", field, fieldType)
+				pivotFields = append(pivotFields, pivotField)
+				fields = append(fields, tableAndField)
+			}
+		}
+	}
+
+	if len(translationFields) > 0 {
+		translationValues := []string{}
+		translationPivotFields := []string{}
+		translationInFields := []string{}
+
+		for i := 0; i < len(translationFields); i++ {
+			translationField := translationFields[i]
+			value := fmt.Sprintf("('%s')", translationField)
+			translationInField := fmt.Sprintf("'%s'", translationField)
+			translationPivotField := fmt.Sprintf("%s character varying", translationField)
+			translationInFields = append(translationInFields, translationInField)
+			translationValues = append(translationValues, value)
+			translationPivotFields = append(translationPivotFields, translationPivotField)
+			query = fmt.Sprintf("select * from crosstab($$select %s, translations.structure_field, translations.value from %s join translations on translations.structure_id = %s.id and translations.structure_field in (%s)$$, $$values %s$$) as tab (%s, %s)", strings.Join(fields, ", "), table, table, strings.Join(translationInFields, ", "), strings.Join(translationValues, ", "), strings.Join(pivotFields, ", "), strings.Join(translationPivotFields, ", "))
+		}
+	} else {
+		query = fmt.Sprintf("select %s from %s", strings.Join(fields, ", "), table)
+	}
+
+	return query
+}
+
 //GenerateTranslationsInsertQuery docs
 func GenerateTranslationsInsertQuery(objID, langCode string, obj, trs interface{}) (string, []interface{}) {
 	t := reflect.TypeOf(obj)

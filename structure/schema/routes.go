@@ -8,5 +8,6 @@ import (
 func Routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Post("/", postSchema)
+	router.Get("/", getAllSchemas)
 	return router
 }

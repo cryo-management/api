@@ -31,3 +31,16 @@ func postSchema(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, r, s)
 }
+
+func getAllSchemas(w http.ResponseWriter, r *http.Request) {
+	s := new(Schema)
+
+	schemaList, err := s.GetAll()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, err.Error())
+		return
+	}
+
+	render.JSON(w, r, schemaList)
+}
