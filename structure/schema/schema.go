@@ -28,29 +28,18 @@ func (s *Schema) Create() (string, error) {
 }
 
 //GetAll docs
-func (s *Schema) GetAll() ([]*Schema, error) {
+func (s *Schema) GetAll() ([]Schema, error) {
 	query := db.GenerateSelectQuery("schemas", *s)
 	conn := new(db.Database)
 	rows, err := conn.Query(query)
 	if err != nil {
 		return nil, err
 	}
-	schemaList := make([]*Schema, 0)
-	for rows.Next() {
-		schema := new(Schema)
 
-		err := rows.Scan(
-			&schema.ID,
-			&schema.Code,
-			&schema.Module,
-			&schema.Active,
-			&schema.Name,
-			&schema.Description,
-		)
-		if err != nil {
-			return nil, err
-		}
-		schemaList = append(schemaList, schema)
+	schemaList := []Schema{}
+	err = db.StructScan(rows, &schemaList)
+	if err != nil {
+		return nil, err
 	}
 
 	return schemaList, nil
