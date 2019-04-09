@@ -1,4 +1,4 @@
-package translation
+package models
 
 import (
 	"github.com/cryo-management/api/db"
@@ -14,8 +14,8 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-//Save docs
-func Save(objID, langCode string, obj interface{}) error {
+//CreateTranslation docs
+func CreateTranslation(objID, langCode string, obj interface{}) error {
 	query, args := db.GenerateTranslationsInsertQuery(objID, langCode, obj, Translation{})
 	conn := new(db.Database)
 	_, err := conn.Insert(query, args...)

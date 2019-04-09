@@ -1,7 +1,8 @@
-package router
+package routes
 
 import (
-	"github.com/cryo-management/api/structure/schema"
+	"github.com/cryo-management/api/routes/admin"
+	"github.com/cryo-management/api/routes/structure"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -18,8 +19,11 @@ func Setup() *chi.Mux {
 		middleware.Recoverer,
 	)
 
-	router.Route("/v1", func(r chi.Router) {
-		r.Mount("/api/schema", schema.Routes())
+	router.Route("/api/v1", func(r chi.Router) {
+		r.Mount("/admin/schema", admin.SchemaRoutes())
+		r.Mount("/struct/schema", structure.SchemaRoutes())
+		//r.Mount("/api/data/{schema_code}", schema.Routes())
+		//r.Mount("/api/auth", auth.Routes())
 	})
 
 	return router
