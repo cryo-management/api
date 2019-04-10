@@ -38,6 +38,16 @@ func (db *Database) Insert(query string, args ...interface{}) (string, error) {
 	return id, nil
 }
 
+//Delete docs
+func (db *Database) Delete(query string, args ...interface{}) (string, error) {
+	var id string
+	err := conn.QueryRow(query+" RETURNING id", args...).Scan(&id)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
+}
+
 var conn *sql.DB
 
 //Connect docs

@@ -9,9 +9,9 @@ import (
 func SchemaRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	// v1/api/schema/admin/contract
+	// v1/api/struct/schema/contract
 	r.Route("/", func(r chi.Router) {
-		r.Get("/", controller.GetSchema)
+		r.Get("/{schema_code}", controller.GetSchema)
 	})
 
 	return r

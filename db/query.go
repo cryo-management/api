@@ -31,48 +31,37 @@ func GenerateInsertQuery(table string, obj interface{}) (string, []interface{}) 
 }
 
 //GenerateSelectQuery docs
-func GenerateSelectQuery(table string, obj interface{}) string {
+func GenerateSelectQuery(table string, obj interface{}, wheres ...string) string {
 	t := reflect.TypeOf(obj)
 
 	query := ""
-	fields := []string{}
-	translationFields := []string{}
-	pivotFields := []string{}
+	where := ""
+	columns := []string{}
+	joins := []string{}
+
+	if len(wheres) > 0 {
+		where = "where"
+	}
 
 	for i := 0; i < t.NumField(); i++ {
 		if t.Field(i).Tag.Get("sql") != "" {
+			column := t.Field(i).Tag.Get("sql")
 			if t.Field(i).Tag.Get("table") != "" {
-				field := t.Field(i).Tag.Get("alias")
-				translationFields = append(translationFields, field)
+				joinColumnAlias := t.Field(i).Tag.Get("alias")
+				joinTable := t.Field(i).Tag.Get("table")
+				joinOn := t.Field(i).Tag.Get("on")
+				sqlJoinColumn := fmt.Sprintf("%s_%s.%s as %s", joinTable, joinColumnAlias, column, joinColumnAlias)
+				sqlJoin := fmt.Sprintf("join %s %s_%s on %s", joinTable, joinTable, joinColumnAlias, joinOn)
+				columns = append(columns, sqlJoinColumn)
+				joins = append(joins, sqlJoin)
 			} else {
-				field := t.Field(i).Tag.Get("sql")
-				tableAndField := fmt.Sprintf("%s.%s", table, field)
-				fieldType := t.Field(i).Tag.Get("sqlType")
-				pivotField := fmt.Sprintf("%s %s", field, fieldType)
-				pivotFields = append(pivotFields, pivotField)
-				fields = append(fields, tableAndField)
+				sqlColumn := fmt.Sprintf("%s.%s", table, column)
+				columns = append(columns, sqlColumn)
 			}
 		}
 	}
 
-	if len(translationFields) > 0 {
-		translationValues := []string{}
-		translationPivotFields := []string{}
-		translationInFields := []string{}
-
-		for i := 0; i < len(translationFields); i++ {
-			translationField := translationFields[i]
-			value := fmt.Sprintf("('%s')", translationField)
-			translationInField := fmt.Sprintf("'%s'", translationField)
-			translationPivotField := fmt.Sprintf("%s character varying", translationField)
-			translationInFields = append(translationInFields, translationInField)
-			translationValues = append(translationValues, value)
-			translationPivotFields = append(translationPivotFields, translationPivotField)
-			query = fmt.Sprintf("select * from crosstab($$select %s, translations.structure_field, translations.value from %s join translations on translations.structure_id = %s.id and translations.structure_field in (%s)$$, $$values %s$$) as tab (%s, %s)", strings.Join(fields, ", "), table, table, strings.Join(translationInFields, ", "), strings.Join(translationValues, ", "), strings.Join(pivotFields, ", "), strings.Join(translationPivotFields, ", "))
-		}
-	} else {
-		query = fmt.Sprintf("select %s from %s", strings.Join(fields, ", "), table)
-	}
+	query = strings.Trim(fmt.Sprintf("select %s from %s %s %s %s", strings.Join(columns, ", "), table, strings.Join(joins, " "), where, strings.Join(wheres, " ")), " ")
 
 	return query
 }

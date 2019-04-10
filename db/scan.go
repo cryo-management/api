@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"reflect"
 )
 
@@ -33,7 +32,6 @@ func StructScan(rows *sql.Rows, obj interface{}) error {
 				mapJSON[colName] = string(mapJSON[colName].([]uint8))
 			}
 		}
-		fmt.Println(mapJSON)
 		results = append(results, mapJSON)
 	}
 	rows.Close()
