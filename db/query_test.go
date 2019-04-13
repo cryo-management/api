@@ -13,35 +13,37 @@ type field struct {
 	Description string `json:"description" type:"fields" table:"translations" alias:"description" sql:"value" on:"translations_description.structure_id = fields.id and translations_description.structure_field = 'description'" external:"true" persist:"true"`
 	Code        string `json:"code" sql:"code"`
 	Type        string `json:"type" sql:"type"`
-	Multivalue  string `json:"multivalue" sql:"multivalue"`
-	LookupID    string `json:"lookup_id" sql:"lookup_id"`
-	Permission  string `json:"permission" sql:"permission"`
-	Active      string `json:"active" sql:"active"`
+	Multivalue  bool   `json:"multivalue,omitempty" sql:"multivalue"`
+	LookupID    string `json:"lookup_id,omitempty" sql:"lookup_id" fk:"true"`
+	Permission  int    `json:"permission,omitempty" sql:"permission" readOnly:"true"`
+	Active      bool   `json:"active" sql:"active"`
 }
 
+type fields []field
+
 type schemaComplete struct {
-	ID               string  `json:"id" sql:"id" pk:"true"`
-	Name             string  `json:"name" type:"schemas" table:"translations" alias:"name" sql:"value" on:"translations_name.structure_id = schemas.id and translations_name.structure_field = 'name'" external:"true" persist:"true"`
-	Description      string  `json:"description" type:"schemas" table:"translations" alias:"description" sql:"value" on:"translations_description.structure_id = schemas.id and translations_description.structure_field = 'description'" external:"true" persist:"true"`
-	Code             string  `json:"code" sql:"code"`
-	Module           bool    `json:"module" sql:"module"`
-	Active           bool    `json:"active" sql:"active"`
-	LastModifiedDate int     `json:"last_modified_date" sql:"last_modified_date"`
-	Fields           []field `json:"fields"`
+	ID               string `json:"id" sql:"id" pk:"true"`
+	Name             string `json:"name" type:"schemas" table:"translations" alias:"name" sql:"value" on:"translations_name.structure_id = schemas.id and translations_name.structure_field = 'name'" external:"true" persist:"true"`
+	Description      string `json:"description" type:"schemas" table:"translations" alias:"description" sql:"value" on:"translations_description.structure_id = schemas.id and translations_description.structure_field = 'description'" external:"true" persist:"true"`
+	Code             string `json:"code" sql:"code"`
+	Module           bool   `json:"module" sql:"module"`
+	Active           bool   `json:"active" sql:"active"`
+	LastModifiedDate int    `json:"last_modified_date" sql:"last_modified_date"`
+	Fields           fields `json:"fields,omitempty"`
 }
 
 type schemaSimple struct {
-	ID               string  `json:"id" sql:"id" pk:"true"`
-	Code             string  `json:"code" sql:"code"`
-	Module           bool    `json:"module" sql:"module"`
-	Active           bool    `json:"active" sql:"active"`
-	LastModifiedDate int     `json:"last_modified_date" sql:"last_modified_date"`
-	Fields           []field `json:"fields"`
+	ID               string `json:"id" sql:"id" pk:"true"`
+	Code             string `json:"code" sql:"code"`
+	Module           bool   `json:"module" sql:"module"`
+	Active           bool   `json:"active" sql:"active"`
+	LastModifiedDate int    `json:"last_modified_date" sql:"last_modified_date"`
+	Fields           fields `json:"fields,omitempty"`
 }
 
 type translation struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
-	StructureID    string `json:"structure_id" sql:"structure_id"`
+	StructureID    string `json:"structure_id" sql:"structure_id" fk:"true"`
 	StructureType  string `json:"structure_type" sql:"structure_type"`
 	StructureField string `json:"structure_field" sql:"structure_field"`
 	Value          string `json:"value" sql:"value"`
@@ -70,6 +72,12 @@ func TestGenerateSelectQuerySimple(t *testing.T) {
 	obj := schemaSimple{}
 	generatedQuery := GenerateSelectQuery("schemas", obj)
 	expectedQuery := "select schemas.id, schemas.code, schemas.module, schemas.active, schemas.last_modified_date from schemas"
+	assert.Equal(t, expectedQuery, generatedQuery, "invalid generated query")
+}
+
+func TestGenerateDeleteQuery(t *testing.T) {
+	generatedQuery := GenerateDeleteQuery("schemas", "id = 'ffa7cfb3-5220-4430-800a-c0be84421db5'")
+	expectedQuery := "delete from schemas where id = 'ffa7cfb3-5220-4430-800a-c0be84421db5'"
 	assert.Equal(t, expectedQuery, generatedQuery, "invalid generated query")
 }
 

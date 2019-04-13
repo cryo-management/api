@@ -11,7 +11,7 @@ func SchemaRoutes() *chi.Mux {
 
 	// v1/api/struct/schema/contract
 	r.Route("/", func(r chi.Router) {
-		r.Get("/{schema_code}", controller.GetSchema)
+		r.Get("/{schema_id}", controller.GetSchema)
 	})
 
 	return r

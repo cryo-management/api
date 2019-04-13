@@ -7,6 +7,8 @@ const (
 	ErrorInsertingRecord string = "002-ErrorInsertingRecord"
 	//ErrorReturningData unable to return data
 	ErrorReturningData string = "003-ErrorReturningData"
+	//ErrorDeletingData unable to return data
+	ErrorDeletingData string = "004-ErrorDeletingData"
 )
 
 type responseError struct {

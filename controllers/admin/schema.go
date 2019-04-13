@@ -13,21 +13,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//GetSchema docs
-func GetSchema(w http.ResponseWriter, r *http.Request) {
-	schema := new(models.Schema)
-	code := string(chi.URLParam(r, "schema_code"))
-
-	schemaData, err := schema.GetByCode(code)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllSchemas", err.Error()))
-		return
-	}
-
-	render.JSON(w, r, schemaData)
-}
-
 //PostSchema docs
 func PostSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
@@ -47,7 +32,7 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 	}
 
 	translation := new(models.Translation)
-	err = translation.Create(id, r.Header.Get("languageCode"), *schema)
+	err = translation.Create(id, *schema)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostSchema translation", err.Error()))
@@ -57,16 +42,55 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, schema)
 }
 
-//GetAllSchemas docs
-func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
-	s := new(models.Schema)
+//GetSchema docs
+func GetSchema(w http.ResponseWriter, r *http.Request) {
+	schema := new(models.Schema)
+	code := string(chi.URLParam(r, "schema_code"))
 
-	schemaList, err := s.GetAll()
+	err := schema.Load(code)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllSchemas", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetSchema load", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, schemaList)
+	render.JSON(w, r, schema)
+}
+
+//GetAllSchemas docs
+func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
+	schemas := new(models.Schemas)
+
+	err := schemas.Load()
+	if err != nil {
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllSchemas load", err.Error()))
+		return
+	}
+
+	render.JSON(w, r, schemas)
+}
+
+//DeleteSchema docs
+func DeleteSchema(w http.ResponseWriter, r *http.Request) {
+	schema := new(models.Schema)
+	id := string(chi.URLParam(r, "schema_id"))
+
+	err := schema.Delete(id)
+	if err != nil {
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete schema", err.Error()))
+		return
+	}
+
+	translation := new(models.Translation)
+
+	err = translation.DeleteByStructureID(id)
+	if err != nil {
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete translation", err.Error()))
+		return
+	}
+
+	render.JSON(w, r, id)
 }

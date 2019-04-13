@@ -12,22 +12,21 @@ import (
 //GetSchema docs
 func GetSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
-	code := string(chi.URLParam(r, "schema_code"))
+	id := string(chi.URLParam(r, "schema_id"))
 
-	schemaData, errSchema := schema.GetByCode(code)
-	if errSchema != nil {
+	err := schema.Load(id)
+	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetByCode", errSchema.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetSchema load schema", err.Error()))
 		return
 	}
 
-	field := new(models.Field)
-	errField := field.GetAllWithPermissionBySchemaID(schemaData.ID, &schemaData.Fields)
-	if errSchema != nil {
+	err = schema.Fields.LoadByPermission(schema.ID)
+	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllWithPermissionBySchemaID", errField.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetSchema load fields", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, schemaData)
+	render.JSON(w, r, schema)
 }

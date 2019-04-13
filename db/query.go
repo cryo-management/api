@@ -17,7 +17,7 @@ func GenerateInsertQuery(table string, obj interface{}) (string, []interface{}) 
 
 	paramIndex := 1
 	for i := 0; i < t.NumField(); i++ {
-		if t.Field(i).Tag.Get("pk") != "true" && t.Field(i).Tag.Get("external") != "true" {
+		if t.Field(i).Tag.Get("sql") != "" && t.Field(i).Tag.Get("pk") != "true" && t.Field(i).Tag.Get("external") != "true" && t.Field(i).Tag.Get("readOnly") != "true" {
 			fields = append(fields, t.Field(i).Tag.Get("sql"))
 			params = append(params, fmt.Sprintf("$%d", paramIndex))
 			paramIndex++
@@ -44,7 +44,7 @@ func GenerateSelectQuery(table string, obj interface{}, wheres ...string) string
 	}
 
 	for i := 0; i < t.NumField(); i++ {
-		if t.Field(i).Tag.Get("sql") != "" {
+		if t.Field(i).Tag.Get("sql") != "" && t.Field(i).Tag.Get("readOnly") != "true" {
 			column := t.Field(i).Tag.Get("sql")
 			if t.Field(i).Tag.Get("table") != "" {
 				joinColumnAlias := t.Field(i).Tag.Get("alias")
@@ -99,4 +99,18 @@ func GenerateTranslationsInsertQuery(objID, langCode string, obj, trs interface{
 	query := fmt.Sprintf("insert into translations (%s) values %s", strings.Join(fields, ", "), strings.Join(params, ", "))
 
 	return query, args
+}
+
+//GenerateDeleteQuery docs
+func GenerateDeleteQuery(table string, wheres ...string) string {
+	query := ""
+	where := ""
+
+	if len(wheres) > 0 {
+		where = "where"
+	}
+
+	query = strings.Trim(fmt.Sprintf("delete from %s %s %s", table, where, strings.Join(wheres, " ")), " ")
+
+	return query
 }

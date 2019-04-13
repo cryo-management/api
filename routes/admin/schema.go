@@ -15,11 +15,11 @@ func SchemaRoutes() *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostSchema)
 		r.Get("/", controller.GetAllSchemas)
-		r.Get("/{schema_code}", controller.GetSchema)
-		r.Patch("/{schema_code}", func(w http.ResponseWriter, r *http.Request) {
+		r.Get("/{schema_id}", controller.GetSchema)
+		r.Patch("/{schema_id}", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("update schema"))
 		})
-		// r.Delete("/{schema_code}", controller.DeleteSchema)
+		r.Delete("/{schema_id}", controller.DeleteSchema)
 	})
 
 	return r

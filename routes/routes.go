@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/cryo-management/api/routes/admin"
+	myMiddlewares "github.com/cryo-management/api/routes/middlewares"
 	"github.com/cryo-management/api/routes/structure"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -17,12 +18,15 @@ func Setup() *chi.Mux {
 		middleware.DefaultCompress,
 		middleware.RedirectSlashes,
 		middleware.Recoverer,
+		myMiddlewares.Session,
 	)
 
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/admin/schema", admin.SchemaRoutes())
-		r.Mount("/struct/schema", structure.SchemaRoutes())
-		//r.Mount("/api/data/{schema_code}", schema.Routes())
+		r.Mount("/admin/groups", admin.GroupRoutes())
+		r.Mount("/admin/schemas", admin.SchemaRoutes())
+		r.Mount("/admin/schemas/{schema_id}/fields", admin.FieldRoutes())
+		r.Mount("/struct/schemas", structure.SchemaRoutes())
+		//r.Mount("/api/data/{schema_id}", schema.Routes())
 		//r.Mount("/api/auth", auth.Routes())
 	})
 
