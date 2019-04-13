@@ -23,17 +23,17 @@ type Schema struct {
 type Schemas []Schema
 
 // Create docs
-func (s *Schema) Create() (string, error) {
+func (s *Schema) Create() error {
 	table := "schemas"
 	query, args := db.GenerateInsertQuery(table, *s)
 	conn := new(db.Database)
 	id, err := conn.Insert(query, args...)
 	if err != nil {
-		return "", err
+		return err
 	}
 	s.ID = id
 
-	return id, nil
+	return nil
 }
 
 // Load docs

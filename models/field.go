@@ -25,17 +25,17 @@ type Field struct {
 type Fields []Field
 
 // Create docs
-func (f *Field) Create() (string, error) {
+func (f *Field) Create() error {
 	table := "fields"
 	query, args := db.GenerateInsertQuery(table, *f)
 	conn := new(db.Database)
 	id, err := conn.Insert(query, args...)
 	if err != nil {
-		return "", err
+		return err
 	}
 	f.ID = id
 
-	return id, nil
+	return nil
 }
 
 // Load docs

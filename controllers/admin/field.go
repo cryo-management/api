@@ -27,7 +27,7 @@ func PostField(w http.ResponseWriter, r *http.Request) {
 
 	field.SchemaID = schemaID
 
-	id, err := field.Create()
+	err = field.Create()
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostField creating", err.Error()))
@@ -35,7 +35,7 @@ func PostField(w http.ResponseWriter, r *http.Request) {
 	}
 
 	translation := new(models.Translation)
-	err = translation.Create(id, *field)
+	err = translation.Create(field.ID, *field)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostField translation", err.Error()))

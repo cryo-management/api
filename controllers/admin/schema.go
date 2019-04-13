@@ -24,7 +24,7 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := schema.Create()
+	err = schema.Create()
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostSchema creating", err.Error()))
@@ -32,7 +32,7 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 	}
 
 	translation := new(models.Translation)
-	err = translation.Create(id, *schema)
+	err = translation.Create(schema.ID, *schema)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostSchema translation", err.Error()))

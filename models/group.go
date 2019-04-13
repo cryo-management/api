@@ -14,23 +14,24 @@ type Group struct {
 	Description string `json:"description" type:"groups" table:"translations" alias:"description" sql:"value" on:"translations_description.structure_id = groups.id and translations_description.structure_field = 'description'" external:"true" persist:"true"`
 	Code        string `json:"code" sql:"code"`
 	Active      bool   `json:"active" sql:"active"`
+	Users       Users  `json:"users,omitempty"`
 }
 
 // Groups docs
 type Groups []Group
 
 // Create docs
-func (g *Group) Create() (string, error) {
+func (g *Group) Create() error {
 	table := "groups"
 	query, args := db.GenerateInsertQuery(table, *g)
 	conn := new(db.Database)
 	id, err := conn.Insert(query, args...)
 	if err != nil {
-		return "", err
+		return err
 	}
 	g.ID = id
 
-	return id, nil
+	return nil
 }
 
 // Load docs

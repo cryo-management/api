@@ -24,7 +24,7 @@ func PostGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := group.Create()
+	err = group.Create()
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostGroup creating", err.Error()))
@@ -32,7 +32,7 @@ func PostGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	translation := new(models.Translation)
-	err = translation.Create(id, *group)
+	err = translation.Create(group.ID, *group)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostGroup translation", err.Error()))
