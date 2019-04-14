@@ -13,7 +13,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//PostSchema docs
 func PostSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
 	body, err := ioutil.ReadAll(r.Body)
@@ -42,12 +41,11 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, schema)
 }
 
-//GetSchema docs
 func GetSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
-	code := string(chi.URLParam(r, "schema_code"))
+	id := string(chi.URLParam(r, "schema_id"))
 
-	err := schema.Load(code)
+	err := schema.Load(id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetSchema load", err.Error()))
@@ -57,7 +55,6 @@ func GetSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, schema)
 }
 
-//GetAllSchemas docs
 func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	schemas := new(models.Schemas)
 
@@ -71,7 +68,6 @@ func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, schemas)
 }
 
-//DeleteSchema docs
 func DeleteSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
 	id := string(chi.URLParam(r, "schema_id"))

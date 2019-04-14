@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-//UserRoutes docs
 func UserRoutes() *chi.Mux {
 	r := chi.NewRouter()
 

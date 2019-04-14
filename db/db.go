@@ -17,10 +17,8 @@ const (
 	dbname   = "cryo"
 )
 
-//Database docs
 type Database struct{}
 
-//Query docs
 func (db *Database) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	if conn == nil {
 		return nil, errors.New("[Cryo] Error: Database not connected")
@@ -28,7 +26,6 @@ func (db *Database) Query(query string, args ...interface{}) (*sql.Rows, error) 
 	return conn.Query(query, args...)
 }
 
-//Insert docs
 func (db *Database) Insert(query string, args ...interface{}) (string, error) {
 	var id string
 	err := conn.QueryRow(query+" RETURNING id", args...).Scan(&id)
@@ -38,7 +35,6 @@ func (db *Database) Insert(query string, args ...interface{}) (string, error) {
 	return id, nil
 }
 
-//Delete docs
 func (db *Database) Delete(query string, args ...interface{}) (string, error) {
 	var id string
 	err := conn.QueryRow(query+" RETURNING id", args...).Scan(&id)
@@ -50,7 +46,6 @@ func (db *Database) Delete(query string, args ...interface{}) (string, error) {
 
 var conn *sql.DB
 
-//Connect docs
 func Connect() error {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -72,7 +67,6 @@ func Connect() error {
 
 }
 
-//Close docs
 func Close() {
 	conn.Close()
 	fmt.Println("[Cryo] Database connection successfully closed")

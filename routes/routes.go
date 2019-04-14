@@ -9,7 +9,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//Setup docs
 func Setup() *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(

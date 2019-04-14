@@ -7,7 +7,6 @@ import (
 	"github.com/cryo-management/api/db"
 )
 
-//Translation docs
 type Translation struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
 	StructureID    string `json:"structure_id" sql:"structure_id" fk:"true"`
@@ -17,7 +16,6 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-//Create docs
 func (t *Translation) Create(objID string, obj interface{}) error {
 	query, args := db.GenerateTranslationsInsertQuery(objID, common.Session.User.Language, obj, Translation{})
 	conn := new(db.Database)
@@ -25,7 +23,6 @@ func (t *Translation) Create(objID string, obj interface{}) error {
 	return err
 }
 
-// DeleteByStructureID docs
 func (t *Translation) DeleteByStructureID(structureID string) error {
 	table := "translations"
 	sqlID := fmt.Sprintf("%s.structure_id = '%s'", table, structureID)

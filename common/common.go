@@ -17,7 +17,6 @@ type responseError struct {
 	Error string `json:"erro"`
 }
 
-//NewResponseError docs
 func NewResponseError(code string, scope, err string) interface{} {
 	return responseError{
 		Code:  code,

@@ -6,7 +6,6 @@ import (
 	"github.com/cryo-management/api/db"
 )
 
-//User docs
 type User struct {
 	ID        string `json:"id" sql:"id" pk:"true"`
 	FirstName string `json:"first_name" sql:"first_name"`
@@ -18,10 +17,8 @@ type User struct {
 	Groups    Groups `json:"groups,omitempty"`
 }
 
-// Users docs
 type Users []User
 
-// Create docs
 func (u *User) Create() error {
 	table := "users"
 	query, args := db.GenerateInsertQuery(table, *u)
@@ -35,7 +32,6 @@ func (u *User) Create() error {
 	return nil
 }
 
-// Load docs
 func (u *User) Load(id string) error {
 	table := "users"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)
@@ -54,7 +50,6 @@ func (u *User) Load(id string) error {
 	return nil
 }
 
-// Load docs
 func (u *Users) Load() error {
 	table := "users"
 	query := db.GenerateSelectQuery(table, User{})
@@ -72,7 +67,6 @@ func (u *Users) Load() error {
 	return nil
 }
 
-// Delete docs
 func (u *User) Delete(id string) error {
 	table := "users"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)

@@ -13,7 +13,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//PostField docs
 func PostField(w http.ResponseWriter, r *http.Request) {
 	field := new(models.Field)
 	schemaID := string(chi.URLParam(r, "schema_id"))
@@ -45,7 +44,6 @@ func PostField(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, field)
 }
 
-//GetField docs
 func GetField(w http.ResponseWriter, r *http.Request) {
 	field := new(models.Field)
 	id := string(chi.URLParam(r, "field_id"))
@@ -60,7 +58,6 @@ func GetField(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, field)
 }
 
-//GetAllFields docs
 func GetAllFields(w http.ResponseWriter, r *http.Request) {
 	fields := new(models.Fields)
 	schemaID := string(chi.URLParam(r, "schema_id"))
@@ -75,7 +72,6 @@ func GetAllFields(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, fields)
 }
 
-//DeleteField docs
 func DeleteField(w http.ResponseWriter, r *http.Request) {
 	field := new(models.Field)
 	id := string(chi.URLParam(r, "field_id"))

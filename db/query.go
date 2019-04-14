@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-//GenerateInsertQuery docs
 func GenerateInsertQuery(table string, obj interface{}) (string, []interface{}) {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
@@ -30,7 +29,6 @@ func GenerateInsertQuery(table string, obj interface{}) (string, []interface{}) 
 	return query, args
 }
 
-//GenerateSelectQuery docs
 func GenerateSelectQuery(table string, obj interface{}, wheres ...string) string {
 	t := reflect.TypeOf(obj)
 
@@ -66,7 +64,6 @@ func GenerateSelectQuery(table string, obj interface{}, wheres ...string) string
 	return query
 }
 
-//GenerateTranslationsInsertQuery docs
 func GenerateTranslationsInsertQuery(objID, langCode string, obj, trs interface{}) (string, []interface{}) {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
@@ -101,7 +98,6 @@ func GenerateTranslationsInsertQuery(objID, langCode string, obj, trs interface{
 	return query, args
 }
 
-//GenerateDeleteQuery docs
 func GenerateDeleteQuery(table string, wheres ...string) string {
 	query := ""
 	where := ""

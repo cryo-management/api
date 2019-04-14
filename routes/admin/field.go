@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-//FieldRoutes docs
 func FieldRoutes() *chi.Mux {
 	r := chi.NewRouter()
 

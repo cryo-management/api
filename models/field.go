@@ -7,7 +7,6 @@ import (
 	"github.com/cryo-management/api/db"
 )
 
-//Field docs
 type Field struct {
 	ID          string `json:"id" sql:"id" pk:"true"`
 	SchemaID    string `json:"schema_id" sql:"schema_id" fk:"true"`
@@ -21,10 +20,8 @@ type Field struct {
 	Active      bool   `json:"active" sql:"active"`
 }
 
-// Fields docs
 type Fields []Field
 
-// Create docs
 func (f *Field) Create() error {
 	table := "fields"
 	query, args := db.GenerateInsertQuery(table, *f)
@@ -38,7 +35,6 @@ func (f *Field) Create() error {
 	return nil
 }
 
-// Load docs
 func (f *Field) Load(id string) error {
 	table := "fields"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)
@@ -57,7 +53,6 @@ func (f *Field) Load(id string) error {
 	return nil
 }
 
-// Load docs
 func (f *Fields) Load(schemaID string) error {
 	table := "fields"
 	sqlschemaID := fmt.Sprintf("%s.schema_id = '%s'", table, schemaID)
@@ -76,7 +71,6 @@ func (f *Fields) Load(schemaID string) error {
 	return nil
 }
 
-// LoadByPermission docs
 func (f *Fields) LoadByPermission(schemaID string) error {
 	query := "select f.id, f.schema_id, f.code, translations_name.value as name, translations_description.value as description, f.type, f.multivalue, f.lookup_id, f.active, max(gp.type) permission from groups_users ug join groups g on g.id = ug.group_id join groups_permissions gp on gp.group_id = ug.group_id join fields f on f.id = gp.structure_id and gp.structure_type = 'field' join schemas s on s.id = f.schema_id join translations translations_name on translations_name.structure_id = f.id and translations_name.structure_field = 'name' join translations translations_description on translations_description.structure_id = f.id and translations_description.structure_field = 'description' where f.active = true and g.active = true and f.schema_id = $1 and ug.user_id = $2 and translations_name.language_code = $3 and translations_description.language_code = $4 group by f.id, f.schema_id, f.code, translations_name.value, translations_description.value, f.type, f.multivalue, f.lookup_id, f.active"
 	conn := new(db.Database)
@@ -93,7 +87,6 @@ func (f *Fields) LoadByPermission(schemaID string) error {
 	return nil
 }
 
-// Delete docs
 func (f *Field) Delete(id string) error {
 	table := "fields"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)

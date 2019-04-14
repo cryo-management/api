@@ -9,7 +9,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//GetSchema docs
 func GetSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
 	id := string(chi.URLParam(r, "schema_id"))

@@ -6,7 +6,6 @@ import (
 	"reflect"
 )
 
-//StructScan docs
 func StructScan(rows *sql.Rows, obj interface{}) error {
 
 	cols, _ := rows.Columns()

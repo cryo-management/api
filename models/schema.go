@@ -7,7 +7,6 @@ import (
 	"github.com/cryo-management/api/db"
 )
 
-// Schema docs
 type Schema struct {
 	ID               string `json:"id" sql:"id" pk:"true"`
 	Name             string `json:"name" type:"schemas" table:"translations" alias:"name" sql:"value" on:"translations_name.structure_id = schemas.id and translations_name.structure_field = 'name'" external:"true" persist:"true"`
@@ -19,10 +18,8 @@ type Schema struct {
 	Fields           Fields `json:"fields,omitempty"`
 }
 
-// Schemas docs
 type Schemas []Schema
 
-// Create docs
 func (s *Schema) Create() error {
 	table := "schemas"
 	query, args := db.GenerateInsertQuery(table, *s)
@@ -36,7 +33,6 @@ func (s *Schema) Create() error {
 	return nil
 }
 
-// Load docs
 func (s *Schema) Load(id string) error {
 	table := "schemas"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)
@@ -55,7 +51,6 @@ func (s *Schema) Load(id string) error {
 	return nil
 }
 
-// Load docs
 func (s *Schemas) Load() error {
 	table := "schemas"
 	query := db.GenerateSelectQuery(table, Schema{}, fmt.Sprintf("translations_name.language_code = '%s'", common.Session.User.Language), fmt.Sprintf("and translations_description.language_code = '%s'", common.Session.User.Language))
@@ -73,7 +68,6 @@ func (s *Schemas) Load() error {
 	return nil
 }
 
-// Delete docs
 func (s *Schema) Delete(id string) error {
 	table := "schemas"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)

@@ -13,7 +13,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-//PostUser docs
 func PostUser(w http.ResponseWriter, r *http.Request) {
 	user := new(models.User)
 	body, err := ioutil.ReadAll(r.Body)
@@ -42,7 +41,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, user)
 }
 
-//GetUser docs
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	user := new(models.User)
 	id := string(chi.URLParam(r, "user_id"))
@@ -57,7 +55,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, user)
 }
 
-//GetAllUsers docs
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	users := new(models.Users)
 
@@ -71,7 +68,6 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, users)
 }
 
-//DeleteUser docs
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user := new(models.User)
 	id := string(chi.URLParam(r, "user_id"))
