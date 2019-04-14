@@ -22,9 +22,10 @@ func Setup() *chi.Mux {
 
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/admin/users", admin.UserRoutes())
-		r.Mount("/admin/groups", admin.GroupRoutes())
 		r.Mount("/admin/schemas", admin.SchemaRoutes())
 		r.Mount("/admin/schemas/{schema_id}/fields", admin.FieldRoutes())
+		r.Mount("/admin/lookups", admin.LookupRoutes())
+		r.Mount("/admin/groups", admin.GroupRoutes())
 		r.Mount("/struct/schemas", structure.SchemaRoutes())
 		//r.Mount("/api/data/{schema_id}", schema.Routes())
 		//r.Mount("/api/auth", auth.Routes())
