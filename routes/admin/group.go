@@ -22,7 +22,7 @@ func GroupRoutes() *chi.Mux {
 		r.Post("/users", controller.AddUser)
 		r.Delete("/{group_id}/users/{user_id}", controller.RemoveUser)
 		r.Post("/permissions", controller.AddPermission)
-		r.Delete("/{group_id}/permissions/{type}/structureid/{structure_id}", controller.RemovePermission)
+		r.Delete("/{group_id}/permissions/{type}/structure_id/{structure_id}", controller.RemovePermission)
 	})
 
 	return r

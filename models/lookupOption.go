@@ -9,7 +9,7 @@ import (
 
 type LookupOption struct {
 	ID       string `json:"id" sql:"id" pk:"true"`
-	LookupID string `json:"lookup_id" sql:"lookup_id" pk:"true"`
+	LookupID string `json:"lookup_id" sql:"lookup_id" fk:"true"`
 	Value    string `json:"value" sql:"value"`
 	Label    string `json:"label" type:"lookups_options" table:"translations" alias:"label" sql:"value" on:"translations_label.structure_id = lookups.id and translations_label.structure_field = 'label'" external:"true" persist:"true"`
 	Active   bool   `json:"active" sql:"active"`
@@ -18,7 +18,7 @@ type LookupOption struct {
 type LookupOptions []LookupOption
 
 func (l *LookupOption) Create() error {
-	table := "lookups"
+	table := "lookups_options"
 	query, args := db.GenerateInsertQuery(table, *l)
 	conn := new(db.Database)
 	id, err := conn.Insert(query, args...)
@@ -31,7 +31,7 @@ func (l *LookupOption) Create() error {
 }
 
 func (l *LookupOption) Load(id string) error {
-	table := "lookups"
+	table := "lookups_options"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)
 	query := db.GenerateSelectQuery(table, LookupOption{}, sqlID, fmt.Sprintf("and translations_name.language_code = '%s'", common.Session.User.Language), fmt.Sprintf("and translations_description.language_code = '%s'", common.Session.User.Language))
 	conn := new(db.Database)
@@ -48,9 +48,10 @@ func (l *LookupOption) Load(id string) error {
 	return nil
 }
 
-func (l *LookupOptions) Load() error {
-	table := "lookups"
-	query := db.GenerateSelectQuery(table, LookupOption{}, fmt.Sprintf("translations_name.language_code = '%s'", common.Session.User.Language), fmt.Sprintf("and translations_description.language_code = '%s'", common.Session.User.Language))
+func (l *LookupOptions) Load(lookupID string) error {
+	table := "lookups_options"
+	sqlLookupID := fmt.Sprintf("%s.lookup_id = '%s'", table, lookupID)
+	query := db.GenerateSelectQuery(table, LookupOption{}, sqlLookupID, fmt.Sprintf("and translations_name.language_code = '%s'", common.Session.User.Language), fmt.Sprintf("and translations_description.language_code = '%s'", common.Session.User.Language))
 	conn := new(db.Database)
 	rows, err := conn.Query(query)
 	if err != nil {
@@ -66,7 +67,7 @@ func (l *LookupOptions) Load() error {
 }
 
 func (l *LookupOption) Delete(id string) error {
-	table := "lookups"
+	table := "lookups_options"
 	sqlID := fmt.Sprintf("%s.id = '%s'", table, id)
 	query := db.GenerateDeleteQuery(table, sqlID)
 	conn := new(db.Database)
