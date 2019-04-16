@@ -5,6 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/andreluzz/go-sql-builder/builder"
+	"github.com/andreluzz/go-sql-builder/db"
+	"github.com/go-chi/chi"
+
 	"github.com/cryo-management/api/models"
 )
 
@@ -12,15 +16,15 @@ import (
 func CreateSchema(r *http.Request) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
-	schema := new(models.Schema)
-	err := json.Unmarshal(body, &schema)
+	schema := &models.Schema{}
+	err := json.Unmarshal(body, schema)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateSchema unmarshal body", err.Error()))
 		return response
 	}
 
-	id, err := schema.Create()
+	id, err := db.InsertStruct(models.TableSchema, schema)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateSchema create", err.Error()))
@@ -28,9 +32,48 @@ func CreateSchema(r *http.Request) *Response {
 	}
 	schema.ID = id
 
-	err = models.CreateTranslationsFromStruct(models.TableSchema, "pt-br", schema)
+	//TODO change language_code get from request
+	err = models.CreateTranslationsFromStruct(models.TableSchema, r.Header.Get("languageCode"), schema)
 
 	response.Data = schema
 
 	return response
+}
+
+func LoadAllSchemas(r *http.Request) *Response {
+	response := NewResponse()
+
+	schemas := []models.Schema{}
+	jsonBytes, err := db.LoadStruct(models.TableSchema, schemas, nil)
+	json.Unmarshal(jsonBytes, &schemas)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetAllSchemas", err.Error()))
+		return response
+	}
+	response.Data = schemas
+	return response
+}
+
+func LoadSchema(r *http.Request) *Response {
+	response := NewResponse()
+	schema := &models.Schema{}
+
+	jsonBytes, err := db.LoadStruct(models.TableSchema, schema, builder.Equal("schemas.id", chi.URLParam(r, "schema_id")))
+	json.Unmarshal(jsonBytes, schema)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetSchema", err.Error()))
+		return response
+	}
+	response.Data = schema
+	return response
+}
+
+func UpdateSchema(r *http.Request) *Response {
+	return nil
+}
+
+func DeleteSchema(r *http.Request) *Response {
+	return nil
 }

@@ -31,6 +31,8 @@ const (
 	ErrorReturningData string = "003-ErrorReturningData"
 	//ErrorDeletingData unable to return data
 	ErrorDeletingData string = "004-ErrorDeletingData"
+	//ErrorLoadingData unable to load data
+	ErrorLoadingData string = "005-ErrorLoadingData"
 )
 
 func NewResponseError(code string, scope, err string) ResponseError {
