@@ -20,6 +20,10 @@ type Schema struct {
 
 type Schemas []Schema
 
+func (s *Schema) GetID() string {
+	return s.ID
+}
+
 func (s *Schema) Create() error {
 	table := "schemas"
 	query, args := db.GenerateInsertQuery(table, *s)

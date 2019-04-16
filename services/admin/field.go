@@ -12,11 +12,11 @@ func (f *FieldService) Create(field *models.Field) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.Create(*field, field.ID)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.Create(*field, field.ID)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
@@ -45,11 +45,11 @@ func (f *FieldService) Delete(field *models.Field, id string) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.DeleteByStructureID(id)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.DeleteByStructureID(id)
+	// if err != nil {
+	// 	return err
+	// }
 
 	groupPermission := new(models.GroupPermission)
 	groupPermission.StructureID = id

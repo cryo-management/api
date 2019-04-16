@@ -12,11 +12,11 @@ func (g *GroupService) Create(group *models.Group) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.Create(*group, group.ID)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.Create(*group, group.ID)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
@@ -45,11 +45,11 @@ func (g *GroupService) Delete(group *models.Group, id string) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.DeleteByStructureID(id)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.DeleteByStructureID(id)
+	// if err != nil {
+	// 	return err
+	// }
 
 	groupUser := new(models.GroupUser)
 	groupUser.GroupID = id

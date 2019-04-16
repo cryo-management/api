@@ -12,11 +12,11 @@ func (l *LookupService) Create(lookup *models.Lookup) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.Create(*lookup, lookup.ID)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.Create(*lookup, lookup.ID)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
@@ -45,11 +45,11 @@ func (l *LookupService) Delete(lookup *models.Lookup, id string) error {
 		return err
 	}
 
-	translationService := new(TranslationService)
-	err = translationService.DeleteByStructureID(id)
-	if err != nil {
-		return err
-	}
+	// translationService := new(TranslationService)
+	// err = translationService.DeleteByStructureID(id)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

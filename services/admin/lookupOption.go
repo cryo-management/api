@@ -33,13 +33,13 @@ func PostLookupOption(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	translation := new(models.Translation)
-	err = translation.Create(lookupOption.ID, *lookupOption)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostLookupOption translation", err.Error()))
-		return
-	}
+	// translation := new(models.Translation)
+	// err = translation.Create(lookupOption.ID, *lookupOption)
+	// if err != nil {
+	// 	render.Status(r, http.StatusInternalServerError)
+	// 	render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostLookupOption translation", err.Error()))
+	// 	return
+	// }
 
 	render.JSON(w, r, lookupOption)
 }

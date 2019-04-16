@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/cryo-management/api/common"
 	"github.com/cryo-management/api/db"
@@ -16,8 +17,8 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-func (t *Translation) Create(objID string, obj interface{}) error {
-	query, args := db.GenerateTranslationsInsertQuery(objID, common.Session.User.Language, obj, Translation{})
+func (t *Translation) Create(model Model) error {
+	query, args := db.GenerateTranslationsInsertQuery(model.GetID(), common.Session.User.Language, reflect.TypeOf(model).Elem(), Translation{})
 	conn := new(db.Database)
 	_, err := conn.Insert(query, args...)
 	return err

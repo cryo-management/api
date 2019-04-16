@@ -17,7 +17,7 @@ type responseError struct {
 	Error string `json:"erro"`
 }
 
-func NewResponseError(code string, scope, err string) interface{} {
+func NewResponseError(code string, scope, err string) responseError {
 	return responseError{
 		Code:  code,
 		Scope: scope,
