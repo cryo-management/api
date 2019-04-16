@@ -1,11 +1,9 @@
 package models
 
 import (
-	"fmt"
 	"reflect"
 
-	"github.com/cryo-management/api/common"
-	"github.com/cryo-management/api/db"
+	"github.com/andreluzz/go-sql-builder/db"
 )
 
 type Translation struct {
@@ -17,22 +15,28 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-func (t *Translation) Create(model Model) error {
-	query, args := db.GenerateTranslationsInsertQuery(model.GetID(), common.Session.User.Language, reflect.TypeOf(model).Elem(), Translation{})
-	conn := new(db.Database)
-	_, err := conn.Insert(query, args...)
+func CreateTranslationsFromStruct(structureType, languageCode string, model Model) error {
+	modelType := reflect.TypeOf(model).Elem()
+	modelValue := reflect.ValueOf(model).Elem()
+
+	translations := []Translation{}
+	for i := 0; i < modelType.NumField(); i++ {
+		if modelType.Field(i).Tag.Get("table") == TableTranslations {
+			trs := Translation{
+				StructureID:    modelValue.FieldByName("ID").Interface().(string),
+				StructureField: modelType.Field(i).Tag.Get("json"),
+				StructureType:  structureType,
+				Value:          modelValue.Field(i).Interface().(string),
+				LanguageCode:   languageCode,
+			}
+			translations = append(translations, trs)
+		}
+	}
+
+	_, err := db.InsertStruct(TableTranslations, translations)
 	return err
 }
 
 func (t *Translation) DeleteByStructureID(structureID string) error {
-	table := "translations"
-	sqlID := fmt.Sprintf("%s.structure_id = '%s'", table, structureID)
-	query := db.GenerateDeleteQuery(table, sqlID)
-	conn := new(db.Database)
-	_, err := conn.Delete(query)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

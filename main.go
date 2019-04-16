@@ -5,14 +5,21 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cryo-management/api/db"
+	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/routes"
 )
 
-func main() {
-	err := db.Connect()
-	defer db.Close()
+const (
+	host     = "cryo.cdnm8viilrat.us-east-2.rds-preview.amazonaws.com"
+	port     = 5432
+	user     = "cryoadmin"
+	password = "x3FhcrWDxnxCq9p"
+	dbname   = "cryo"
+)
 
+func main() {
+	err := db.Connect(host, port, user, password, dbname, false)
+	defer db.Close()
 	if err != nil {
 		fmt.Println("[Cryo] Fatal error")
 	} else {

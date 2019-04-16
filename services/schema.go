@@ -8,8 +8,9 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
+//CreateSchema persists the request body creating a new schema in the database
 func CreateSchema(r *http.Request) *Response {
-	response := new(Response)
+	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
 	schema := new(models.Schema)
 	err := json.Unmarshal(body, &schema)
@@ -19,73 +20,17 @@ func CreateSchema(r *http.Request) *Response {
 		return response
 	}
 
-	err = schema.Create()
+	id, err := schema.Create()
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateSchema create", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateSchema create", err.Error()))
 		return response
 	}
+	schema.ID = id
 
-	// translation := new(models.Translation)
-	// err = translation.Create(schema)
-	// if err != nil {
-	// 	response.Code = http.StatusInternalServerError
-	// 	response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateSchema create translation", err.Error()))
-	// 	return response
-	// }
+	err = models.CreateTranslationsFromStruct(models.TableSchema, "pt-br", schema)
 
-	response.Code = 200
 	response.Data = schema
 
 	return response
 }
-
-// func (s *SchemaService) Load(schema *models.Schema, id string) error {
-// 	err := schema.Load(id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (s *SchemaService) LoadAll(schemas *models.Schemas) error {
-// 	err := schemas.Load()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (s *SchemaService) Delete(schema *models.Schema, id string) error {
-// 	err := schema.Delete(id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	translationService := new(TranslationService)
-// 	err = translationService.DeleteByStructureID(id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	groupPermission := new(models.GroupPermission)
-// 	groupPermission.StructureID = id
-
-// 	groupService := new(GroupService)
-// 	err = groupService.DeletePermission(groupPermission)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	fields := new(models.Fields)
-
-// 	fieldService := new(FieldService)
-// 	err = fieldService.DeleteBySchemaID(fields, id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }

@@ -16,6 +16,12 @@ type Response struct {
 	Errors   []ResponseError `json:"errors"`
 }
 
+func NewResponse() *Response {
+	return &Response{
+		Code: 200,
+	}
+}
+
 const (
 	//ErrorParsingRequest unable to unmarshall json to struct
 	ErrorParsingRequest string = "001-ErrorParsingRequest"
