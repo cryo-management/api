@@ -57,6 +57,7 @@ func (f *Fields) Load(schemaID string) error {
 	table := "fields"
 	sqlschemaID := fmt.Sprintf("%s.schema_id = '%s'", table, schemaID)
 	query := db.GenerateSelectQuery(table, Field{}, sqlschemaID, fmt.Sprintf("and translations_name.language_code = '%s'", common.Session.User.Language), fmt.Sprintf("and translations_description.language_code = '%s'", common.Session.User.Language))
+	fmt.Printf(query)
 	conn := new(db.Database)
 	rows, err := conn.Query(query)
 	if err != nil {

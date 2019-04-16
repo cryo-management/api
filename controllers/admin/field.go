@@ -9,6 +9,7 @@ import (
 
 	"github.com/cryo-management/api/common"
 	"github.com/cryo-management/api/models"
+	services "github.com/cryo-management/api/services/admin"
 
 	"github.com/go-chi/render"
 )
@@ -26,18 +27,11 @@ func PostField(w http.ResponseWriter, r *http.Request) {
 
 	field.SchemaID = schemaID
 
-	err = field.Create()
+	fieldService := new(services.FieldService)
+	err = fieldService.Create(field)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostField creating", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-	err = translation.Create(field.ID, *field)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostField translation", err.Error()))
 		return
 	}
 
@@ -48,7 +42,8 @@ func GetField(w http.ResponseWriter, r *http.Request) {
 	field := new(models.Field)
 	id := string(chi.URLParam(r, "field_id"))
 
-	err := field.Load(id)
+	fieldService := new(services.FieldService)
+	err := fieldService.Load(field, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetField", err.Error()))
@@ -62,7 +57,8 @@ func GetAllFields(w http.ResponseWriter, r *http.Request) {
 	fields := new(models.Fields)
 	schemaID := string(chi.URLParam(r, "schema_id"))
 
-	err := fields.Load(schemaID)
+	fieldService := new(services.FieldService)
+	err := fieldService.LoadAll(fields, schemaID)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllFields load fields", err.Error()))
@@ -76,19 +72,11 @@ func DeleteField(w http.ResponseWriter, r *http.Request) {
 	field := new(models.Field)
 	id := string(chi.URLParam(r, "field_id"))
 
-	err := field.Delete(id)
+	fieldService := new(services.FieldService)
+	err := fieldService.Delete(field, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteField delete field", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-
-	err = translation.DeleteByStructureID(id)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteField delete translation", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete schema", err.Error()))
 		return
 	}
 

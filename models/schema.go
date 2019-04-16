@@ -14,7 +14,7 @@ type Schema struct {
 	Code             string `json:"code" sql:"code"`
 	Module           bool   `json:"module" sql:"module"`
 	Active           bool   `json:"active" sql:"active"`
-	LastModifiedDate int    `json:"last_modified_date" sql:"last_modified_date"`
+	LastModifiedDate int    `json:"last_modified_date" sql:"last_modified_date" readOnly:"true"`
 	Fields           Fields `json:"fields,omitempty"`
 }
 

@@ -9,6 +9,7 @@ import (
 
 	"github.com/cryo-management/api/common"
 	"github.com/cryo-management/api/models"
+	services "github.com/cryo-management/api/services/admin"
 
 	"github.com/go-chi/render"
 )
@@ -23,18 +24,11 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = schema.Create()
+	schemaService := new(services.SchemaService)
+	err = schemaService.Create(schema)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostSchema creating", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-	err = translation.Create(schema.ID, *schema)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostSchema translation", err.Error()))
 		return
 	}
 
@@ -45,7 +39,8 @@ func GetSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
 	id := string(chi.URLParam(r, "schema_id"))
 
-	err := schema.Load(id)
+	schemaService := new(services.SchemaService)
+	err := schemaService.Load(schema, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetSchema load", err.Error()))
@@ -58,7 +53,8 @@ func GetSchema(w http.ResponseWriter, r *http.Request) {
 func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	schemas := new(models.Schemas)
 
-	err := schemas.Load()
+	schemaService := new(services.SchemaService)
+	err := schemaService.LoadAll(schemas)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllSchemas load", err.Error()))
@@ -72,19 +68,11 @@ func DeleteSchema(w http.ResponseWriter, r *http.Request) {
 	schema := new(models.Schema)
 	id := string(chi.URLParam(r, "schema_id"))
 
-	err := schema.Delete(id)
+	schemaService := new(services.SchemaService)
+	err := schemaService.Delete(schema, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete schema", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-
-	err = translation.DeleteByStructureID(id)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete translation", err.Error()))
 		return
 	}
 

@@ -27,8 +27,18 @@ func (g *GroupUser) Create() error {
 
 func (g *GroupUser) Delete() error {
 	table := "groups_users"
-	sqlGroupID := fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
-	sqlUserID := fmt.Sprintf("and %s.user_id = '%s'", table, g.UserID)
+	sqlGroupID, sqlUserID := "", ""
+	if g.GroupID != "" && g.UserID != "" {
+		sqlGroupID = fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
+		sqlUserID = fmt.Sprintf("and %s.user_id = '%s'", table, g.UserID)
+	} else {
+		if g.GroupID != "" {
+			sqlGroupID = fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
+		}
+		if g.UserID != "" {
+			sqlUserID = fmt.Sprintf("%s.user_id = '%s'", table, g.UserID)
+		}
+	}
 	query := db.GenerateDeleteQuery(table, sqlGroupID, sqlUserID)
 	conn := new(db.Database)
 	_, err := conn.Delete(query)

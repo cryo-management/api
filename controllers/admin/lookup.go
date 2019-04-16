@@ -9,6 +9,7 @@ import (
 
 	"github.com/cryo-management/api/common"
 	"github.com/cryo-management/api/models"
+	services "github.com/cryo-management/api/services/admin"
 
 	"github.com/go-chi/render"
 )
@@ -23,18 +24,11 @@ func PostLookup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = lookup.Create()
+	lookupService := new(services.LookupService)
+	err = lookupService.Create(lookup)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostLookup creating", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-	err = translation.Create(lookup.ID, *lookup)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostLookup translation", err.Error()))
 		return
 	}
 
@@ -45,10 +39,11 @@ func GetLookup(w http.ResponseWriter, r *http.Request) {
 	lookup := new(models.Lookup)
 	id := string(chi.URLParam(r, "lookup_id"))
 
-	err := lookup.Load(id)
+	lookupService := new(services.LookupService)
+	err := lookupService.Load(lookup, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetLookup", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetLookup load", err.Error()))
 		return
 	}
 
@@ -58,10 +53,11 @@ func GetLookup(w http.ResponseWriter, r *http.Request) {
 func GetAllLookups(w http.ResponseWriter, r *http.Request) {
 	lookups := new(models.Lookups)
 
-	err := lookups.Load()
+	lookupService := new(services.LookupService)
+	err := lookupService.LoadAll(lookups)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllLookups load lookups", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllLookups load", err.Error()))
 		return
 	}
 
@@ -72,19 +68,11 @@ func DeleteLookup(w http.ResponseWriter, r *http.Request) {
 	lookup := new(models.Lookup)
 	id := string(chi.URLParam(r, "lookup_id"))
 
-	err := lookup.Delete(id)
+	lookupService := new(services.LookupService)
+	err := lookupService.Delete(lookup, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteLookup delete lookup", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-
-	err = translation.DeleteByStructureID(id)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteLookup delete translation", err.Error()))
 		return
 	}
 

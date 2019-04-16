@@ -10,6 +10,7 @@ import (
 
 	"github.com/cryo-management/api/common"
 	"github.com/cryo-management/api/models"
+	services "github.com/cryo-management/api/services/admin"
 
 	"github.com/go-chi/render"
 )
@@ -24,18 +25,11 @@ func PostGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = group.Create()
+	groupService := new(services.GroupService)
+	err = groupService.Create(group)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostGroup creating", err.Error()))
-		return
-	}
-
-	translation := new(models.Translation)
-	err = translation.Create(group.ID, *group)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "PostGroup translation", err.Error()))
 		return
 	}
 
@@ -46,10 +40,11 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	group := new(models.Group)
 	id := string(chi.URLParam(r, "group_id"))
 
-	err := group.Load(id)
+	groupService := new(services.GroupService)
+	err := groupService.Load(group, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetGroup", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetGroup load", err.Error()))
 		return
 	}
 
@@ -59,10 +54,11 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 func GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	groups := new(models.Groups)
 
-	err := groups.Load()
+	groupService := new(services.GroupService)
+	err := groupService.LoadAll(groups)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllGroups load groups", err.Error()))
+		render.JSON(w, r, common.NewResponseError(common.ErrorReturningData, "GetAllGroups load", err.Error()))
 		return
 	}
 
@@ -73,85 +69,80 @@ func DeleteGroup(w http.ResponseWriter, r *http.Request) {
 	group := new(models.Group)
 	id := string(chi.URLParam(r, "group_id"))
 
-	err := group.Delete(id)
+	groupService := new(services.GroupService)
+	err := groupService.Delete(group, id)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteGroup delete group", err.Error()))
 		return
 	}
 
-	translation := new(models.Translation)
-
-	err = translation.DeleteByStructureID(id)
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteGroup delete translation", err.Error()))
-		return
-	}
-
 	render.JSON(w, r, id)
 }
 
-func AddUser(w http.ResponseWriter, r *http.Request) {
-	GroupUser := new(models.GroupUser)
+func AddGroupUser(w http.ResponseWriter, r *http.Request) {
+	groupUser := new(models.GroupUser)
 	body, err := ioutil.ReadAll(r.Body)
-	err = json.Unmarshal(body, &GroupUser)
+	err = json.Unmarshal(body, &groupUser)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorParsingRequest, "AddUser unmarshal body", err.Error()))
 		return
 	}
 
-	err = GroupUser.Create()
+	groupService := new(services.GroupService)
+	err = groupService.CreateGroupUser(groupUser)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "AddUser creating", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, GroupUser)
+	render.JSON(w, r, groupUser)
 }
 
-func RemoveUser(w http.ResponseWriter, r *http.Request) {
-	GroupUser := new(models.GroupUser)
+func RemoveGroupUser(w http.ResponseWriter, r *http.Request) {
+	groupUser := new(models.GroupUser)
 	groupID := string(chi.URLParam(r, "group_id"))
 	userID := string(chi.URLParam(r, "user_id"))
 
-	GroupUser.GroupID = groupID
-	GroupUser.UserID = userID
+	groupUser.GroupID = groupID
+	groupUser.UserID = userID
 
-	err := GroupUser.Delete()
+	groupService := new(services.GroupService)
+	err := groupService.DeleteGoupUser(groupUser)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "RemoveUser delete group user", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, GroupUser)
+	render.JSON(w, r, groupUser)
 }
 
 func AddPermission(w http.ResponseWriter, r *http.Request) {
-	GroupPermission := new(models.GroupPermission)
+	groupPermission := new(models.GroupPermission)
 	body, err := ioutil.ReadAll(r.Body)
-	err = json.Unmarshal(body, &GroupPermission)
+	err = json.Unmarshal(body, &groupPermission)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorParsingRequest, "AddPermission unmarshal body", err.Error()))
 		return
 	}
 
-	err = GroupPermission.Create()
+	groupService := new(services.GroupService)
+	err = groupService.CreatePermission(groupPermission)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorInsertingRecord, "AddPermission creating", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, GroupPermission)
+	render.JSON(w, r, groupPermission)
 }
 
 func RemovePermission(w http.ResponseWriter, r *http.Request) {
-	GroupPermission := new(models.GroupPermission)
+	groupPermission := new(models.GroupPermission)
 	groupID := string(chi.URLParam(r, "group_id"))
 	structureID := string(chi.URLParam(r, "structure_id"))
 	permissionType, err := strconv.Atoi(chi.URLParam(r, "type"))
@@ -161,16 +152,17 @@ func RemovePermission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	GroupPermission.GroupID = groupID
-	GroupPermission.StructureID = structureID
-	GroupPermission.Type = permissionType
+	groupPermission.GroupID = groupID
+	groupPermission.StructureID = structureID
+	groupPermission.Type = permissionType
 
-	err = GroupPermission.Delete()
+	groupService := new(services.GroupService)
+	err = groupService.DeletePermission(groupPermission)
 	if err != nil {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "GroupPermission delete group user", err.Error()))
 		return
 	}
 
-	render.JSON(w, r, GroupPermission)
+	render.JSON(w, r, groupPermission)
 }

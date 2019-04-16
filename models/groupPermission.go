@@ -30,9 +30,23 @@ func (g *GroupPermission) Create() error {
 
 func (g *GroupPermission) Delete() error {
 	table := "groups_permissions"
-	sqlGroupID := fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
-	sqlStructureID := fmt.Sprintf("and %s.structure_id = '%s'", table, g.StructureID)
-	sqlType := fmt.Sprintf("and %s.type = '%d'", table, g.Type)
+	sqlGroupID, sqlStructureID, sqlType := "", "", ""
+	if g.GroupID != "" && g.StructureID != "" && g.Type > 0 {
+		sqlGroupID = fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
+		sqlStructureID = fmt.Sprintf("and %s.structure_id = '%s'", table, g.StructureID)
+		sqlType = fmt.Sprintf("and %s.type = '%d'", table, g.Type)
+	} else {
+		if g.GroupID != "" {
+			sqlGroupID = fmt.Sprintf("%s.group_id = '%s'", table, g.GroupID)
+		}
+		if g.StructureID != "" && g.Type == 0 {
+			sqlStructureID = fmt.Sprintf("%s.structure_id = '%s'", table, g.StructureID)
+		}
+		if g.StructureID != "" && g.Type > 0 {
+			sqlStructureID = fmt.Sprintf("%s.structure_id = '%s'", table, g.StructureID)
+			sqlType = fmt.Sprintf("and %s.type = '%d'", table, g.Type)
+		}
+	}
 	query := db.GenerateDeleteQuery(table, sqlGroupID, sqlStructureID, sqlType)
 	conn := new(db.Database)
 	_, err := conn.Delete(query)
