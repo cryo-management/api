@@ -1,5 +1,6 @@
 package models
 
+//User defines the struct of this object
 type User struct {
 	ID        string `json:"id" sql:"id" pk:"true"`
 	FirstName string `json:"first_name" sql:"first_name"`
@@ -10,6 +11,7 @@ type User struct {
 	Active    bool   `json:"active" sql:"active"`
 }
 
+//GetID returns object primary key
 func (u *User) GetID() string {
 	return u.ID
 }

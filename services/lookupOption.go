@@ -12,7 +12,7 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
-//CreateLookupOption persists the request body creating a new lookupOption in the database
+//CreateLookupOption persists the request body creating a new object in the database
 func CreateLookupOption(r *http.Request) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -44,12 +44,12 @@ func CreateLookupOption(r *http.Request) *Response {
 	return response
 }
 
+//LoadAllLookupOptions return all instances from the object
 func LoadAllLookupOptions(r *http.Request) *Response {
 	response := NewResponse()
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookupOptions := []models.LookupOption{}
-	jsonBytes, err := db.LoadStruct(models.TableLookupsOptions, lookupOptions, builder.Equal("lookups_options.lookup_id", lookupID))
-	json.Unmarshal(jsonBytes, &lookupOptions)
+	err := db.LoadStruct(models.TableLookupsOptions, &lookupOptions, builder.Equal("lookups_options.lookup_id", lookupID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllLookupOptions loaging data", err.Error()))
@@ -59,12 +59,12 @@ func LoadAllLookupOptions(r *http.Request) *Response {
 	return response
 }
 
+//LoadLookupOption return only one object from the database
 func LoadLookupOption(r *http.Request) *Response {
 	response := NewResponse()
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	lookupOption := &models.LookupOption{}
-	jsonBytes, err := db.LoadStruct(models.TableLookupsOptions, lookupOption, builder.Equal("lookups_options.id", lookupOptionID))
-	json.Unmarshal(jsonBytes, lookupOption)
+	err := db.LoadStruct(models.TableLookupsOptions, lookupOption, builder.Equal("lookups_options.id", lookupOptionID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetLookupOption", err.Error()))
@@ -74,10 +74,12 @@ func LoadLookupOption(r *http.Request) *Response {
 	return response
 }
 
+//UpdateLookupOption updates object data in the database
 func UpdateLookupOption(r *http.Request) *Response {
 	return nil
 }
 
+//DeleteLookupOption deletes object from the database
 func DeleteLookupOption(r *http.Request) *Response {
 	return nil
 }

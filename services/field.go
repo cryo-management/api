@@ -48,8 +48,7 @@ func LoadAllFields(r *http.Request) *Response {
 	response := NewResponse()
 	schemaID := chi.URLParam(r, "schema_id")
 	fields := []models.Field{}
-	jsonBytes, err := db.LoadStruct(models.TableFields, fields, builder.Equal("fields.schema_id", schemaID))
-	json.Unmarshal(jsonBytes, &fields)
+	err := db.LoadStruct(models.TableFields, &fields, builder.Equal("fields.schema_id", schemaID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllFields loaging data", err.Error()))
@@ -63,8 +62,7 @@ func LoadField(r *http.Request) *Response {
 	response := NewResponse()
 	fieldID := chi.URLParam(r, "field_id")
 	field := &models.Field{}
-	jsonBytes, err := db.LoadStruct(models.TableFields, field, builder.Equal("fields.id", fieldID))
-	json.Unmarshal(jsonBytes, field)
+	err := db.LoadStruct(models.TableFields, field, builder.Equal("fields.id", fieldID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetField", err.Error()))
@@ -78,6 +76,7 @@ func UpdateField(r *http.Request) *Response {
 	return nil
 }
 
+//DeleteField deletes object from the database
 func DeleteField(r *http.Request) *Response {
 	return nil
 }

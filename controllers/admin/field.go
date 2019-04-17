@@ -42,18 +42,3 @@ func DeleteField(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
-
-// func DeleteField(w http.ResponseWriter, r *http.Request) {
-// 	field := new(models.Field)
-// 	id := string(chi.URLParam(r, "field_id"))
-
-// 	fieldService := new(services.FieldService)
-// 	err := fieldService.Delete(field, id)
-// 	if err != nil {
-// 		render.Status(r, http.StatusInternalServerError)
-// 		render.JSON(w, r, common.NewResponseError(common.ErrorDeletingData, "DeleteSchema delete schema", err.Error()))
-// 		return
-// 	}
-
-// 	render.JSON(w, r, id)
-// }

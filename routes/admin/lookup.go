@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
+//LookupRoutes creates the api methods
 func LookupRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
@@ -15,6 +16,11 @@ func LookupRoutes() *chi.Mux {
 		r.Get("/{lookup_id}", controller.GetLookup)
 		r.Patch("/{lookup_id}", controller.UpdateLookup)
 		r.Delete("/{lookup_id}", controller.DeleteLookup)
+		r.Post("/{lookup_id}/options", controller.PostLookupOptions)
+		r.Get("/{lookup_id}/options", controller.GetAllLookupOptions)
+		r.Get("/{lookup_id}/options/{option_id}", controller.GetLookupOptions)
+		r.Patch("/{lookup_id}/options/{option_id}", controller.PostLookupOptions)
+		r.Delete("/{lookup_id}/options/{option_id}", controller.GetLookupOptions)
 	})
 
 	return r

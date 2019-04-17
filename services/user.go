@@ -12,7 +12,7 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
-//CreateUser persists the request body creating a new user in the database
+//CreateUser persists the request body creating a new object in the database
 func CreateUser(r *http.Request) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -37,12 +37,12 @@ func CreateUser(r *http.Request) *Response {
 	return response
 }
 
+//LoadAllUsers return all instances from the object
 func LoadAllUsers(r *http.Request) *Response {
 	response := NewResponse()
 
 	users := []models.User{}
-	jsonBytes, err := db.LoadStruct(models.TableUsers, users, nil)
-	json.Unmarshal(jsonBytes, &users)
+	err := db.LoadStruct(models.TableUsers, &users, nil)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllUsers", err.Error()))
@@ -52,12 +52,12 @@ func LoadAllUsers(r *http.Request) *Response {
 	return response
 }
 
+//LoadUser return only one object from the database
 func LoadUser(r *http.Request) *Response {
 	response := NewResponse()
 	userID := chi.URLParam(r, "user_id")
 	user := &models.User{}
-	jsonBytes, err := db.LoadStruct(models.TableUsers, user, builder.Equal("users.id", userID))
-	json.Unmarshal(jsonBytes, user)
+	err := db.LoadStruct(models.TableUsers, user, builder.Equal("users.id", userID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadUser", err.Error()))
@@ -67,6 +67,7 @@ func LoadUser(r *http.Request) *Response {
 	return response
 }
 
+//UpdateUser updates object data in the database
 func UpdateUser(r *http.Request) *Response {
 	return nil
 }

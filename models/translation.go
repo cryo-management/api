@@ -6,6 +6,7 @@ import (
 	"github.com/andreluzz/go-sql-builder/db"
 )
 
+//Translation defines the struct of this object
 type Translation struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
 	StructureID    string `json:"structure_id" sql:"structure_id" fk:"true"`
@@ -15,10 +16,12 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
+//GetID returns object primary key
 func (t *Translation) GetID() string {
 	return t.ID
 }
 
+//CreateTranslationsFromStruct saves translations from struct to the database
 func CreateTranslationsFromStruct(structureType, languageCode string, model Model) error {
 	modelType := reflect.TypeOf(model).Elem()
 	modelValue := reflect.ValueOf(model).Elem()
@@ -39,8 +42,4 @@ func CreateTranslationsFromStruct(structureType, languageCode string, model Mode
 
 	_, err := db.InsertStruct(TableTranslations, translations)
 	return err
-}
-
-func (t *Translation) DeleteByStructureID(structureID string) error {
-	return nil
 }

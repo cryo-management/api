@@ -12,7 +12,7 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
-//CreateLookup persists the request body creating a new lookup in the database
+//CreateLookup persists the request body creating a new object in the database
 func CreateLookup(r *http.Request) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -45,12 +45,12 @@ func CreateLookup(r *http.Request) *Response {
 	return response
 }
 
+//LoadAllLookups return all instances from the object
 func LoadAllLookups(r *http.Request) *Response {
 	response := NewResponse()
 
 	lookups := []models.Lookup{}
-	jsonBytes, err := db.LoadStruct(models.TableLookups, lookups, nil)
-	json.Unmarshal(jsonBytes, &lookups)
+	err := db.LoadStruct(models.TableLookups, &lookups, nil)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllLookups", err.Error()))
@@ -60,12 +60,12 @@ func LoadAllLookups(r *http.Request) *Response {
 	return response
 }
 
+//LoadLookup return only one object from the database
 func LoadLookup(r *http.Request) *Response {
 	response := NewResponse()
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookup := &models.Lookup{}
-	jsonBytes, err := db.LoadStruct(models.TableLookups, lookup, builder.Equal("lookups.id", lookupID))
-	json.Unmarshal(jsonBytes, lookup)
+	err := db.LoadStruct(models.TableLookups, lookup, builder.Equal("lookups.id", lookupID))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadLookup", err.Error()))
@@ -75,10 +75,12 @@ func LoadLookup(r *http.Request) *Response {
 	return response
 }
 
+//UpdateLookup updates object data in the database
 func UpdateLookup(r *http.Request) *Response {
 	return nil
 }
 
+//DeleteLookup deletes object from the database
 func DeleteLookup(r *http.Request) *Response {
 	return nil
 }
