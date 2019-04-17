@@ -1,8 +1,6 @@
 package admin
 
 import (
-	"net/http"
-
 	controller "github.com/cryo-management/api/controllers/admin"
 	"github.com/go-chi/chi"
 )
@@ -15,9 +13,7 @@ func UserRoutes() *chi.Mux {
 		r.Post("/", controller.PostUser)
 		r.Get("/", controller.GetAllUsers)
 		r.Get("/{user_id}", controller.GetUser)
-		r.Patch("/{user_id}", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("update user"))
-		})
+		r.Patch("/{user_id}", controller.UpdateUser)
 		r.Delete("/{user_id}", controller.DeleteUser)
 	})
 

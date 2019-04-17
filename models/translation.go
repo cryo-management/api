@@ -15,6 +15,10 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
+func (t *Translation) GetID() string {
+	return t.ID
+}
+
 func CreateTranslationsFromStruct(structureType, languageCode string, model Model) error {
 	modelType := reflect.TypeOf(model).Elem()
 	modelValue := reflect.ValueOf(model).Elem()

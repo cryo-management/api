@@ -24,7 +24,7 @@ func CreateSchema(r *http.Request) *Response {
 		return response
 	}
 
-	id, err := db.InsertStruct(models.TableSchema, schema)
+	id, err := db.InsertStruct(models.TableSchemas, schema)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateSchema create", err.Error()))
@@ -33,7 +33,12 @@ func CreateSchema(r *http.Request) *Response {
 	schema.ID = id
 
 	//TODO change language_code get from request
-	err = models.CreateTranslationsFromStruct(models.TableSchema, r.Header.Get("languageCode"), schema)
+	err = models.CreateTranslationsFromStruct(models.TableSchemas, r.Header.Get("languageCode"), schema)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateSchema create translation", err.Error()))
+		return response
+	}
 
 	response.Data = schema
 
@@ -44,11 +49,11 @@ func LoadAllSchemas(r *http.Request) *Response {
 	response := NewResponse()
 
 	schemas := []models.Schema{}
-	jsonBytes, err := db.LoadStruct(models.TableSchema, schemas, nil)
+	jsonBytes, err := db.LoadStruct(models.TableSchemas, schemas, nil)
 	json.Unmarshal(jsonBytes, &schemas)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetAllSchemas", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllSchemas", err.Error()))
 		return response
 	}
 	response.Data = schemas
@@ -57,13 +62,13 @@ func LoadAllSchemas(r *http.Request) *Response {
 
 func LoadSchema(r *http.Request) *Response {
 	response := NewResponse()
+	schemaID := chi.URLParam(r, "schema_id")
 	schema := &models.Schema{}
-
-	jsonBytes, err := db.LoadStruct(models.TableSchema, schema, builder.Equal("schemas.id", chi.URLParam(r, "schema_id")))
+	jsonBytes, err := db.LoadStruct(models.TableSchemas, schema, builder.Equal("schemas.id", schemaID))
 	json.Unmarshal(jsonBytes, schema)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetSchema", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadSchema", err.Error()))
 		return response
 	}
 	response.Data = schema

@@ -1,8 +1,15 @@
 package models
 
 const (
-	TableSchema       string = "schemas"
-	TableTranslations string = "translations"
+	TableSchemas           string = "schemas"
+	TableTranslations      string = "translations"
+	TableFields            string = "fields"
+	TableUsers             string = "users"
+	TableGroups            string = "groups"
+	TableGroupsUsers       string = "groups_users"
+	TableGroupsPermissions string = "groups_permissions"
+	TableLookups           string = "lookups"
+	TableLookupsOptions    string = "lookups_options"
 )
 
 type Model interface {

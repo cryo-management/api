@@ -17,6 +17,8 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 
 func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	response := services.LoadAllSchemas(r)
+
+	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
 
