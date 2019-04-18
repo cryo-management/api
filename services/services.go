@@ -1,15 +1,22 @@
 package services
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"reflect"
 
 	"github.com/andreluzz/go-sql-builder/builder"
 	"github.com/andreluzz/go-sql-builder/db"
+	"github.com/cryo-management/api/models"
 )
 
+//Metadata defines the struct to the api return complementary information to the response data
 type Metadata struct {
 }
 
+//ResponseError defines the struct to the api response error
 type ResponseError struct {
 	Code  string `json:"code"`
 	Scope string `json:"scope"`
@@ -53,14 +60,89 @@ func NewResponseError(code string, scope, err string) ResponseError {
 	}
 }
 
+func getColumnsFromBody(body []byte) []string {
+	jsonMap := make(map[string]interface{})
+	json.Unmarshal(body, &jsonMap)
+	columns := []string{}
+	for k := range jsonMap {
+		columns = append(columns, k)
+	}
+
+	return columns
+}
+
+//create
+func create(r *http.Request, object interface{}, scope, table string) *Response {
+	response := NewResponse()
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, &object)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, fmt.Sprintf("%s unmarshal body", scope), err.Error()))
+
+		return response
+	}
+
+	id, err := db.InsertStruct(table, object)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s create", scope), err.Error()))
+
+		return response
+	}
+
+	elementType := reflect.TypeOf(object).Elem()
+	elementValue := reflect.ValueOf(object).Elem()
+	elementID := elementValue.FieldByName("ID")
+	elementID.SetString(id)
+
+	for i := 0; i < elementType.NumField(); i++ {
+		if elementType.Field(i).Tag.Get("table") == models.TableTranslations {
+			err = models.CreateTranslationsFromStruct(table, r.Header.Get("languageCode"), object)
+			if err != nil {
+				response.Code = http.StatusInternalServerError
+				response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s create translation", scope), err.Error()))
+
+				return response
+			}
+			break
+		}
+	}
+
+	response.Data = object
+
+	return response
+}
+
+//load return instances from the object
 func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
+
 	err := db.LoadStruct(table, object, conditions)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, scope, err.Error()))
+
 		return response
 	}
+
 	response.Data = object
+
+	return response
+}
+
+//deleteSchema deletes object from the database
+func delete(r *http.Request, scope, table string, conditions builder.Builder) *Response {
+	response := NewResponse()
+
+	err := db.DeleteStruct(table, conditions)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, scope, err.Error()))
+
+		return response
+	}
+
 	return response
 }

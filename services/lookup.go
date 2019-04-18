@@ -14,73 +14,60 @@ import (
 
 //CreateLookup persists the request body creating a new object in the database
 func CreateLookup(r *http.Request) *Response {
-	response := NewResponse()
-	body, _ := ioutil.ReadAll(r.Body)
-	lookup := &models.Lookup{}
-	err := json.Unmarshal(body, lookup)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateLookup unmarshal body", err.Error()))
-		return response
-	}
+	lookup := models.Lookup{}
 
-	id, err := db.InsertStruct(models.TableLookups, lookup)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateLookup create", err.Error()))
-		return response
-	}
-	lookup.ID = id
-
-	//TODO change language_code get from request
-	err = models.CreateTranslationsFromStruct(models.TableLookups, r.Header.Get("languageCode"), lookup)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateLookup create translation", err.Error()))
-		return response
-	}
-
-	response.Data = lookup
-
-	return response
+	return create(r, &lookup, "CreateLookup", models.TableLookups)
 }
 
 //LoadAllLookups return all instances from the object
 func LoadAllLookups(r *http.Request) *Response {
-	response := NewResponse()
-
 	lookups := []models.Lookup{}
-	err := db.LoadStruct(models.TableLookups, &lookups, nil)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllLookups", err.Error()))
-		return response
-	}
-	response.Data = lookups
-	return response
+
+	return load(r, &lookups, "LoadAllLookups", models.TableLookups, nil)
 }
 
 //LoadLookup return only one object from the database
 func LoadLookup(r *http.Request) *Response {
-	response := NewResponse()
+	lookup := models.Lookup{}
 	lookupID := chi.URLParam(r, "lookup_id")
-	lookup := &models.Lookup{}
-	err := db.LoadStruct(models.TableLookups, lookup, builder.Equal("lookups.id", lookupID))
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadLookup", err.Error()))
-		return response
-	}
-	response.Data = lookup
-	return response
+	condition := builder.Equal("lookups.id", lookupID)
+
+	return load(r, &lookup, "LoadALookup", models.TableLookups, condition)
 }
 
 //UpdateLookup updates object data in the database
 func UpdateLookup(r *http.Request) *Response {
-	return nil
+	response := NewResponse()
+	lookupID := chi.URLParam(r, "lookup_id")
+	lookup := &models.Lookup{}
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, lookup)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "UpdateLookup unmarshal body", err.Error()))
+
+		return response
+	}
+
+	condition := builder.Equal("lookups.id", lookupID)
+	columns := getColumnsFromBody(body)
+
+	err = db.UpdateStruct(models.TableLookups, lookup, condition, columns...)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "UpdateLookup", err.Error()))
+
+		return response
+	}
+
+	return response
 }
 
 //DeleteLookup deletes object from the database
 func DeleteLookup(r *http.Request) *Response {
-	return nil
+	lookupID := chi.URLParam(r, "lookup_id")
+	condition := builder.Equal("lookups.id", lookupID)
+
+	return delete(r, "DeleteLookup", models.TableLookups, condition)
 }

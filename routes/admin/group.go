@@ -16,7 +16,7 @@ func GroupRoutes() *chi.Mux {
 		r.Patch("/{group_id}", controller.UpdateGroup)
 		r.Delete("/{group_id}", controller.DeleteGroup)
 		r.Post("/{group_id}/users", controller.PostGroupUser)
-		r.Ger("/{group_id}/users", controller.PostGroupUser) //TODO: create a controller to return all users from a group
+		r.Get("/{group_id}/users", controller.PostGroupUser) //TODO: create a controller to return all users from a group
 		r.Delete("/{group_id}/users/{user_id}", controller.DeleteGroupUser)
 		r.Post("/{group_id}/permissions", controller.PostGroupPermission)
 		r.Get("/{group_id}/permissions", controller.PostGroupPermission) //TODO: create a controller to return all permissions from a group

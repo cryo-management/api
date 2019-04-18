@@ -22,7 +22,7 @@ func (t *Translation) GetID() string {
 }
 
 //CreateTranslationsFromStruct saves translations from struct to the database
-func CreateTranslationsFromStruct(structureType, languageCode string, model Model) error {
+func CreateTranslationsFromStruct(structureType, languageCode string, model interface{}) error {
 	modelType := reflect.TypeOf(model).Elem()
 	modelValue := reflect.ValueOf(model).Elem()
 

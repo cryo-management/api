@@ -12,72 +12,62 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
-//CreateGroup persists the request body creating a new group in the database
+//CreateGroup persists the request body creating a new object in the database
 func CreateGroup(r *http.Request) *Response {
-	response := NewResponse()
-	body, _ := ioutil.ReadAll(r.Body)
-	group := &models.Group{}
-	err := json.Unmarshal(body, group)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateGroup unmarshal body", err.Error()))
-		return response
-	}
+	group := models.Group{}
 
-	id, err := db.InsertStruct(models.TableGroups, group)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateGroup create", err.Error()))
-		return response
-	}
-	group.ID = id
-
-	//TODO change language_code get from request
-	err = models.CreateTranslationsFromStruct(models.TableGroups, r.Header.Get("languageCode"), group)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateGroup create translation", err.Error()))
-		return response
-	}
-
-	response.Data = group
-
-	return response
+	return create(r, &group, "CreateGroup", models.TableGroups)
 }
 
+//LoadAllGroups return all instances from the object
 func LoadAllGroups(r *http.Request) *Response {
-	response := NewResponse()
-
 	groups := []models.Group{}
-	err := db.LoadStruct(models.TableGroups, &groups, nil)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllGroups", err.Error()))
-		return response
-	}
-	response.Data = groups
-	return response
+
+	return load(r, &groups, "LoadAllGroups", models.TableGroups, nil)
 }
 
+//LoadGroup return only one object from the database
 func LoadGroup(r *http.Request) *Response {
+	group := models.Group{}
+	groupID := chi.URLParam(r, "group_id")
+	condition := builder.Equal("groups.id", groupID)
+
+	return load(r, &group, "LoadAGroup", models.TableGroups, condition)
+}
+
+//UpdateGroup updates object data in the database
+func UpdateGroup(r *http.Request) *Response {
 	response := NewResponse()
 	groupID := chi.URLParam(r, "group_id")
 	group := &models.Group{}
-	err := db.LoadStruct(models.TableGroups, group, builder.Equal("groups.id", groupID))
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, group)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadGroup", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "UpdateGroup unmarshal body", err.Error()))
+
 		return response
 	}
-	response.Data = group
-	return response
-}
 
-func UpdateGroup(r *http.Request) *Response {
-	return nil
+	condition := builder.Equal("groups.id", groupID)
+	columns := getColumnsFromBody(body)
+
+	err = db.UpdateStruct(models.TableGroups, group, condition, columns...)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "UpdateGroup", err.Error()))
+
+		return response
+	}
+
+	return response
 }
 
 //DeleteGroup deletes object from the database
 func DeleteGroup(r *http.Request) *Response {
-	return nil
+	groupID := chi.URLParam(r, "group_id")
+	condition := builder.Equal("groups.id", groupID)
+
+	return delete(r, "DeleteGroup", models.TableGroups, condition)
 }

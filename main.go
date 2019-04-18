@@ -5,24 +5,30 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/BurntSushi/toml"
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/routes"
 )
 
-const (
-	host     = "cryo.cdnm8viilrat.us-east-2.rds-preview.amazonaws.com"
-	port     = 5432
-	user     = "cryoadmin"
-	password = "x3FhcrWDxnxCq9p"
-	dbname   = "cryo"
-)
+//Config defines the struct of system configs
+type Config struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	DBName   string
+}
 
 func main() {
-	err := db.Connect(host, port, user, password, dbname, false)
+	fmt.Println("[Cryo] Connecting to the database")
+	var config Config
+	toml.DecodeFile("config.toml", &config)
+	err := db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 	defer db.Close()
 	if err != nil {
-		fmt.Println("[Cryo] Fatal error")
+		fmt.Println("[Cryo] Error while connecting to database")
 	} else {
+		fmt.Println("[Cryo] Database connected successfully")
 		router := routes.Setup()
 
 		fmt.Println("[Cryo] API listening on port 3333")

@@ -14,72 +14,62 @@ import (
 
 //CreateLookupOption persists the request body creating a new object in the database
 func CreateLookupOption(r *http.Request) *Response {
-	response := NewResponse()
-	body, _ := ioutil.ReadAll(r.Body)
-	lookupOption := &models.LookupOption{}
-	err := json.Unmarshal(body, lookupOption)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "CreateLookupOption unmarshal body", err.Error()))
-		return response
-	}
+	lookupOption := models.LookupOption{}
 
-	id, err := db.InsertStruct(models.TableLookupsOptions, lookupOption)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateLookupOption create", err.Error()))
-		return response
-	}
-	lookupOption.ID = id
-
-	err = models.CreateTranslationsFromStruct(models.TableLookupsOptions, r.Header.Get("languageCode"), lookupOption)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "CreateLookupOption create translation", err.Error()))
-		return response
-	}
-
-	response.Data = lookupOption
-
-	return response
+	return create(r, &lookupOption, "CreateLookupOption", models.TableLookupsOptions)
 }
 
 //LoadAllLookupOptions return all instances from the object
 func LoadAllLookupOptions(r *http.Request) *Response {
-	response := NewResponse()
-	lookupID := chi.URLParam(r, "lookup_id")
 	lookupOptions := []models.LookupOption{}
-	err := db.LoadStruct(models.TableLookupsOptions, &lookupOptions, builder.Equal("lookups_options.lookup_id", lookupID))
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllLookupOptions loaging data", err.Error()))
-		return response
-	}
-	response.Data = lookupOptions
-	return response
+	lookupID := chi.URLParam(r, "lookup_id")
+	condition := builder.Equal("lookups_options.lookup_id", lookupID)
+
+	return load(r, &lookupOptions, "LoadAllLookupOptions", models.TableLookupsOptions, condition)
 }
 
 //LoadLookupOption return only one object from the database
 func LoadLookupOption(r *http.Request) *Response {
-	response := NewResponse()
+	lookupOption := models.LookupOption{}
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
-	lookupOption := &models.LookupOption{}
-	err := db.LoadStruct(models.TableLookupsOptions, lookupOption, builder.Equal("lookups_options.id", lookupOptionID))
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "GetLookupOption", err.Error()))
-		return response
-	}
-	response.Data = lookupOption
-	return response
+	condition := builder.Equal("lookups_options.id", lookupOptionID)
+
+	return load(r, &lookupOption, "LoadALookupOption", models.TableLookupsOptions, condition)
 }
 
 //UpdateLookupOption updates object data in the database
 func UpdateLookupOption(r *http.Request) *Response {
-	return nil
+	response := NewResponse()
+	lookupOptionID := chi.URLParam(r, "lookup_option_id")
+	lookupOption := &models.LookupOption{}
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, lookupOption)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "UpdateLookupOption unmarshal body", err.Error()))
+
+		return response
+	}
+
+	condition := builder.Equal("lookups_options.id", lookupOptionID)
+	columns := getColumnsFromBody(body)
+
+	err = db.UpdateStruct(models.TableLookupsOptions, lookupOption, condition, columns...)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "UpdateLookupOption", err.Error()))
+
+		return response
+	}
+
+	return response
 }
 
 //DeleteLookupOption deletes object from the database
 func DeleteLookupOption(r *http.Request) *Response {
-	return nil
+	lookupOptionID := chi.URLParam(r, "lookup_option_id")
+	condition := builder.Equal("lookups_options.id", lookupOptionID)
+
+	return delete(r, "DeleteLookupOption", models.TableLookupsOptions, condition)
 }
