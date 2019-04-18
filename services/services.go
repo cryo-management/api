@@ -71,7 +71,7 @@ func getColumnsFromBody(body []byte) []string {
 	return columns
 }
 
-//create
+//create persists the request body creating a new object in the database
 func create(r *http.Request, object interface{}, scope, table string) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
