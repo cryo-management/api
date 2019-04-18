@@ -1,13 +1,15 @@
 package routes
 
 import (
-	cryoMiddleware "github.com/cryo-management/api/middlewares"
+	cryo "github.com/cryo-management/api/middlewares"
 	"github.com/cryo-management/api/routes/admin"
+	"github.com/cryo-management/api/routes/auth"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 )
 
+//Setup configure the API endpoints
 func Setup() *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(
@@ -16,7 +18,7 @@ func Setup() *chi.Mux {
 		middleware.DefaultCompress,
 		middleware.RedirectSlashes,
 		middleware.Recoverer,
-		cryoMiddleware.Session,
+		cryo.Authorization,
 	)
 
 	router.Route("/api/v1", func(r chi.Router) {
@@ -24,6 +26,7 @@ func Setup() *chi.Mux {
 		r.Mount("/admin/schemas", admin.SchemaRoutes())
 		r.Mount("/admin/lookups", admin.LookupRoutes())
 		r.Mount("/admin/groups", admin.GroupRoutes())
+		r.Mount("/auth", auth.Routes())
 	})
 
 	return router

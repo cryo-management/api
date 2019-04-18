@@ -49,6 +49,8 @@ const (
 	ErrorDeletingData string = "004-ErrorDeletingData"
 	//ErrorLoadingData unable to load data
 	ErrorLoadingData string = "005-ErrorLoadingData"
+	//ErrorLogin unable to login user
+	ErrorLogin string = "006-ErrorLoginUser"
 )
 
 //NewResponseError defines a structure to encode api response data
@@ -71,7 +73,6 @@ func getColumnsFromBody(body []byte) []string {
 	return columns
 }
 
-//create persists the request body creating a new object in the database
 func create(r *http.Request, object interface{}, scope, table string) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -115,7 +116,6 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	return response
 }
 
-//load return instances from the object
 func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
@@ -132,7 +132,6 @@ func load(r *http.Request, object interface{}, scope, table string, conditions b
 	return response
 }
 
-//removeSchema deletes object from the database
 func remove(r *http.Request, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
