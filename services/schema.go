@@ -69,5 +69,5 @@ func DeleteSchema(r *http.Request) *Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	condition := builder.Equal("schemas.id", schemaID)
 
-	return delete(r, "DeleteSchema", models.TableSchemas, condition)
+	return remove(r, "DeleteSchema", models.TableSchemas, condition)
 }

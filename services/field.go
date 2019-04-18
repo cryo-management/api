@@ -71,5 +71,5 @@ func DeleteField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
 	condition := builder.Equal("fields.id", fieldID)
 
-	return delete(r, "DeleteField", models.TableFields, condition)
+	return remove(r, "DeleteField", models.TableFields, condition)
 }

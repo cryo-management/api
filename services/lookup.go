@@ -69,5 +69,5 @@ func DeleteLookup(r *http.Request) *Response {
 	lookupID := chi.URLParam(r, "lookup_id")
 	condition := builder.Equal("lookups.id", lookupID)
 
-	return delete(r, "DeleteLookup", models.TableLookups, condition)
+	return remove(r, "DeleteLookup", models.TableLookups, condition)
 }

@@ -69,5 +69,5 @@ func DeleteGroup(r *http.Request) *Response {
 	groupID := chi.URLParam(r, "group_id")
 	condition := builder.Equal("groups.id", groupID)
 
-	return delete(r, "DeleteGroup", models.TableGroups, condition)
+	return remove(r, "DeleteGroup", models.TableGroups, condition)
 }

@@ -69,5 +69,5 @@ func DeleteUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	condition := builder.Equal("users.id", userID)
 
-	return delete(r, "DeleteUser", models.TableUsers, condition)
+	return remove(r, "DeleteUser", models.TableUsers, condition)
 }
