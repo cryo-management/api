@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -32,7 +33,7 @@ func LoadUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	condition := builder.Equal("users.id", userID)
 
-	return load(r, &user, "LoadAUser", models.TableUsers, condition)
+	return load(r, &user, "LoadUser", models.TableUsers, condition)
 }
 
 //UpdateUser updates object data in the database
@@ -69,5 +70,44 @@ func DeleteUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	condition := builder.Equal("users.id", userID)
 
-	return delete(r, "DeleteUser", models.TableUsers, condition)
+	return remove(r, "DeleteUser", models.TableUsers, condition)
+}
+
+//LoadAllGroupsByUser return all instances from the object
+func LoadAllGroupsByUser(r *http.Request) *Response {
+	response := NewResponse()
+
+	group := []models.Group{}
+	userID := chi.URLParam(r, "user_id")
+	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableTranslations, models.TableTranslations)
+	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableTranslations, models.TableTranslations)
+	languageCode := r.Header.Get("languageCode")
+
+	statemant := builder.Select(
+		"groups.id", "translations_name.value as name", "translations_description.value as description", "groups.code",
+	).From(models.TableGroups).Join(
+		tblTranslationName, "translations_name.structure_id = groups.id and translations_name.structure_field = 'name'",
+	).Join(
+		tblTranslationDescription, "translations_description.structure_id = groups.id and translations_description.structure_field = 'description'",
+	).Join(
+		models.TableGroupsUsers, "groups_users.group_id = groups.id",
+	).Where(
+		builder.And(
+			builder.Equal("groups_users.user_id", userID),
+			builder.Equal("translations_name.language_code", languageCode),
+			builder.Equal("translations_description.language_code", languageCode),
+		),
+	)
+
+	err := db.QueryStruct(statemant, &group)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllGroupsByUser", err.Error()))
+
+		return response
+	}
+
+	response.Data = group
+
+	return response
 }

@@ -42,3 +42,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
+
+func GetAllGroupsByUser(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllGroupsByUser(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}

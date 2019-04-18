@@ -32,7 +32,7 @@ func LoadLookup(r *http.Request) *Response {
 	lookupID := chi.URLParam(r, "lookup_id")
 	condition := builder.Equal("lookups.id", lookupID)
 
-	return load(r, &lookup, "LoadALookup", models.TableLookups, condition)
+	return load(r, &lookup, "LoadLookup", models.TableLookups, condition)
 }
 
 //UpdateLookup updates object data in the database
@@ -69,5 +69,5 @@ func DeleteLookup(r *http.Request) *Response {
 	lookupID := chi.URLParam(r, "lookup_id")
 	condition := builder.Equal("lookups.id", lookupID)
 
-	return delete(r, "DeleteLookup", models.TableLookups, condition)
+	return remove(r, "DeleteLookup", models.TableLookups, condition)
 }

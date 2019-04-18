@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
+//UserRoutes creates the api methods
 func UserRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
@@ -13,7 +14,7 @@ func UserRoutes() *chi.Mux {
 		r.Post("/", controller.PostUser)
 		r.Get("/", controller.GetAllUsers)
 		r.Get("/{user_id}", controller.GetUser)
-		r.Get("/{user_id}/groups", controller.GetUser) //TODO: create a controller to return all groups from a user
+		r.Get("/{user_id}/groups", controller.GetAllGroupsByUser) //TODO: create a controller to return all groups from a user
 		r.Patch("/{user_id}", controller.UpdateUser)
 		r.Delete("/{user_id}", controller.DeleteUser)
 	})

@@ -44,21 +44,43 @@ func DeleteGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostGroupUser(w http.ResponseWriter, r *http.Request) {
-	render.Status(r, 500)
-	render.JSON(w, r, "")
+	response := services.InsertUserInGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+func GetAllUsersByGroup(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllUsersByGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
 }
 
 func DeleteGroupUser(w http.ResponseWriter, r *http.Request) {
-	render.Status(r, 500)
-	render.JSON(w, r, "")
+	response := services.RemoveUserFromGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
 }
 
 func PostGroupPermission(w http.ResponseWriter, r *http.Request) {
-	render.Status(r, 500)
-	render.JSON(w, r, "")
+	response := services.InsertPermission(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+func GetAllPermissionsByGroup(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllPermissionsByGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
 }
 
 func DeleteGroupPermission(w http.ResponseWriter, r *http.Request) {
-	render.Status(r, 500)
-	render.JSON(w, r, "")
+	response := services.RemovePermission(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
 }

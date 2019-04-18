@@ -1,0 +1,15 @@
+Tarefas:
+  Todos:
+    New:
+      ☐ criar campos padrão
+        Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de campos padrão", api_method, api_url, json_data)
+        Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/fields | body: json_data
+      ☐ Criar view padrão
+        Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de views", api_method, api_url, json_data)
+        Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/views | body: json_data
+    Done:
+      ✔ Press Alt+D to mark a todo as done
+      ✔ Press it again to undo the action
+    Cancelled:
+      ✘ Press Alt+C to mark a todo as cancelled
+      ✘ Press it again to undo the action

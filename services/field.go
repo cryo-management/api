@@ -34,7 +34,7 @@ func LoadField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
 	condition := builder.Equal("fields.id", fieldID)
 
-	return load(r, &field, "LoadAField", models.TableFields, condition)
+	return load(r, &field, "LoadField", models.TableFields, condition)
 }
 
 //UpdateField updates object data in the database
@@ -71,5 +71,5 @@ func DeleteField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
 	condition := builder.Equal("fields.id", fieldID)
 
-	return delete(r, "DeleteField", models.TableFields, condition)
+	return remove(r, "DeleteField", models.TableFields, condition)
 }

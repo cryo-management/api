@@ -132,8 +132,8 @@ func load(r *http.Request, object interface{}, scope, table string, conditions b
 	return response
 }
 
-//deleteSchema deletes object from the database
-func delete(r *http.Request, scope, table string, conditions builder.Builder) *Response {
+//removeSchema deletes object from the database
+func remove(r *http.Request, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
 	err := db.DeleteStruct(table, conditions)

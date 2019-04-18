@@ -34,7 +34,7 @@ func LoadLookupOption(r *http.Request) *Response {
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	condition := builder.Equal("lookups_options.id", lookupOptionID)
 
-	return load(r, &lookupOption, "LoadALookupOption", models.TableLookupsOptions, condition)
+	return load(r, &lookupOption, "LoadLookupOption", models.TableLookupsOptions, condition)
 }
 
 //UpdateLookupOption updates object data in the database
@@ -71,5 +71,5 @@ func DeleteLookupOption(r *http.Request) *Response {
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	condition := builder.Equal("lookups_options.id", lookupOptionID)
 
-	return delete(r, "DeleteLookupOption", models.TableLookupsOptions, condition)
+	return remove(r, "DeleteLookupOption", models.TableLookupsOptions, condition)
 }

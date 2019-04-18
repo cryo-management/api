@@ -32,7 +32,7 @@ func LoadSchema(r *http.Request) *Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	condition := builder.Equal("schemas.id", schemaID)
 
-	return load(r, &schema, "LoadASchema", models.TableSchemas, condition)
+	return load(r, &schema, "LoadSchema", models.TableSchemas, condition)
 }
 
 //UpdateSchema updates object data in the database
@@ -69,5 +69,5 @@ func DeleteSchema(r *http.Request) *Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	condition := builder.Equal("schemas.id", schemaID)
 
-	return delete(r, "DeleteSchema", models.TableSchemas, condition)
+	return remove(r, "DeleteSchema", models.TableSchemas, condition)
 }

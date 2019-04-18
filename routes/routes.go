@@ -24,8 +24,6 @@ func Setup() *chi.Mux {
 		r.Mount("/admin/schemas", admin.SchemaRoutes())
 		r.Mount("/admin/lookups", admin.LookupRoutes())
 		r.Mount("/admin/groups", admin.GroupRoutes())
-		//r.Mount("/api/data/{schema_id}", schema.Routes())
-		//r.Mount("/api/auth", auth.Routes())
 	})
 
 	return router
