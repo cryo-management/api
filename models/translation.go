@@ -48,7 +48,7 @@ func CreateTranslationsFromStruct(structureType, languageCode string, object int
 	return err
 }
 
-// UpdateTranslationsFromStruct saves translations from struct to the database
+// UpdateTranslationsFromStruct updates translations from struct to the database
 func UpdateTranslationsFromStruct(structureType, languageCode string, object interface{}, columns ...string) error {
 	objectType := reflect.TypeOf(object).Elem()
 	objectValue := reflect.ValueOf(object).Elem()

@@ -9,7 +9,7 @@ import (
 func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
-	//  v1/api/admin/user
+	// v1/api/auth
 	r.Route("/", func(r chi.Router) {
 		r.Post("/login", controller.Login)
 	})

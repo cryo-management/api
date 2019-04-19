@@ -9,7 +9,7 @@ import (
 func LookupRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	//  v1/api/admin/lookups
+	// v1/api/admin/lookups
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostLookup)
 		r.Get("/", controller.GetAllLookups)

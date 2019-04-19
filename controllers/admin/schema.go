@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/render"
 )
 
+// PostSchema sends the request to service creating a new schema
 func PostSchema(w http.ResponseWriter, r *http.Request) {
 	response := services.CreateSchema(r)
 
@@ -15,6 +16,7 @@ func PostSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+// GetAllSchemas return all schema instances from the service
 func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	response := services.LoadAllSchemas(r)
 
@@ -22,6 +24,7 @@ func GetAllSchemas(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+// GetSchema return only one schema from the service
 func GetSchema(w http.ResponseWriter, r *http.Request) {
 	response := services.LoadSchema(r)
 
@@ -29,6 +32,7 @@ func GetSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+// UpdateSchema sends the request to service updating a schema
 func UpdateSchema(w http.ResponseWriter, r *http.Request) {
 	response := services.UpdateSchema(r)
 
@@ -36,6 +40,7 @@ func UpdateSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+// DeleteSchema sends the request to service deleting a schema
 func DeleteSchema(w http.ResponseWriter, r *http.Request) {
 	response := services.DeleteSchema(r)
 

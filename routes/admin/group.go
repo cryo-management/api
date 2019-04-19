@@ -9,7 +9,7 @@ import (
 func GroupRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	//  v1/api/admin/group
+	// v1/api/admin/groups
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostGroup)
 		r.Get("/", controller.GetAllGroups)
