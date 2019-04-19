@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-//View defines the struct of this object
+// View defines the struct of this object
 type View struct {
 	ID               string    `json:"id" sql:"id" pk:"true"`
 	StructureID      string    `json:"structure_id" sql:"structure_id" fk:"true"`
@@ -12,7 +12,7 @@ type View struct {
 	LastModifiedDate time.Time `json:"last_modified_date" sql:"last_modified_date"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (v *View) GetID() string {
 	return v.ID
 }

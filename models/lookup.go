@@ -1,6 +1,6 @@
 package models
 
-//Lookup defines the struct of this object
+// Lookup defines the struct of this object
 type Lookup struct {
 	ID           string `json:"id" sql:"id" pk:"true"`
 	Name         string `json:"name" table:"translations" alias:"translations_name" sql:"value" on:"translations_name.structure_id = lookups.id and translations_name.structure_field = 'name'"`
@@ -14,12 +14,12 @@ type Lookup struct {
 	Active       bool   `json:"active" sql:"active"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (l *Lookup) GetID() string {
 	return l.ID
 }
 
-//LookupOption defines the struct of this object
+// LookupOption defines the struct of this object
 type LookupOption struct {
 	ID       string `json:"id" sql:"id" pk:"true"`
 	LookupID string `json:"lookup_id" sql:"lookup_id" fk:"true"`
@@ -28,7 +28,7 @@ type LookupOption struct {
 	Active   bool   `json:"active" sql:"active"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (l *LookupOption) GetID() string {
 	return l.ID
 }

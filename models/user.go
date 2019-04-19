@@ -2,7 +2,7 @@ package models
 
 import jwt "github.com/dgrijalva/jwt-go"
 
-//User defines the struct of this object
+// User defines the struct of this object
 type User struct {
 	ID           string `json:"id" sql:"id" pk:"true"`
 	FirstName    string `json:"first_name" sql:"first_name"`
@@ -13,7 +13,7 @@ type User struct {
 	Active       bool   `json:"active" sql:"active"`
 }
 
-//UserCustomClaims used to parse token payload
+// UserCustomClaims used to parse token payload
 type UserCustomClaims struct {
 	User User
 	jwt.StandardClaims

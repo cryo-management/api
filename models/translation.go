@@ -3,10 +3,11 @@ package models
 import (
 	"reflect"
 
+	"github.com/andreluzz/go-sql-builder/builder"
 	"github.com/andreluzz/go-sql-builder/db"
 )
 
-//Translation defines the struct of this object
+// Translation defines the struct of this object
 type Translation struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
 	StructureID    string `json:"structure_id" sql:"structure_id" fk:"true"`
@@ -16,30 +17,75 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (t *Translation) GetID() string {
 	return t.ID
 }
 
-//CreateTranslationsFromStruct saves translations from struct to the database
-func CreateTranslationsFromStruct(structureType, languageCode string, model interface{}) error {
-	modelType := reflect.TypeOf(model).Elem()
-	modelValue := reflect.ValueOf(model).Elem()
+// CreateTranslationsFromStruct saves translations from struct to the database
+func CreateTranslationsFromStruct(structureType, languageCode string, object interface{}) error {
+	objectType := reflect.TypeOf(object).Elem()
+	objectValue := reflect.ValueOf(object).Elem()
 
 	translations := []Translation{}
-	for i := 0; i < modelType.NumField(); i++ {
-		if modelType.Field(i).Tag.Get("table") == TableTranslations {
-			trs := Translation{
-				StructureID:    modelValue.FieldByName("ID").Interface().(string),
-				StructureField: modelType.Field(i).Tag.Get("json"),
+	for i := 0; i < objectType.NumField(); i++ {
+		if objectType.Field(i).Tag.Get("table") == TableTranslations {
+			structureID := objectValue.FieldByName("ID").Interface().(string)
+			structureField := objectType.Field(i).Tag.Get("json")
+			value := objectValue.Field(i).Interface().(string)
+			translation := Translation{
+				StructureID:    structureID,
+				StructureField: structureField,
 				StructureType:  structureType,
-				Value:          modelValue.Field(i).Interface().(string),
+				Value:          value,
 				LanguageCode:   languageCode,
 			}
-			translations = append(translations, trs)
+			translations = append(translations, translation)
 		}
 	}
 
 	_, err := db.InsertStruct(TableTranslations, translations)
 	return err
+}
+
+// UpdateTranslationsFromStruct saves translations from struct to the database
+func UpdateTranslationsFromStruct(structureType, languageCode string, object interface{}, columns ...string) error {
+	objectType := reflect.TypeOf(object).Elem()
+	objectValue := reflect.ValueOf(object).Elem()
+
+	for i := 0; i < objectType.NumField(); i++ {
+		objectField := objectType.Field(i)
+		if objectField.Tag.Get("table") == TableTranslations {
+			for _, column := range columns {
+				if column == objectField.Tag.Get("json") {
+					structureID := objectValue.FieldByName("ID").Interface().(string)
+					structureField := objectField.Tag.Get("json")
+					value := objectValue.Field(i).Interface().(string)
+					translation := Translation{
+						StructureID:    structureID,
+						StructureField: structureField,
+						StructureType:  structureType,
+						Value:          value,
+						LanguageCode:   languageCode,
+					}
+
+					condition := builder.And(
+						builder.Equal("translations.structure_id", structureID),
+						builder.Equal("translations.structure_field", structureField),
+					)
+
+					err := db.UpdateStruct(
+						TableTranslations, &translation, condition,
+						"structure_id", "structure_field", "structure_type", "value", "language_code",
+					)
+					if err != nil {
+						return err
+					}
+					break
+				}
+			}
+		}
+	}
+
+	return nil
 }

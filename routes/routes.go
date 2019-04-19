@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/render"
 )
 
-//Setup configure the API endpoints
+// Setup configure the API endpoints
 func Setup() *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(

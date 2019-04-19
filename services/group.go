@@ -1,8 +1,6 @@
 package services
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
@@ -12,21 +10,21 @@ import (
 	"github.com/cryo-management/api/models"
 )
 
-//CreateGroup persists the request body creating a new object in the database
+// CreateGroup persists the request body creating a new object in the database
 func CreateGroup(r *http.Request) *Response {
 	group := models.Group{}
 
 	return create(r, &group, "CreateGroup", models.TableGroups)
 }
 
-//LoadAllGroups return all instances from the object
+// LoadAllGroups return all instances from the object
 func LoadAllGroups(r *http.Request) *Response {
 	groups := []models.Group{}
 
 	return load(r, &groups, "LoadAllGroups", models.TableGroups, nil)
 }
 
-//LoadGroup return only one object from the database
+// LoadGroup return only one object from the database
 func LoadGroup(r *http.Request) *Response {
 	group := models.Group{}
 	groupID := chi.URLParam(r, "group_id")
@@ -35,36 +33,18 @@ func LoadGroup(r *http.Request) *Response {
 	return load(r, &group, "LoadGroup", models.TableGroups, condition)
 }
 
-//UpdateGroup updates object data in the database
+// UpdateGroup updates object data in the database
 func UpdateGroup(r *http.Request) *Response {
-	response := NewResponse()
 	groupID := chi.URLParam(r, "group_id")
-	group := &models.Group{}
-	body, _ := ioutil.ReadAll(r.Body)
-
-	err := json.Unmarshal(body, group)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "UpdateGroup unmarshal body", err.Error()))
-
-		return response
-	}
-
 	condition := builder.Equal("groups.id", groupID)
-	columns := getColumnsFromBody(body)
-
-	err = db.UpdateStruct(models.TableGroups, group, condition, columns...)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "UpdateGroup", err.Error()))
-
-		return response
+	group := models.Group{
+		ID: groupID,
 	}
 
-	return response
+	return update(r, &group, "UpdateGroup", models.TableGroups, condition)
 }
 
-//DeleteGroup deletes object from the database
+// DeleteGroup deletes object from the database
 func DeleteGroup(r *http.Request) *Response {
 	groupID := chi.URLParam(r, "group_id")
 	condition := builder.Equal("groups.id", groupID)
@@ -72,7 +52,7 @@ func DeleteGroup(r *http.Request) *Response {
 	return remove(r, "DeleteGroup", models.TableGroups, condition)
 }
 
-//InsertUserInGroup persists the request creating a new object in the database
+// InsertUserInGroup persists the request creating a new object in the database
 func InsertUserInGroup(r *http.Request) *Response {
 	response := NewResponse()
 
@@ -92,7 +72,7 @@ func InsertUserInGroup(r *http.Request) *Response {
 	return response
 }
 
-//LoadAllUsersByGroup return all instances from the object
+// LoadAllUsersByGroup return all instances from the object
 func LoadAllUsersByGroup(r *http.Request) *Response {
 	response := NewResponse()
 
@@ -118,7 +98,7 @@ func LoadAllUsersByGroup(r *http.Request) *Response {
 	return response
 }
 
-//RemoveUserFromGroup deletes object from the database
+// RemoveUserFromGroup deletes object from the database
 func RemoveUserFromGroup(r *http.Request) *Response {
 	response := NewResponse()
 
@@ -143,14 +123,14 @@ func RemoveUserFromGroup(r *http.Request) *Response {
 	return response
 }
 
-//InsertPermission persists the request body creating a new object in the database
+// InsertPermission persists the request body creating a new object in the database
 func InsertPermission(r *http.Request) *Response {
 	permission := models.Permission{}
 
 	return create(r, &permission, "InsertPermission", models.TableGroupsPermissions)
 }
 
-//LoadAllPermissionsByGroup return all instances from the object
+// LoadAllPermissionsByGroup return all instances from the object
 func LoadAllPermissionsByGroup(r *http.Request) *Response {
 	permissions := []models.Permission{}
 	groupID := chi.URLParam(r, "group_id")
@@ -159,7 +139,7 @@ func LoadAllPermissionsByGroup(r *http.Request) *Response {
 	return load(r, &permissions, "LoadAllPermissionsByGroup", models.TableGroupsPermissions, condition)
 }
 
-//RemovePermission deletes object from the database
+// RemovePermission deletes object from the database
 func RemovePermission(r *http.Request) *Response {
 	permissionID := chi.URLParam(r, "permission_id")
 	condition := builder.Equal("groups_permissions.id", permissionID)

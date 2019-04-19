@@ -5,11 +5,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
-//GroupRoutes creates the api methods
+// GroupRoutes creates the api methods
 func GroupRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	// v1/api/admin/group
+	//  v1/api/admin/group
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostGroup)
 		r.Get("/", controller.GetAllGroups)

@@ -12,7 +12,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-//Login validate credentials and return user token
+// Login validate credentials and return user token
 func Login(r *http.Request) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -65,7 +65,7 @@ func Login(r *http.Request) *Response {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	cryoSigningKey := []byte("AllYourBase") //TODO: Check the best place for this key, probably the config.toml
+	cryoSigningKey := []byte("AllYourBase") // TODO: Check the best place for this key, probably the config.toml
 	tokenString, err := token.SignedString(cryoSigningKey)
 
 	jsonMap["user"] = user

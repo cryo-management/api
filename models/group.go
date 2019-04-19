@@ -1,6 +1,6 @@
 package models
 
-//Group defines the struct of this object
+// Group defines the struct of this object
 type Group struct {
 	ID          string `json:"id" sql:"id" pk:"true"`
 	Name        string `json:"name" table:"translations" alias:"translations_name" sql:"value" on:"translations_name.structure_id = groups.id and translations_name.structure_field = 'name'"`
@@ -9,12 +9,12 @@ type Group struct {
 	Active      bool   `json:"active" sql:"active"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (g *Group) GetID() string {
 	return g.ID
 }
 
-//Permission defines the struct of this object
+// Permission defines the struct of this object
 type Permission struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
 	GroupID        string `json:"group_id" sql:"group_id" fk:"true"`
@@ -24,7 +24,7 @@ type Permission struct {
 	ConditionQuery string `json:"condition_query" sql:"condition_query"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (p *Permission) GetID() string {
 	return p.ID
 }

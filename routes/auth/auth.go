@@ -5,11 +5,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
-//Routes defines authentication endpoints
+// Routes defines authentication endpoints
 func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
-	// v1/api/admin/user
+	//  v1/api/admin/user
 	r.Route("/", func(r chi.Router) {
 		r.Post("/login", controller.Login)
 	})

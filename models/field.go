@@ -1,6 +1,6 @@
 package models
 
-//Field defines the struct of this object
+// Field defines the struct of this object
 type Field struct {
 	ID          string `json:"id" sql:"id" pk:"true"`
 	SchemaID    string `json:"schema_id" sql:"schema_id" fk:"true"`
@@ -14,7 +14,7 @@ type Field struct {
 	Active      bool   `json:"active" sql:"active"`
 }
 
-//GetID returns object primary key
+// GetID returns object primary key
 func (f *Field) GetID() string {
 	return f.ID
 }

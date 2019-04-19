@@ -5,11 +5,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
-//SchemaRoutes creates the api methods
+// SchemaRoutes creates the api methods
 func SchemaRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	// v1/api/schema/admin/contract
+	//  v1/api/schema/admin/contract
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostSchema)
 		r.Get("/", controller.GetAllSchemas)
