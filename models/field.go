@@ -14,7 +14,3 @@ type Field struct {
 	Active      bool   `json:"active" sql:"active"`
 }
 
-// GetID returns object primary key
-func (f *Field) GetID() string {
-	return f.ID
-}

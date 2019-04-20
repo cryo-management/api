@@ -11,8 +11,3 @@ type View struct {
 	Type             string    `json:"type" sql:"type"`
 	LastModifiedDate time.Time `json:"last_modified_date" sql:"last_modified_date"`
 }
-
-// GetID returns object primary key
-func (v *View) GetID() string {
-	return v.ID
-}

@@ -9,8 +9,3 @@ type Schema struct {
 	Module      bool   `json:"module" sql:"module"`
 	Active      bool   `json:"active" sql:"active"`
 }
-
-// GetID returns object primary key
-func (s *Schema) GetID() string {
-	return s.ID
-}

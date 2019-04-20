@@ -9,11 +9,6 @@ type Group struct {
 	Active      bool   `json:"active" sql:"active"`
 }
 
-// GetID returns object primary key
-func (g *Group) GetID() string {
-	return g.ID
-}
-
 // Permission defines the struct of this object
 type Permission struct {
 	ID             string `json:"id" sql:"id" pk:"true"`
@@ -24,7 +19,3 @@ type Permission struct {
 	ConditionQuery string `json:"condition_query" sql:"condition_query"`
 }
 
-// GetID returns object primary key
-func (p *Permission) GetID() string {
-	return p.ID
-}

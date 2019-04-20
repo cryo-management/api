@@ -14,11 +14,6 @@ type Lookup struct {
 	Active       bool   `json:"active" sql:"active"`
 }
 
-// GetID returns object primary key
-func (l *Lookup) GetID() string {
-	return l.ID
-}
-
 // LookupOption defines the struct of this object
 type LookupOption struct {
 	ID       string `json:"id" sql:"id" pk:"true"`
@@ -26,9 +21,4 @@ type LookupOption struct {
 	Value    string `json:"value" sql:"value"`
 	Label    string `json:"label" table:"translations" alias:"translations_label" sql:"value" on:"translations_label.structure_id = lookups.id and translations_label.structure_field = 'label'"`
 	Active   bool   `json:"active" sql:"active"`
-}
-
-// GetID returns object primary key
-func (l *LookupOption) GetID() string {
-	return l.ID
 }

@@ -17,11 +17,6 @@ type Translation struct {
 	LanguageCode   string `json:"language_code" sql:"language_code"`
 }
 
-// GetID returns object primary key
-func (t *Translation) GetID() string {
-	return t.ID
-}
-
 // CreateTranslationsFromStruct saves translations from struct to the database
 func CreateTranslationsFromStruct(structureType, languageCode string, object interface{}) error {
 	objectType := reflect.TypeOf(object).Elem()

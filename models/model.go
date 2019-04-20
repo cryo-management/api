@@ -19,9 +19,14 @@ const (
 	TableLookups string = "lookups"
 	// TableLookupsOptions database table name
 	TableLookupsOptions string = "lookups_options"
+	// TableWidgets database table name
+	TableWidgets string = "widgets"
+	// TableViews database table name
+	TableViews string = "views"
+	// TablePages database table name
+	TablePages string = "pages"
+	// TableSections database table name
+	TableSections string = "sections"
+	// TableSectionsStructures database table name
+	TableSectionsStructures string = "sections_structures"
 )
-
-// Model interface define default methods
-type Model interface {
-	GetID() string
-}
