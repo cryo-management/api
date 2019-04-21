@@ -62,6 +62,7 @@ func NewResponseError(code string, scope, err string) ResponseError {
 	}
 }
 
+// getColumnsFromBody get request body and return an string array with columns from the body
 func getColumnsFromBody(body []byte) []string {
 	jsonMap := make(map[string]interface{})
 	json.Unmarshal(body, &jsonMap)
@@ -73,6 +74,7 @@ func getColumnsFromBody(body []byte) []string {
 	return columns
 }
 
+// create object data in the database
 func create(r *http.Request, object interface{}, scope, table string) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -116,6 +118,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	return response
 }
 
+// load object data from the database
 func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
@@ -132,6 +135,7 @@ func load(r *http.Request, object interface{}, scope, table string, conditions b
 	return response
 }
 
+// remove object data from the database
 func remove(r *http.Request, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 

@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/BurntSushi/toml"
 	"github.com/andreluzz/go-sql-builder/db"
+	"github.com/cryo-management/api/config"
 	"github.com/cryo-management/api/routes"
 )
 
@@ -21,8 +21,7 @@ type Config struct {
 
 func main() {
 	fmt.Println("[Cryo] Loading configuration file")
-	var config Config
-	_, err := toml.DecodeFile("config.toml", &config)
+	config, err := config.Load()
 	if err != nil {
 		fmt.Println("[Cryo] Error while trying to load configuration file")
 	} else {
