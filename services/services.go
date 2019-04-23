@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/andreluzz/go-sql-builder/builder"
 	"github.com/andreluzz/go-sql-builder/db"
@@ -87,6 +88,18 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 		return response
 	}
 
+	now := time.Now()
+	elementType := reflect.TypeOf(object).Elem()
+	elementValue := reflect.ValueOf(object).Elem()
+	elementCreatedBy := elementValue.FieldByName("CreatedBy")
+	elementUpdatedBy := elementValue.FieldByName("UpdatedBy")
+	elementCreatedAt := elementValue.FieldByName("CreatedAt")
+	elementUpdatedAt := elementValue.FieldByName("UpdatedAt")
+	elementCreatedBy.SetString("1")
+	elementUpdatedBy.SetString("1")
+	elementCreatedAt.Set(reflect.ValueOf(now))
+	elementUpdatedAt.Set(reflect.ValueOf(now))
+
 	id, err := db.InsertStruct(table, object)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
@@ -95,8 +108,6 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 		return response
 	}
 
-	elementType := reflect.TypeOf(object).Elem()
-	elementValue := reflect.ValueOf(object).Elem()
 	elementID := elementValue.FieldByName("ID")
 	elementID.SetString(id)
 
