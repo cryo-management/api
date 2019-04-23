@@ -13,7 +13,7 @@ import (
 func CreateField(r *http.Request) *Response {
 	field := models.Field{}
 
-	return create(r, &field, "CreateField", models.TableFields)
+	return create(r, &field, "CreateField", models.TableCoreSchFields)
 }
 
 // LoadAllFields return all instances from the object
@@ -22,7 +22,7 @@ func LoadAllFields(r *http.Request) *Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	condition := builder.Equal("fields.schema_id", schemaID)
 
-	return load(r, &fields, "LoadAllFields", models.TableFields, condition)
+	return load(r, &fields, "LoadAllFields", models.TableCoreSchFields, condition)
 }
 
 // LoadField return only one object from the database
@@ -31,7 +31,7 @@ func LoadField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
 	condition := builder.Equal("fields.id", fieldID)
 
-	return load(r, &field, "LoadField", models.TableFields, condition)
+	return load(r, &field, "LoadField", models.TableCoreSchFields, condition)
 }
 
 // UpdateField updates object data in the database
@@ -42,7 +42,7 @@ func UpdateField(r *http.Request) *Response {
 		ID: fieldID,
 	}
 
-	return update(r, &field, "UpdateField", models.TableFields, condition)
+	return update(r, &field, "UpdateField", models.TableCoreSchFields, condition)
 }
 
 // DeleteField deletes object from the database
@@ -50,5 +50,5 @@ func DeleteField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
 	condition := builder.Equal("fields.id", fieldID)
 
-	return remove(r, "DeleteField", models.TableFields, condition)
+	return remove(r, "DeleteField", models.TableCoreSchFields, condition)
 }

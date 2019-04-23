@@ -35,7 +35,7 @@ func Login(r *http.Request) *Response {
 	}
 
 	user := models.User{}
-	err = db.LoadStruct(models.TableUsers, &user, builder.Equal("email", jsonMap["email"]))
+	err = db.LoadStruct(models.TableCoreUsers, &user, builder.Equal("email", jsonMap["email"]))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
 		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "Login load user", err.Error()))

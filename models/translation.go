@@ -2,6 +2,7 @@ package models
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/andreluzz/go-sql-builder/builder"
 	"github.com/andreluzz/go-sql-builder/db"
@@ -9,12 +10,16 @@ import (
 
 // Translation defines the struct of this object
 type Translation struct {
-	ID             string `json:"id" sql:"id" pk:"true"`
-	StructureID    string `json:"structure_id" sql:"structure_id" fk:"true"`
-	StructureType  string `json:"structure_type" sql:"structure_type"`
-	StructureField string `json:"structure_field" sql:"structure_field"`
-	Value          string `json:"value" sql:"value"`
-	LanguageCode   string `json:"language_code" sql:"language_code"`
+	ID             string    `json:"id" sql:"id" pk:"true"`
+	StructureID    string    `json:"structure_id" sql:"structure_id" fk:"true"`
+	StructureType  string    `json:"structure_type" sql:"structure_type"`
+	StructureField string    `json:"structure_field" sql:"structure_field"`
+	Value          string    `json:"value" sql:"value"`
+	LanguageCode   string    `json:"language_code" sql:"language_code"`
+	CreatedBy      string    `json:"created_by" sql:"created_by"`
+	CreatedAt    time.Time `json:"created_at" sql:"created_at"`
+	UpdatedBy      string    `json:"updated_by" sql:"updated_by"`
+	UpdatedAt    time.Time `json:"updated_at" sql:"updated_at"`
 }
 
 // CreateTranslationsFromStruct saves translations from struct to the database
@@ -24,7 +29,7 @@ func CreateTranslationsFromStruct(structureType, languageCode string, object int
 
 	translations := []Translation{}
 	for i := 0; i < objectType.NumField(); i++ {
-		if objectType.Field(i).Tag.Get("table") == TableTranslations {
+		if objectType.Field(i).Tag.Get("table") == TableCoreTranslations {
 			structureID := objectValue.FieldByName("ID").Interface().(string)
 			structureField := objectType.Field(i).Tag.Get("json")
 			value := objectValue.Field(i).Interface().(string)
@@ -39,7 +44,7 @@ func CreateTranslationsFromStruct(structureType, languageCode string, object int
 		}
 	}
 
-	_, err := db.InsertStruct(TableTranslations, translations)
+	_, err := db.InsertStruct(TableCoreTranslations, translations)
 	return err
 }
 
@@ -50,7 +55,7 @@ func UpdateTranslationsFromStruct(structureType, languageCode string, object int
 
 	for i := 0; i < objectType.NumField(); i++ {
 		objectField := objectType.Field(i)
-		if objectField.Tag.Get("table") == TableTranslations {
+		if objectField.Tag.Get("table") == TableCoreTranslations {
 			for _, column := range columns {
 				if column == objectField.Tag.Get("json") {
 					structureID := objectValue.FieldByName("ID").Interface().(string)
@@ -70,7 +75,7 @@ func UpdateTranslationsFromStruct(structureType, languageCode string, object int
 					)
 
 					err := db.UpdateStruct(
-						TableTranslations, &translation, condition,
+						TableCoreTranslations, &translation, condition,
 						"structure_id", "structure_field", "structure_type", "value", "language_code",
 					)
 					if err != nil {

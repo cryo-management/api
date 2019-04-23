@@ -4,13 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"reflect"
 	"testing"
 
-	"github.com/BurntSushi/toml"
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/config"
 	"github.com/go-chi/chi"
@@ -24,10 +21,7 @@ type ServiceUserTestSuite struct {
 }
 
 func (suite *ServiceUserTestSuite) SetupTest() {
-	pathSeparator := string(os.PathSeparator)
-	file := fmt.Sprintf("..%sconfig.toml", pathSeparator)
-	config := config.Config{}
-	toml.DecodeFile(file, &config)
+	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 }
 

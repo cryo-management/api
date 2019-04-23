@@ -15,14 +15,14 @@ import (
 func CreateUser(r *http.Request) *Response {
 	user := models.User{}
 
-	return create(r, &user, "CreateUser", models.TableUsers)
+	return create(r, &user, "CreateUser", models.TableCoreUsers)
 }
 
 // LoadAllUsers return all instances from the object
 func LoadAllUsers(r *http.Request) *Response {
 	users := []models.User{}
 
-	return load(r, &users, "LoadAllUsers", models.TableUsers, nil)
+	return load(r, &users, "LoadAllUsers", models.TableCoreUsers, nil)
 }
 
 // LoadUser return only one object from the database
@@ -31,7 +31,7 @@ func LoadUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	condition := builder.Equal("users.id", userID)
 
-	return load(r, &user, "LoadUser", models.TableUsers, condition)
+	return load(r, &user, "LoadUser", models.TableCoreUsers, condition)
 }
 
 // UpdateUser updates object data in the database
@@ -42,7 +42,7 @@ func UpdateUser(r *http.Request) *Response {
 		ID: userID,
 	}
 
-	return update(r, &user, "UpdateUser", models.TableUsers, condition)
+	return update(r, &user, "UpdateUser", models.TableCoreUsers, condition)
 }
 
 // DeleteUser deletes object from the database
@@ -50,7 +50,7 @@ func DeleteUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	condition := builder.Equal("users.id", userID)
 
-	return remove(r, "DeleteUser", models.TableUsers, condition)
+	return remove(r, "DeleteUser", models.TableCoreUsers, condition)
 }
 
 // LoadAllGroupsByUser return all instances from the object
@@ -59,18 +59,18 @@ func LoadAllGroupsByUser(r *http.Request) *Response {
 
 	group := []models.Group{}
 	userID := chi.URLParam(r, "user_id")
-	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableTranslations, models.TableTranslations)
-	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableTranslations, models.TableTranslations)
+	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
+	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
 	languageCode := r.Header.Get("languageCode")
 
 	statemant := builder.Select(
 		"groups.id", "translations_name.value as name", "translations_description.value as description", "groups.code",
-	).From(models.TableGroups).Join(
+	).From(models.TableCoreGroups).Join(
 		tblTranslationName, "translations_name.structure_id = groups.id and translations_name.structure_field = 'name'",
 	).Join(
 		tblTranslationDescription, "translations_description.structure_id = groups.id and translations_description.structure_field = 'description'",
 	).Join(
-		models.TableGroupsUsers, "groups_users.group_id = groups.id",
+		models.TableCoreGroupsUsers, "groups_users.group_id = groups.id",
 	).Where(
 		builder.And(
 			builder.Equal("groups_users.user_id", userID),

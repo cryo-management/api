@@ -1,11 +1,17 @@
 package models
 
+import "time"
+
 // Schema defines the struct of this object
 type Schema struct {
-	ID          string `json:"id" sql:"id" pk:"true"`
-	Name        string `json:"name" table:"translations" alias:"translations_name" sql:"value" on:"translations_name.structure_id = schemas.id and translations_name.structure_field = 'name'"`
-	Description string `json:"description" table:"translations" alias:"translations_description" sql:"value" on:"translations_description.structure_id = schemas.id and translations_description.structure_field = 'description'"`
-	Code        string `json:"code" sql:"code"`
-	Module      bool   `json:"module" sql:"module"`
-	Active      bool   `json:"active" sql:"active"`
+	ID            string    `json:"id" sql:"id" pk:"true"`
+	Code          string    `json:"code" sql:"code"`
+	Name          string    `json:"name" table:"core_translations" alias:"core_translations_name" sql:"value" on:"core_translations_name.structure_id = core_schemas.id and core_translations_name.structure_field = 'name'"`
+	Description   string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_schemas.id and core_translations_description.structure_field = 'description'"`
+	Module        bool      `json:"module" sql:"module"`
+	Active        bool      `json:"active" sql:"active"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_schemas" alias:"created_by_user" on:"created_by_user.id = core_schemas.created_by"`
+	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_schemas" alias:"updated_by_user" on:"updated_by_user.id = core_schemas.updated_by"`
+	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }

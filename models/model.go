@@ -1,32 +1,40 @@
 package models
 
 const (
-	// TableSchemas database table name
-	TableSchemas string = "schemas"
-	// TableTranslations database table name
-	TableTranslations string = "translations"
-	// TableFields database table name
-	TableFields string = "fields"
-	// TableUsers database table name
-	TableUsers string = "users"
-	// TableGroups database table name
-	TableGroups string = "groups"
-	// TableGroupsUsers database table name
-	TableGroupsUsers string = "groups_users"
-	// TableGroupsPermissions database table name
-	TableGroupsPermissions string = "groups_permissions"
-	// TableLookups database table name
-	TableLookups string = "lookups"
-	// TableLookupsOptions database table name
-	TableLookupsOptions string = "lookups_options"
-	// TableWidgets database table name
-	TableWidgets string = "widgets"
-	// TableViews database table name
-	TableViews string = "views"
-	// TablePages database table name
-	TablePages string = "pages"
-	// TableSections database table name
-	TableSections string = "sections"
-	// TableSectionsStructures database table name
-	TableSectionsStructures string = "sections_structures"
+	// TableCoreUsers database table name
+	TableCoreUsers string = "core_users"
+	// TableCoreGroups database table name
+	TableCoreGroups string = "core_groups"
+	// TableCoreGrpPermissions database table name
+	TableCoreGrpPermissions string = "core_grp_permissions"
+	// TableCoreGroupsUsers database table name
+	TableCoreGroupsUsers string = "core_groups_users"
+	// TableCoreSchemas database table name
+	TableCoreSchemas string = "core_schemas"
+	// TableCoreSchModules database table name
+	TableCoreSchModules string = "core_sch_modules"
+	// TableCoreLookups database table name
+	TableCoreLookups string = "core_lookups"
+	// TableCoreLkpOptions database table name
+	TableCoreLkpOptions string = "core_lkp_options"
+	// TableCoreSchFields database table name
+	TableCoreSchFields string = "core_sch_fields"
+	// TableCoreSchFldValidations database table name
+	TableCoreSchFldValidations string = "core_sch_fld_validations"
+	// TableCoreWidgets database table name
+	TableCoreWidgets string = "core_widgets"
+	// TableCoreSchViews database table name
+	TableCoreSchViews string = "core_sch_views"
+	// TableCoreSchPages database table name
+	TableCoreSchPages string = "core_sch_pages"
+	// TableCoreViewsPages database table name
+	TableCoreViewsPages string = "core_views_pages"
+	// TableCoreSchPagSections database table name
+	TableCoreSchPagSections string = "core_sch_pag_sections"
+	// TableCoreSchPagSecTabs database table name
+	TableCoreSchPagSecTabs string = "core_sch_pag_sec_tabs"
+	// TableCoreSchPagSecStructures database table name
+	TableCoreSchPagSecStructures string = "core_sch_pag_sec_structures"
+	// TableCoreTranslations database table name
+	TableCoreTranslations string = "core_translations"
 )

@@ -13,9 +13,8 @@ type Config struct {
 	DBName   string
 }
 
-// Load get the system configuration parameters from the file and put on struct
-func Load() (Config, error) {
-	file := "config.toml"
+// NewConfig get the system configuration parameters from the file and put on struct
+func NewConfig(file string) (Config, error) {
 	config := Config{}
 	_, err := toml.DecodeFile(file, &config)
 

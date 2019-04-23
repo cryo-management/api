@@ -10,24 +10,18 @@ import (
 	"github.com/cryo-management/api/routes"
 )
 
-// Config defines the struct of system configs
-type Config struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-}
+// Config is a global variable to the application
+var Config config.Config
 
 func main() {
 	fmt.Println("[Cryo] Loading configuration file")
-	config, err := config.Load()
+	Config, err := config.NewConfig("config.toml")
 	if err != nil {
 		fmt.Println("[Cryo] Error while trying to load configuration file")
 	} else {
 		fmt.Println("[Cryo] Configuration file loaded successfully")
 		fmt.Println("[Cryo] Connecting to the database")
-		err = db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+		err = db.Connect(Config.Host, Config.Port, Config.User, Config.Password, Config.DBName, false)
 		defer db.Close()
 		if err != nil {
 			fmt.Println("[Cryo] Error while connecting to database")

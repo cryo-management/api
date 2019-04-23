@@ -4,10 +4,13 @@ import "time"
 
 // View defines the struct of this object
 type View struct {
-	ID               string    `json:"id" sql:"id" pk:"true"`
-	StructureID      string    `json:"structure_id" sql:"structure_id" fk:"true"`
-	StructureType    string    `json:"structure_type" sql:"structure_type"`
-	Name             string    `json:"name" table:"translations" alias:"translations_name" sql:"value" on:"translations_name.structure_id = views.id and translations_name.structure_field = 'name'"`
-	Type             string    `json:"type" sql:"type"`
-	LastModifiedDate time.Time `json:"last_modified_date" sql:"last_modified_date"`
+	ID            string    `json:"id" sql:"id" pk:"true"`
+	Code          string    `json:"code" sql:"code"`
+	SchemaID      string    `json:"schema_id" sql:"schema_id" fk:"true"`
+	Name          string    `json:"name" table:"core_translations" alias:"core_translations_name" sql:"value" on:"core_translations_name.structure_id = core_sch_views.id and core_translations_name.structure_field = 'name'"`
+	Description   string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_sch_views.id and core_translations_description.structure_field = 'description'"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_sch_views" alias:"created_by_user" on:"created_by_user.id = core_sch_views.created_by"`
+	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_sch_views" alias:"updated_by_user" on:"updated_by_user.id = core_sch_views.updated_by"`
+	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }

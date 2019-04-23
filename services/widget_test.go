@@ -15,93 +15,89 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type ServiceGroupTestSuite struct {
+type ServiceWidgetTestSuite struct {
 	suite.Suite
 	InstanceID string
 }
 
-func (suite *ServiceGroupTestSuite) SetupTest() {
+func (suite *ServiceWidgetTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 }
 
-func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
+func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
 	data := map[string]interface{}{
-		"name":        "Grupo Teste 01",
-		"description": "Descrição do Grupo Teste 01",
-		"code":        "grupoteste01",
-		"active":      true,
+		"type": "table",
 	}
 	jsonData, _ := json.Marshal(data)
 
-	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
 	req.Header.Set("LanguageCode", "pt-br")
 
-	response := CreateGroup(req)
+	response := CreateWidget(req)
 
 	result := response.Data != nil && response.Code == 200
-	groupValue := reflect.ValueOf(response.Data).Elem()
-	suite.InstanceID = groupValue.FieldByName("ID").Interface().(string)
+	widgetValue := reflect.ValueOf(response.Data).Elem()
+	suite.InstanceID = widgetValue.FieldByName("ID").Interface().(string)
 
 	assert.Equal(suite.T(), result, true)
 }
 
-func (suite *ServiceGroupTestSuite) Test00002LoadAllGroups() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
+func (suite *ServiceWidgetTestSuite) Test00002LoadAllWidgets() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
 	req.Header.Set("LanguageCode", "pt-br")
 
-	response := LoadAllGroups(req)
+	response := LoadAllWidgets(req)
 
 	result := response.Data != nil && response.Code == 200
 
 	assert.Equal(suite.T(), result, true)
 }
 
-func (suite *ServiceGroupTestSuite) Test00003LoadGroup() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
+func (suite *ServiceWidgetTestSuite) Test00003LoadWidget() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
 	req.Header.Set("LanguageCode", "pt-br")
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("widget_id", suite.InstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := LoadGroup(req)
+	response := LoadWidget(req)
 
 	result := response.Data != nil && response.Code == 200
 
 	assert.Equal(suite.T(), result, true)
 }
 
-func (suite *ServiceGroupTestSuite) Test00004UpdateGroup() {
+func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
 	data := map[string]interface{}{
-		"description": "Descrição do Grupo Teste 01 Updated",
-		"active":      false,
+		"type": "chart",
 	}
 	jsonData, _ := json.Marshal(&data)
 
-	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
 	req.Header.Set("LanguageCode", "pt-br")
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("widget_id", suite.InstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := UpdateGroup(req)
+	response := UpdateWidget(req)
 
 	result := response.Code == 200
 
 	assert.Equal(suite.T(), result, true)
 }
 
-func (suite *ServiceGroupTestSuite) Test00005DeleteGroup() {
-	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
+func (suite *ServiceWidgetTestSuite) Test00005DeleteWidget() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/widgets", nil)
 	req.Header.Set("LanguageCode", "pt-br")
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("widget_id", suite.InstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := DeleteGroup(req)
+	response := DeleteWidget(req)
 
 	result := response.Code == 200
 
@@ -110,6 +106,6 @@ func (suite *ServiceGroupTestSuite) Test00005DeleteGroup() {
 
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
-func TestServiceGroupSuite(t *testing.T) {
-	suite.Run(t, new(ServiceGroupTestSuite))
+func TestServiceWidgetSuite(t *testing.T) {
+	suite.Run(t, new(ServiceWidgetTestSuite))
 }

@@ -101,7 +101,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	elementID.SetString(id)
 
 	for i := 0; i < elementType.NumField(); i++ {
-		if elementType.Field(i).Tag.Get("table") == models.TableTranslations {
+		if elementType.Field(i).Tag.Get("table") == models.TableCoreTranslations {
 			err = models.CreateTranslationsFromStruct(table, r.Header.Get("languageCode"), object)
 			if err != nil {
 				response.Code = http.StatusInternalServerError
@@ -178,7 +178,7 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 	for i := 0; i < elementType.NumField(); i++ {
 		hasTranslation := false
 		elementField := elementType.Field(i)
-		if elementField.Tag.Get("table") == models.TableTranslations {
+		if elementField.Tag.Get("table") == models.TableCoreTranslations {
 			for _, column := range columns {
 				if column == elementField.Tag.Get("json") {
 					hasTranslation = true
