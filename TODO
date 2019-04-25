@@ -1,15 +1,25 @@
+API:
+  ☐ Analisar a possibilidade de alterar os endpoints de modo que essa lista seja reduzida, dê mais flexibilidade e performance nas respostas.
+    Poderíamos ter algo que possamos passar a ação que queremos,
+    as colunas de retorno (retornando todas, caso a lista fosse omitida),
+    se queremos recursos relacionados, também podendo definir as colunas e o body.
+  Todos:
+    ✔ Criar uma tabela core_config_languages para conter todos os idiomas disponíveis. @done(19-04-24 19:26)
+    ☐ Incluir o idioma em todos os wheres de Load Data.
+    ☐ Criar uma trigger na tabela core_translations.
+      Toda vez que um registro for incluído, deve ser replicado para todos os idiomas ativos da tabela core_config_languages.
+    ☐ Criar uma trigger na tabela core_config_languages.
+      Toda vez que um idioma for ativado, deve replicar todas as traduções do idioma padrão da aplicação para o idioma que está sendo ativado.
+    ☐ Criar uma trigger na tabela core_config_languages.
+      Toda vez que um idioma for desativado, deve exluir todas as traduções do mesmo.
+
 Tarefas:
   Todos:
-    New:
-      ☐ criar campos padrão
-        Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de campos padrão", api_method, api_url, json_data)
-        Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/fields | body: json_data
-      ☐ Criar view padrão
-        Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de views", api_method, api_url, json_data)
-        Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/views | body: json_data
-    Done:
-      ✔ Press Alt+D to mark a todo as done
-      ✔ Press it again to undo the action
-    Cancelled:
-      ✘ Press Alt+C to mark a todo as cancelled
-      ✘ Press it again to undo the action
+    ☐ criar campos padrão
+      Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de campos padrão", api_method, api_url, json_data)
+      Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/fields | body: json_data
+    ☐ Criar view padrão
+      Ex.: createTask(fk_id, fk_table, sequence, status, "Criação de views", api_method, api_url, json_data)
+      Worker --> api_method: post | api_url: /api/v1/admin/schemas/{schema_id}/views | body: json_data
+    ✔ Press Alt+D to mark a todo as done
+    ✘ Press Alt+C to mark a todo as cancelled

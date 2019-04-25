@@ -19,11 +19,13 @@ type ServiceLookupTestSuite struct {
 	suite.Suite
 	LookupInstanceID       string
 	LookupOptionInstanceID string
+	UserID                 string
 }
 
 func (suite *ServiceLookupTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
 }
 
 func (suite *ServiceLookupTestSuite) Test00001CreateLookup() {
@@ -40,31 +42,33 @@ func (suite *ServiceLookupTestSuite) Test00001CreateLookup() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := CreateLookup(req)
 
-	result := response.Data != nil && response.Code == 200
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
 	lookupValue := reflect.ValueOf(response.Data).Elem()
 	suite.LookupInstanceID = lookupValue.FieldByName("ID").Interface().(string)
-
-	assert.Equal(suite.T(), result, true)
 }
 
 func (suite *ServiceLookupTestSuite) Test00002LoadAllLookups() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllLookups(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00003LoadLookup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -72,9 +76,8 @@ func (suite *ServiceLookupTestSuite) Test00003LoadLookup() {
 
 	response := LoadLookup(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00004UpdateLookup() {
@@ -85,7 +88,8 @@ func (suite *ServiceLookupTestSuite) Test00004UpdateLookup() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -93,14 +97,13 @@ func (suite *ServiceLookupTestSuite) Test00004UpdateLookup() {
 
 	response := UpdateLookup(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00005CreateLookupOption() {
 	data := map[string]interface{}{
 		"lookup_id": suite.LookupInstanceID,
+		"code":      "valorteste01",
 		"value":     "valorteste01",
 		"label":     "Valor Teste 01",
 		"active":    true,
@@ -108,7 +111,8 @@ func (suite *ServiceLookupTestSuite) Test00005CreateLookupOption() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -116,16 +120,17 @@ func (suite *ServiceLookupTestSuite) Test00005CreateLookupOption() {
 
 	response := CreateLookupOption(req)
 
-	result := response.Data != nil && response.Code == 200
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
 	lookupOptionValue := reflect.ValueOf(response.Data).Elem()
 	suite.LookupOptionInstanceID = lookupOptionValue.FieldByName("ID").Interface().(string)
-
-	assert.Equal(suite.T(), result, true)
 }
 
 func (suite *ServiceLookupTestSuite) Test00006LoadAllLookupOptions() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -133,14 +138,14 @@ func (suite *ServiceLookupTestSuite) Test00006LoadAllLookupOptions() {
 
 	response := LoadAllLookupOptions(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00007LoadLookupOption() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -149,9 +154,8 @@ func (suite *ServiceLookupTestSuite) Test00007LoadLookupOption() {
 
 	response := LoadLookupOption(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00008UpdateLookupOption() {
@@ -162,7 +166,8 @@ func (suite *ServiceLookupTestSuite) Test00008UpdateLookupOption() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -171,14 +176,13 @@ func (suite *ServiceLookupTestSuite) Test00008UpdateLookupOption() {
 
 	response := UpdateLookupOption(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00009DeleteLookupOption() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -187,14 +191,13 @@ func (suite *ServiceLookupTestSuite) Test00009DeleteLookupOption() {
 
 	response := DeleteLookupOption(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceLookupTestSuite) Test00010DeleteLookup() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("lookup_id", suite.LookupInstanceID)
@@ -202,9 +205,7 @@ func (suite *ServiceLookupTestSuite) Test00010DeleteLookup() {
 
 	response := DeleteLookup(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create

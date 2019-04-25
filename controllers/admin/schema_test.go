@@ -38,7 +38,8 @@ func (suite *ControllerSchemaTestSuite) Test00001CreateSchema() {
 
 	res := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
 
 	PostSchema(res, req)
 
@@ -59,7 +60,8 @@ func (suite *ControllerSchemaTestSuite) Test00001CreateSchema() {
 
 // func (suite *ControllerSchemaTestSuite) Test00002LoadAllSchemas() {
 // 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-// 	req.Header.Set("LanguageCode", "pt-br")
+// 	req.Header.Set("languageCode", "pt-br")
+	// req.Header.Set("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
 
 // 	response := LoadAllSchemas(req)
 
@@ -70,7 +72,8 @@ func (suite *ControllerSchemaTestSuite) Test00001CreateSchema() {
 
 // func (suite *ControllerSchemaTestSuite) Test00003LoadSchema() {
 // 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-// 	req.Header.Set("LanguageCode", "pt-br")
+// 	req.Header.Set("languageCode", "pt-br")
+	// req.Header.Set("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
 
 // 	rctx := chi.NewRouteContext()
 // 	rctx.URLParams.Add("schema_id", suite.InstanceID)
@@ -91,7 +94,8 @@ func (suite *ControllerSchemaTestSuite) Test00001CreateSchema() {
 // 	jsonData, _ := json.Marshal(&data)
 
 // 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-// 	req.Header.Set("LanguageCode", "pt-br")
+// 	req.Header.Set("languageCode", "pt-br")
+	// req.Header.Set("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
 
 // 	rctx := chi.NewRouteContext()
 // 	rctx.URLParams.Add("schema_id", suite.InstanceID)
@@ -106,7 +110,8 @@ func (suite *ControllerSchemaTestSuite) Test00001CreateSchema() {
 
 // func (suite *ControllerSchemaTestSuite) Test00005DeleteSchema() {
 // 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-// 	req.Header.Set("LanguageCode", "pt-br")
+// 	req.Header.Set("languageCode", "pt-br")
+	// req.Header.Set("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
 
 // 	rctx := chi.NewRouteContext()
 // 	rctx.URLParams.Add("schema_id", suite.InstanceID)

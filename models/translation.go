@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 
@@ -16,20 +17,24 @@ type Translation struct {
 	StructureField string    `json:"structure_field" sql:"structure_field"`
 	Value          string    `json:"value" sql:"value"`
 	LanguageCode   string    `json:"language_code" sql:"language_code"`
+	Replicated     bool      `json:"replicated" sql:"replicated"`
 	CreatedBy      string    `json:"created_by" sql:"created_by"`
-	CreatedAt    time.Time `json:"created_at" sql:"created_at"`
+	CreatedByUser  *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_translations.created_by"`
+	CreatedAt      time.Time `json:"created_at" sql:"created_at"`
 	UpdatedBy      string    `json:"updated_by" sql:"updated_by"`
-	UpdatedAt    time.Time `json:"updated_at" sql:"updated_at"`
+	UpdatedByUser  *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_translations.updated_by"`
+	UpdatedAt      time.Time `json:"updated_at" sql:"updated_at"`
 }
 
 // CreateTranslationsFromStruct saves translations from struct to the database
-func CreateTranslationsFromStruct(structureType, languageCode string, object interface{}) error {
+func CreateTranslationsFromStruct(structureType, userID, languageCode string, object interface{}) error {
 	objectType := reflect.TypeOf(object).Elem()
 	objectValue := reflect.ValueOf(object).Elem()
 
 	translations := []Translation{}
 	for i := 0; i < objectType.NumField(); i++ {
 		if objectType.Field(i).Tag.Get("table") == TableCoreTranslations {
+			now := time.Now()
 			structureID := objectValue.FieldByName("ID").Interface().(string)
 			structureField := objectType.Field(i).Tag.Get("json")
 			value := objectValue.Field(i).Interface().(string)
@@ -39,6 +44,10 @@ func CreateTranslationsFromStruct(structureType, languageCode string, object int
 				StructureType:  structureType,
 				Value:          value,
 				LanguageCode:   languageCode,
+				CreatedBy:      userID,
+				UpdatedBy:      userID,
+				CreatedAt:      now,
+				UpdatedAt:      now,
 			}
 			translations = append(translations, translation)
 		}
@@ -49,7 +58,7 @@ func CreateTranslationsFromStruct(structureType, languageCode string, object int
 }
 
 // UpdateTranslationsFromStruct updates translations from struct to the database
-func UpdateTranslationsFromStruct(structureType, languageCode string, object interface{}, columns ...string) error {
+func UpdateTranslationsFromStruct(structureType, userID, languageCode string, object interface{}, columns ...string) error {
 	objectType := reflect.TypeOf(object).Elem()
 	objectValue := reflect.ValueOf(object).Elem()
 
@@ -58,6 +67,7 @@ func UpdateTranslationsFromStruct(structureType, languageCode string, object int
 		if objectField.Tag.Get("table") == TableCoreTranslations {
 			for _, column := range columns {
 				if column == objectField.Tag.Get("json") {
+					now := time.Now()
 					structureID := objectValue.FieldByName("ID").Interface().(string)
 					structureField := objectField.Tag.Get("json")
 					value := objectValue.Field(i).Interface().(string)
@@ -67,11 +77,15 @@ func UpdateTranslationsFromStruct(structureType, languageCode string, object int
 						StructureType:  structureType,
 						Value:          value,
 						LanguageCode:   languageCode,
+						UpdatedBy:      userID,
+						UpdatedAt:      now,
 					}
 
+					structureIDColumn := fmt.Sprintf("%s.structure_id", TableCoreTranslations)
+					structureFieldColumn := fmt.Sprintf("%s.structure_field", TableCoreTranslations)
 					condition := builder.And(
-						builder.Equal("translations.structure_id", structureID),
-						builder.Equal("translations.structure_field", structureField),
+						builder.Equal(structureIDColumn, structureID),
+						builder.Equal(structureFieldColumn, structureField),
 					)
 
 					err := db.UpdateStruct(

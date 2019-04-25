@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
@@ -27,7 +28,8 @@ func LoadAllWidgets(r *http.Request) *Response {
 func LoadWidget(r *http.Request) *Response {
 	widget := models.Widget{}
 	widgetID := chi.URLParam(r, "widget_id")
-	condition := builder.Equal("widgets.id", widgetID)
+	widgetIDColumn := fmt.Sprintf("%s.id", models.TableCoreWidgets)
+	condition := builder.Equal(widgetIDColumn, widgetID)
 
 	return load(r, &widget, "LoadWidget", models.TableCoreWidgets, condition)
 }
@@ -35,7 +37,8 @@ func LoadWidget(r *http.Request) *Response {
 // UpdateWidget updates object data in the database
 func UpdateWidget(r *http.Request) *Response {
 	widgetID := chi.URLParam(r, "widget_id")
-	condition := builder.Equal("widgets.id", widgetID)
+	widgetIDColumn := fmt.Sprintf("%s.id", models.TableCoreWidgets)
+	condition := builder.Equal(widgetIDColumn, widgetID)
 	widget := models.Widget{
 		ID: widgetID,
 	}
@@ -46,7 +49,8 @@ func UpdateWidget(r *http.Request) *Response {
 // DeleteWidget deletes object from the database
 func DeleteWidget(r *http.Request) *Response {
 	widgetID := chi.URLParam(r, "widget_id")
-	condition := builder.Equal("widgets.id", widgetID)
+	widgetIDColumn := fmt.Sprintf("%s.id", models.TableCoreWidgets)
+	condition := builder.Equal(widgetIDColumn, widgetID)
 
 	return remove(r, "DeleteWidget", models.TableCoreWidgets, condition)
 }

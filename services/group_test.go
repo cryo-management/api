@@ -17,12 +17,15 @@ import (
 
 type ServiceGroupTestSuite struct {
 	suite.Suite
-	InstanceID string
+	GroupInstanceID      string
+	PermissionInstanceID string
+	UserID               string
 }
 
 func (suite *ServiceGroupTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
 }
 
 func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
@@ -35,41 +38,42 @@ func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := CreateGroup(req)
 
-	result := response.Data != nil && response.Code == 200
-	groupValue := reflect.ValueOf(response.Data).Elem()
-	suite.InstanceID = groupValue.FieldByName("ID").Interface().(string)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 
-	assert.Equal(suite.T(), result, true)
+	groupValue := reflect.ValueOf(response.Data).Elem()
+	suite.GroupInstanceID = groupValue.FieldByName("ID").Interface().(string)
 }
 
 func (suite *ServiceGroupTestSuite) Test00002LoadAllGroups() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllGroups(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceGroupTestSuite) Test00003LoadGroup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := LoadGroup(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceGroupTestSuite) Test00004UpdateGroup() {
@@ -80,32 +84,126 @@ func (suite *ServiceGroupTestSuite) Test00004UpdateGroup() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := UpdateGroup(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceGroupTestSuite) Test00005DeleteGroup() {
-	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+func (suite *ServiceGroupTestSuite) Test00005InsertUserInGroup() {
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("group_id", suite.InstanceID)
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	rctx.URLParams.Add("user_id", suite.UserID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := InsertUserInGroup(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceGroupTestSuite) Test00006LoadAllUsersByGroup() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadAllUsersByGroup(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceGroupTestSuite) Test00007RemoveUserFromGroup() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	rctx.URLParams.Add("user_id", suite.UserID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := RemoveUserFromGroup(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceGroupTestSuite) Test00008InsertPermission() {
+	data := map[string]interface{}{
+		"group_id":       suite.GroupInstanceID,
+		"structure_type": "user",
+		"structure_id":   suite.UserID,
+		"type":           100,
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	response := InsertPermission(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
+	permissionValue := reflect.ValueOf(response.Data).Elem()
+	suite.PermissionInstanceID = permissionValue.FieldByName("ID").Interface().(string)
+}
+
+func (suite *ServiceGroupTestSuite) Test00009LoadAllPermissionsByGroup() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadAllPermissionsByGroup(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceGroupTestSuite) Test00010RemovePermission() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("permission_id", suite.PermissionInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := RemovePermission(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceGroupTestSuite) Test00011DeleteGroup() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := DeleteGroup(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create

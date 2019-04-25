@@ -10,8 +10,10 @@ type Schema struct {
 	Description   string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_schemas.id and core_translations_description.structure_field = 'description'"`
 	Module        bool      `json:"module" sql:"module"`
 	Active        bool      `json:"active" sql:"active"`
-	CreatedByUser *User     `json:"created_by_user" table:"core_schemas" alias:"created_by_user" on:"created_by_user.id = core_schemas.created_by"`
+	CreatedBy     string    `json:"created_by" sql:"created_by"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_schemas.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
-	UpdatedByUser *User     `json:"updated_by_user" table:"core_schemas" alias:"updated_by_user" on:"updated_by_user.id = core_schemas.updated_by"`
+	UpdatedBy     string    `json:"updated_by" sql:"updated_by"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_schemas.updated_by"`
 	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }

@@ -18,11 +18,13 @@ import (
 type ServiceSchemaTestSuite struct {
 	suite.Suite
 	InstanceID string
+	UserID     string
 }
 
 func (suite *ServiceSchemaTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
 }
 
 func (suite *ServiceSchemaTestSuite) Test00001CreateSchema() {
@@ -36,31 +38,33 @@ func (suite *ServiceSchemaTestSuite) Test00001CreateSchema() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
 
-	result := response.Data != nil && response.Code == 200
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
 	schemaValue := reflect.ValueOf(response.Data).Elem()
 	suite.InstanceID = schemaValue.FieldByName("ID").Interface().(string)
-
-	assert.Equal(suite.T(), result, true)
 }
 
 func (suite *ServiceSchemaTestSuite) Test00002LoadAllSchemas() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllSchemas(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceSchemaTestSuite) Test00003LoadSchema() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("schema_id", suite.InstanceID)
@@ -68,9 +72,8 @@ func (suite *ServiceSchemaTestSuite) Test00003LoadSchema() {
 
 	response := LoadSchema(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
@@ -81,7 +84,8 @@ func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("schema_id", suite.InstanceID)
@@ -89,14 +93,13 @@ func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
 
 	response := UpdateSchema(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceSchemaTestSuite) Test00005DeleteSchema() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("schema_id", suite.InstanceID)
@@ -104,9 +107,7 @@ func (suite *ServiceSchemaTestSuite) Test00005DeleteSchema() {
 
 	response := DeleteSchema(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create

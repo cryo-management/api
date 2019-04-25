@@ -14,9 +14,11 @@ type Lookup struct {
 	Label         string    `json:"label" sql:"label"`
 	Autocomplete  string    `json:"autocomplete" sql:"autocomplete"`
 	Active        bool      `json:"active" sql:"active"`
-	CreatedByUser *User     `json:"created_by_user" table:"core_lookups" alias:"created_by_user" on:"created_by_user.id = core_lookups.created_by"`
+	CreatedBy     string    `json:"created_by" sql:"created_by"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_lookups.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
-	UpdatedByUser *User     `json:"updated_by_user" table:"core_lookups" alias:"updated_by_user" on:"updated_by_user.id = core_lookups.updated_by"`
+	UpdatedBy     string    `json:"updated_by" sql:"updated_by"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_lookups.updated_by"`
 	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }
 
@@ -28,8 +30,10 @@ type LookupOption struct {
 	Value         string    `json:"value" sql:"value"`
 	Label         string    `json:"label" table:"core_translations" alias:"core_translations_label" sql:"value" on:"core_translations_label.structure_id = core_lkp_options.id and core_translations_label.structure_field = 'label'"`
 	Active        bool      `json:"active" sql:"active"`
-	CreatedByUser *User     `json:"created_by_user" table:"core_lkp_options" alias:"created_by_user" on:"created_by_user.id = core_lkp_options.created_by"`
+	CreatedBy     string    `json:"created_by" sql:"created_by"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_lkp_options.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
-	UpdatedByUser *User     `json:"updated_by_user" table:"core_lkp_options" alias:"updated_by_user" on:"updated_by_user.id = core_lkp_options.updated_by"`
+	UpdatedBy     string    `json:"updated_by" sql:"updated_by"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_lkp_options.updated_by"`
 	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }

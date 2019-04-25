@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
@@ -20,7 +21,8 @@ func CreateField(r *http.Request) *Response {
 func LoadAllFields(r *http.Request) *Response {
 	fields := []models.Field{}
 	schemaID := chi.URLParam(r, "schema_id")
-	condition := builder.Equal("fields.schema_id", schemaID)
+	schemaIDColumn := fmt.Sprintf("%s.schema_id", models.TableCoreSchFields)
+	condition := builder.Equal(schemaIDColumn, schemaID)
 
 	return load(r, &fields, "LoadAllFields", models.TableCoreSchFields, condition)
 }
@@ -29,7 +31,8 @@ func LoadAllFields(r *http.Request) *Response {
 func LoadField(r *http.Request) *Response {
 	field := models.Field{}
 	fieldID := chi.URLParam(r, "field_id")
-	condition := builder.Equal("fields.id", fieldID)
+	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
+	condition := builder.Equal(fieldIDColumn, fieldID)
 
 	return load(r, &field, "LoadField", models.TableCoreSchFields, condition)
 }
@@ -37,7 +40,8 @@ func LoadField(r *http.Request) *Response {
 // UpdateField updates object data in the database
 func UpdateField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
-	condition := builder.Equal("fields.id", fieldID)
+	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
+	condition := builder.Equal(fieldIDColumn, fieldID)
 	field := models.Field{
 		ID: fieldID,
 	}
@@ -48,7 +52,8 @@ func UpdateField(r *http.Request) *Response {
 // DeleteField deletes object from the database
 func DeleteField(r *http.Request) *Response {
 	fieldID := chi.URLParam(r, "field_id")
-	condition := builder.Equal("fields.id", fieldID)
+	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
+	condition := builder.Equal(fieldIDColumn, fieldID)
 
 	return remove(r, "DeleteField", models.TableCoreSchFields, condition)
 }

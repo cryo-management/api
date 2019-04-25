@@ -47,3 +47,27 @@ func DeleteView(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
+
+// PostViewPage sends the request to service creating an association between group and user
+func PostViewPage(w http.ResponseWriter, r *http.Request) {
+	response := services.InsertPageInView(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// GetAllPagesByView return all user instances by group from the service
+func GetAllPagesByView(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllPagesByView(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// DeleteViewPage sends the request to service deleting a user from a group
+func DeleteViewPage(w http.ResponseWriter, r *http.Request) {
+	response := services.RemovePageFromView(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}

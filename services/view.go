@@ -1,9 +1,12 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/andreluzz/go-sql-builder/builder"
+	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
@@ -19,8 +22,9 @@ func CreateView(r *http.Request) *Response {
 // LoadAllViews return all instances from the object
 func LoadAllViews(r *http.Request) *Response {
 	views := []models.View{}
-	structureID := chi.URLParam(r, "structure_id")
-	condition := builder.Equal("views.structure_id", structureID)
+	schemaID := chi.URLParam(r, "schema_id")
+	schemaIDColumn := fmt.Sprintf("%s.schema_id", models.TableCoreSchViews)
+	condition := builder.Equal(schemaIDColumn, schemaID)
 
 	return load(r, &views, "LoadAllViews", models.TableCoreSchViews, condition)
 }
@@ -29,7 +33,8 @@ func LoadAllViews(r *http.Request) *Response {
 func LoadView(r *http.Request) *Response {
 	view := models.View{}
 	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("views.id", viewID)
+	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
+	condition := builder.Equal(viewIDColumn, viewID)
 
 	return load(r, &view, "LoadView", models.TableCoreSchViews, condition)
 }
@@ -37,7 +42,8 @@ func LoadView(r *http.Request) *Response {
 // UpdateView updates object data in the database
 func UpdateView(r *http.Request) *Response {
 	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("views.id", viewID)
+	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
+	condition := builder.Equal(viewIDColumn, viewID)
 	view := models.View{
 		ID: viewID,
 	}
@@ -48,7 +54,120 @@ func UpdateView(r *http.Request) *Response {
 // DeleteView deletes object from the database
 func DeleteView(r *http.Request) *Response {
 	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("views.id", viewID)
+	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
+	condition := builder.Equal(viewIDColumn, viewID)
 
 	return remove(r, "DeleteView", models.TableCoreSchViews, condition)
+}
+
+// InsertPageInView persists the request creating a new object in the database
+func InsertPageInView(r *http.Request) *Response {
+	response := NewResponse()
+
+	viewID := chi.URLParam(r, "view_id")
+	pageID := chi.URLParam(r, "page_id")
+
+	userID := r.Header.Get("userID")
+	now := time.Now()
+
+	statemant := builder.Insert(
+		models.TableCoreViewsPages,
+		"view_id",
+		"page_id",
+		"created_by",
+		"created_at",
+		"updated_by",
+		"updated_at",
+	).Values(
+		viewID,
+		pageID,
+		userID,
+		now,
+		userID,
+		now,
+	)
+
+	err := db.Exec(statemant)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "InsertPageInView", err.Error()))
+
+		return response
+	}
+
+	return response
+}
+
+// LoadAllPagesByView return all instances from the object
+func LoadAllPagesByView(r *http.Request) *Response {
+	response := NewResponse()
+
+	page := []models.Page{}
+	viewID := chi.URLParam(r, "view_id")
+	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
+	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
+	languageCode := r.Header.Get("languageCode")
+
+	statemant := builder.Select(
+		"core_pages.id",
+		"core_pages.code",
+		"core_translations_name.value as name",
+		"core_translations_description.value as description",
+		"core_pages.schema_id",
+		"core_pages.type",
+		"core_pages.active",
+		"core_pages.created_by",
+		"core_pages.created_at",
+		"core_pages.updated_by",
+		"core_pages.updated_at",
+	).From(models.TableCoreSchPages).Join(
+		tblTranslationName, "core_translations_name.structure_id = core_pages.id and core_translations_name.structure_field = 'name'",
+	).Join(
+		tblTranslationDescription, "core_translations_description.structure_id = core_pages.id and core_translations_description.structure_field = 'description'",
+	).Join(
+		models.TableCoreViewsPages, "core_views_pages.page_id = core_pages.id",
+	).Where(
+		builder.And(
+			builder.Equal("core_views_pages.view_id", viewID),
+			builder.Equal("core_translations_name.language_code", languageCode),
+			builder.Equal("core_translations_description.language_code", languageCode),
+		),
+	)
+
+	err := db.QueryStruct(statemant, &page)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllPagesByView", err.Error()))
+
+		return response
+	}
+
+	response.Data = page
+
+	return response
+}
+
+// RemovePageFromView deletes object from the database
+func RemovePageFromView(r *http.Request) *Response {
+	response := NewResponse()
+
+	viewID := chi.URLParam(r, "view_id")
+	pageID := chi.URLParam(r, "page_id")
+
+	statemant := builder.Delete(models.TableCoreViewsPages).Where(
+		builder.And(
+			builder.Equal("view_id", viewID),
+			builder.Equal("page_id", pageID),
+		),
+	)
+
+	err := db.Exec(statemant)
+	if err != nil {
+		response.Code = http.StatusInternalServerError
+		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, "RemovePageFromView", err.Error()))
+
+		return response
+	}
+
+	return response
 }

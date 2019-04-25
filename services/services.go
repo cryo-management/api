@@ -63,14 +63,18 @@ func NewResponseError(code string, scope, err string) ResponseError {
 	}
 }
 
-// getColumnsFromBody get request body and return an string array with columns from the body
-func getColumnsFromBody(body []byte) []string {
+// getUpdateColumnsFromBody get request body and return an string array with columns from the body
+func getUpdateColumnsFromBody(body []byte) []string {
 	jsonMap := make(map[string]interface{})
 	json.Unmarshal(body, &jsonMap)
 	columns := []string{}
 	for k := range jsonMap {
-		columns = append(columns, k)
+		if k != "created_by" && k != "created_at" && k != "updated_by" && k != "updated_at" {
+			columns = append(columns, k)
+		}
 	}
+	columns = append(columns, "updated_by")
+	columns = append(columns, "updated_at")
 
 	return columns
 }
@@ -88,6 +92,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 		return response
 	}
 
+	userID := r.Header.Get("userID")
 	now := time.Now()
 	elementType := reflect.TypeOf(object).Elem()
 	elementValue := reflect.ValueOf(object).Elem()
@@ -95,8 +100,8 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	elementUpdatedBy := elementValue.FieldByName("UpdatedBy")
 	elementCreatedAt := elementValue.FieldByName("CreatedAt")
 	elementUpdatedAt := elementValue.FieldByName("UpdatedAt")
-	elementCreatedBy.SetString("1")
-	elementUpdatedBy.SetString("1")
+	elementCreatedBy.SetString(userID)
+	elementUpdatedBy.SetString(userID)
 	elementCreatedAt.Set(reflect.ValueOf(now))
 	elementUpdatedAt.Set(reflect.ValueOf(now))
 
@@ -113,7 +118,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 
 	for i := 0; i < elementType.NumField(); i++ {
 		if elementType.Field(i).Tag.Get("table") == models.TableCoreTranslations {
-			err = models.CreateTranslationsFromStruct(table, r.Header.Get("languageCode"), object)
+			err = models.CreateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object)
 			if err != nil {
 				response.Code = http.StatusInternalServerError
 				response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s create translation", scope), err.Error()))
@@ -174,7 +179,16 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 		return response
 	}
 
-	columns := getColumnsFromBody(body)
+	columns := getUpdateColumnsFromBody(body)
+
+	userID := r.Header.Get("userID")
+	now := time.Now()
+	elementType := reflect.TypeOf(object).Elem()
+	elementValue := reflect.ValueOf(object).Elem()
+	elementUpdatedBy := elementValue.FieldByName("UpdatedBy")
+	elementUpdatedAt := elementValue.FieldByName("UpdatedAt")
+	elementUpdatedBy.SetString(userID)
+	elementUpdatedAt.Set(reflect.ValueOf(now))
 
 	err = db.UpdateStruct(table, object, condition, columns...)
 	if err != nil {
@@ -183,8 +197,6 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 
 		return response
 	}
-
-	elementType := reflect.TypeOf(object).Elem()
 
 	for i := 0; i < elementType.NumField(); i++ {
 		hasTranslation := false
@@ -197,7 +209,7 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 				}
 			}
 			if hasTranslation {
-				err = models.UpdateTranslationsFromStruct(table, r.Header.Get("languageCode"), object, columns...)
+				err = models.UpdateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object, columns...)
 				if err != nil {
 					response.Code = http.StatusInternalServerError
 					response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s update translation", scope), err.Error()))

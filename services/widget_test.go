@@ -18,11 +18,13 @@ import (
 type ServiceWidgetTestSuite struct {
 	suite.Suite
 	InstanceID string
+	UserID     string
 }
 
 func (suite *ServiceWidgetTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
 }
 
 func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
@@ -32,31 +34,33 @@ func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := CreateWidget(req)
 
-	result := response.Data != nil && response.Code == 200
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
 	widgetValue := reflect.ValueOf(response.Data).Elem()
 	suite.InstanceID = widgetValue.FieldByName("ID").Interface().(string)
-
-	assert.Equal(suite.T(), result, true)
 }
 
 func (suite *ServiceWidgetTestSuite) Test00002LoadAllWidgets() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllWidgets(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceWidgetTestSuite) Test00003LoadWidget() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("widget_id", suite.InstanceID)
@@ -64,9 +68,8 @@ func (suite *ServiceWidgetTestSuite) Test00003LoadWidget() {
 
 	response := LoadWidget(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
@@ -76,7 +79,8 @@ func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("widget_id", suite.InstanceID)
@@ -84,14 +88,13 @@ func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
 
 	response := UpdateWidget(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceWidgetTestSuite) Test00005DeleteWidget() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("widget_id", suite.InstanceID)
@@ -99,9 +102,7 @@ func (suite *ServiceWidgetTestSuite) Test00005DeleteWidget() {
 
 	response := DeleteWidget(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create

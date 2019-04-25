@@ -1,6 +1,8 @@
 package models
 
 const (
+	// TableCoreConfigLanguages database table name
+	TableCoreConfigLanguages string = "core_config_languages"
 	// TableCoreUsers database table name
 	TableCoreUsers string = "core_users"
 	// TableCoreGroups database table name
@@ -11,8 +13,8 @@ const (
 	TableCoreGroupsUsers string = "core_groups_users"
 	// TableCoreSchemas database table name
 	TableCoreSchemas string = "core_schemas"
-	// TableCoreSchModules database table name
-	TableCoreSchModules string = "core_sch_modules"
+	// TableCoreSchemaModules database table name
+	TableCoreSchemaModules string = "core_schemas_modules"
 	// TableCoreLookups database table name
 	TableCoreLookups string = "core_lookups"
 	// TableCoreLkpOptions database table name

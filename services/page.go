@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
@@ -19,8 +20,9 @@ func CreatePage(r *http.Request) *Response {
 // LoadAllPages return all instances from the object
 func LoadAllPages(r *http.Request) *Response {
 	pages := []models.Page{}
-	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("pages.view_id", viewID)
+	schemaID := chi.URLParam(r, "schema_id")
+	schemaIDColumn := fmt.Sprintf("%s.schema_id", models.TableCoreSchPages)
+	condition := builder.Equal(schemaIDColumn, schemaID)
 
 	return load(r, &pages, "LoadAllPages", models.TableCoreSchPages, condition)
 }
@@ -29,7 +31,8 @@ func LoadAllPages(r *http.Request) *Response {
 func LoadPage(r *http.Request) *Response {
 	page := models.Page{}
 	pageID := chi.URLParam(r, "page_id")
-	condition := builder.Equal("pages.id", pageID)
+	pageIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPages)
+	condition := builder.Equal(pageIDColumn, pageID)
 
 	return load(r, &page, "LoadPage", models.TableCoreSchPages, condition)
 }
@@ -37,7 +40,8 @@ func LoadPage(r *http.Request) *Response {
 // UpdatePage updates object data in the database
 func UpdatePage(r *http.Request) *Response {
 	pageID := chi.URLParam(r, "page_id")
-	condition := builder.Equal("pages.id", pageID)
+	pageIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPages)
+	condition := builder.Equal(pageIDColumn, pageID)
 	page := models.Page{
 		ID: pageID,
 	}
@@ -48,7 +52,8 @@ func UpdatePage(r *http.Request) *Response {
 // DeletePage deletes object from the database
 func DeletePage(r *http.Request) *Response {
 	pageID := chi.URLParam(r, "page_id")
-	condition := builder.Equal("pages.id", pageID)
+	pageIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPages)
+	condition := builder.Equal(pageIDColumn, pageID)
 
 	return remove(r, "DeletePage", models.TableCoreSchPages, condition)
 }

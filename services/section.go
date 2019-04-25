@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
@@ -19,8 +20,9 @@ func CreateSection(r *http.Request) *Response {
 // LoadAllSections return all instances from the object
 func LoadAllSections(r *http.Request) *Response {
 	sections := []models.Section{}
-	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("sections.view_id", viewID)
+	pageID := chi.URLParam(r, "page_id")
+	pageIDColumn := fmt.Sprintf("%s.page_id", models.TableCoreSchPagSections)
+	condition := builder.Equal(pageIDColumn, pageID)
 
 	return load(r, &sections, "LoadAllSections", models.TableCoreSchPagSections, condition)
 }
@@ -29,7 +31,8 @@ func LoadAllSections(r *http.Request) *Response {
 func LoadSection(r *http.Request) *Response {
 	section := models.Section{}
 	sectionID := chi.URLParam(r, "section_id")
-	condition := builder.Equal("sections.id", sectionID)
+	sectionIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSections)
+	condition := builder.Equal(sectionIDColumn, sectionID)
 
 	return load(r, &section, "LoadSection", models.TableCoreSchPagSections, condition)
 }
@@ -37,7 +40,8 @@ func LoadSection(r *http.Request) *Response {
 // UpdateSection updates object data in the database
 func UpdateSection(r *http.Request) *Response {
 	sectionID := chi.URLParam(r, "section_id")
-	condition := builder.Equal("sections.id", sectionID)
+	sectionIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSections)
+	condition := builder.Equal(sectionIDColumn, sectionID)
 	section := models.Section{
 		ID: sectionID,
 	}
@@ -48,7 +52,8 @@ func UpdateSection(r *http.Request) *Response {
 // DeleteSection deletes object from the database
 func DeleteSection(r *http.Request) *Response {
 	sectionID := chi.URLParam(r, "section_id")
-	condition := builder.Equal("sections.id", sectionID)
+	sectionIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSections)
+	condition := builder.Equal(sectionIDColumn, sectionID)
 
 	return remove(r, "DeleteSection", models.TableCoreSchPagSections, condition)
 }
@@ -63,8 +68,9 @@ func CreateSectionStructure(r *http.Request) *Response {
 // LoadAllSectionStructures return all instances from the object
 func LoadAllSectionStructures(r *http.Request) *Response {
 	sectionStructures := []models.SectionStructure{}
-	viewID := chi.URLParam(r, "view_id")
-	condition := builder.Equal("sectionStructures.view_id", viewID)
+	sectionID := chi.URLParam(r, "section_id")
+	sectionIDColumn := fmt.Sprintf("%s.section_id", models.TableCoreSchPagSecStructures)
+	condition := builder.Equal(sectionIDColumn, sectionID)
 
 	return load(r, &sectionStructures, "LoadAllSectionStructures", models.TableCoreSchPagSecStructures, condition)
 }
@@ -72,16 +78,18 @@ func LoadAllSectionStructures(r *http.Request) *Response {
 // LoadSectionStructure return only one object from the database
 func LoadSectionStructure(r *http.Request) *Response {
 	sectionStructure := models.SectionStructure{}
-	sectionStructureID := chi.URLParam(r, "sectionStructure_id")
-	condition := builder.Equal("sectionStructures.id", sectionStructureID)
+	sectionStructureID := chi.URLParam(r, "section_structure_id")
+	sectionStructureIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSecStructures)
+	condition := builder.Equal(sectionStructureIDColumn, sectionStructureID)
 
 	return load(r, &sectionStructure, "LoadSectionStructure", models.TableCoreSchPagSecStructures, condition)
 }
 
 // UpdateSectionStructure updates object data in the database
 func UpdateSectionStructure(r *http.Request) *Response {
-	sectionStructureID := chi.URLParam(r, "sectionStructure_id")
-	condition := builder.Equal("sectionStructures.id", sectionStructureID)
+	sectionStructureID := chi.URLParam(r, "section_structure_id")
+	sectionStructureIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSecStructures)
+	condition := builder.Equal(sectionStructureIDColumn, sectionStructureID)
 	sectionStructure := models.SectionStructure{
 		ID: sectionStructureID,
 	}
@@ -91,8 +99,9 @@ func UpdateSectionStructure(r *http.Request) *Response {
 
 // DeleteSectionStructure deletes object from the database
 func DeleteSectionStructure(r *http.Request) *Response {
-	sectionStructureID := chi.URLParam(r, "sectionStructure_id")
-	condition := builder.Equal("sectionStructures.id", sectionStructureID)
+	sectionStructureID := chi.URLParam(r, "section_structure_id")
+	sectionStructureIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchPagSecStructures)
+	condition := builder.Equal(sectionStructureIDColumn, sectionStructureID)
 
 	return remove(r, "DeleteSectionStructure", models.TableCoreSchPagSecStructures, condition)
 }

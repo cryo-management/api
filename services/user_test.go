@@ -18,50 +18,55 @@ import (
 type ServiceUserTestSuite struct {
 	suite.Suite
 	InstanceID string
+	UserID     string
 }
 
 func (suite *ServiceUserTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
+	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
 }
 
 func (suite *ServiceUserTestSuite) Test00001CreateUser() {
 	data := map[string]interface{}{
-		"first_name": "Usuário",
-		"last_name":  "Teste 01",
-		"email":      "usuarioteste01@domain.com",
-		"password":   "123456",
-		"language":   "pt-br",
-		"active":     true,
+		"username":      "usuarioteste01",
+		"first_name":    "Usuário",
+		"last_name":     "Teste 01",
+		"email":         "usuarioteste01@domain.com",
+		"password":      "123456",
+		"language_code": "pt-br",
+		"active":        true,
 	}
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/users", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := CreateUser(req)
 
-	result := response.Data != nil && response.Code == 200
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
 	userValue := reflect.ValueOf(response.Data).Elem()
 	suite.InstanceID = userValue.FieldByName("ID").Interface().(string)
-
-	assert.Equal(suite.T(), result, true)
 }
 
 func (suite *ServiceUserTestSuite) Test00002LoadAllUsers() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/users", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllUsers(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceUserTestSuite) Test00003LoadUser() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/users", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("user_id", suite.InstanceID)
@@ -69,9 +74,8 @@ func (suite *ServiceUserTestSuite) Test00003LoadUser() {
 
 	response := LoadUser(req)
 
-	result := response.Data != nil && response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceUserTestSuite) Test00004UpdateUser() {
@@ -82,7 +86,8 @@ func (suite *ServiceUserTestSuite) Test00004UpdateUser() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/users", bytes.NewBuffer(jsonData))
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("user_id", suite.InstanceID)
@@ -90,14 +95,13 @@ func (suite *ServiceUserTestSuite) Test00004UpdateUser() {
 
 	response := UpdateUser(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 func (suite *ServiceUserTestSuite) Test00005DeleteUser() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/users", nil)
-	req.Header.Set("LanguageCode", "pt-br")
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("user_id", suite.InstanceID)
@@ -105,9 +109,7 @@ func (suite *ServiceUserTestSuite) Test00005DeleteUser() {
 
 	response := DeleteUser(req)
 
-	result := response.Code == 200
-
-	assert.Equal(suite.T(), result, true)
+	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create
