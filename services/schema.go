@@ -121,10 +121,10 @@ func LoadAllModulesBySchema(r *http.Request) *Response {
 	).Join(
 		tblTranslationDescription, "core_translations_description.structure_id = core_schemas.id and core_translations_description.structure_field = 'description'",
 	).Join(
-		models.TableCoreSchemaModules, "core_schemas_modules.page_id = core_schemas.id",
+		models.TableCoreSchemaModules, "core_schemas_modules.module_id = core_schemas.id",
 	).Where(
 		builder.And(
-			builder.Equal("core_schemas_modules.view_id", schemaID),
+			builder.Equal("core_schemas_modules.schema_id", schemaID),
 			builder.Equal("core_translations_name.language_code", languageCode),
 			builder.Equal("core_translations_description.language_code", languageCode),
 		),

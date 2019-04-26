@@ -21,11 +21,11 @@ func StructureRoutes() *chi.Mux {
 		r.Get("/{structure_id}/views/{view_id}/sections/{section_id}", controller.GetSection)
 		r.Patch("/{structure_id}/views/{view_id}/sections/{section_id}", controller.UpdateSection)
 		r.Delete("/{structure_id}/views/{view_id}/sections/{section_id}", controller.DeleteSection)
-		r.Post("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures", controller.PostSectionStructure)
-		r.Get("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures", controller.GetAllSectionStructures)
-		r.Get("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.GetSectionStructure)
-		r.Patch("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.UpdateSectionStructure)
-		r.Delete("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.DeleteSectionStructure)
+		r.Post("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures", controller.PostContainerStructure)
+		r.Get("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures", controller.GetAllContainerStructures)
+		r.Get("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.GetContainerStructure)
+		r.Patch("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.UpdateContainerStructure)
+		r.Delete("/{structure_id}/views/{view_id}/sections/{section_id}/section_structures/{section_structure_id}", controller.DeleteContainerStructure)
 	})
 
 	return r

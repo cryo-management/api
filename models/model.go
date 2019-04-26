@@ -35,8 +35,8 @@ const (
 	TableCoreSchPagSections string = "core_sch_pag_sections"
 	// TableCoreSchPagSecTabs database table name
 	TableCoreSchPagSecTabs string = "core_sch_pag_sec_tabs"
-	// TableCoreSchPagSecStructures database table name
-	TableCoreSchPagSecStructures string = "core_sch_pag_sec_structures"
+	// TableCoreSchPagCntStructures database table name
+	TableCoreSchPagCntStructures string = "core_sch_pag_cnt_structures"
 	// TableCoreTranslations database table name
 	TableCoreTranslations string = "core_translations"
 )

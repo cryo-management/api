@@ -19,6 +19,7 @@ type ServiceGroupTestSuite struct {
 	suite.Suite
 	GroupInstanceID      string
 	PermissionInstanceID string
+	UserInstanceID       string
 	UserID               string
 }
 
@@ -29,6 +30,8 @@ func (suite *ServiceGroupTestSuite) SetupTest() {
 }
 
 func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
+	createUserToGroup(suite)
+
 	data := map[string]interface{}{
 		"name":        "Grupo Teste 01",
 		"description": "Descrição do Grupo Teste 01",
@@ -103,7 +106,7 @@ func (suite *ServiceGroupTestSuite) Test00005InsertUserInGroup() {
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
-	rctx.URLParams.Add("user_id", suite.UserID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := InsertUserInGroup(req)
@@ -133,7 +136,7 @@ func (suite *ServiceGroupTestSuite) Test00007RemoveUserFromGroup() {
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
-	rctx.URLParams.Add("user_id", suite.UserID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := RemoveUserFromGroup(req)
@@ -145,7 +148,7 @@ func (suite *ServiceGroupTestSuite) Test00008InsertPermission() {
 	data := map[string]interface{}{
 		"group_id":       suite.GroupInstanceID,
 		"structure_type": "user",
-		"structure_id":   suite.UserID,
+		"structure_id":   suite.UserInstanceID,
 		"type":           100,
 	}
 	jsonData, _ := json.Marshal(data)
@@ -203,6 +206,8 @@ func (suite *ServiceGroupTestSuite) Test00011DeleteGroup() {
 
 	response := DeleteGroup(req)
 
+	deleteUserToGroup(suite)
+
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
@@ -210,4 +215,38 @@ func (suite *ServiceGroupTestSuite) Test00011DeleteGroup() {
 // a normal test function and pass our suite to suite.Run
 func TestServiceGroupSuite(t *testing.T) {
 	suite.Run(t, new(ServiceGroupTestSuite))
+}
+
+func createUserToGroup(suite *ServiceGroupTestSuite) {
+	data := map[string]interface{}{
+		"username":      "usuarioteste01",
+		"first_name":    "Usuário",
+		"last_name":     "Teste 01",
+		"email":         "usuarioteste01@domain.com",
+		"password":      "123456",
+		"language_code": "pt-br",
+		"active":        true,
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/users", bytes.NewBuffer(jsonData))
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	response := CreateUser(req)
+
+	userValue := reflect.ValueOf(response.Data).Elem()
+	suite.UserInstanceID = userValue.FieldByName("ID").Interface().(string)
+}
+
+func deleteUserToGroup(suite *ServiceGroupTestSuite) {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/users", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	DeleteUser(req)
 }

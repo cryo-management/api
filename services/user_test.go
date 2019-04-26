@@ -17,8 +17,9 @@ import (
 
 type ServiceUserTestSuite struct {
 	suite.Suite
-	InstanceID string
-	UserID     string
+	UserInstanceID  string
+	GroupInstanceID string
+	UserID          string
 }
 
 func (suite *ServiceUserTestSuite) SetupTest() {
@@ -28,6 +29,8 @@ func (suite *ServiceUserTestSuite) SetupTest() {
 }
 
 func (suite *ServiceUserTestSuite) Test00001CreateUser() {
+	createGroupToUser(suite)
+
 	data := map[string]interface{}{
 		"username":      "usuarioteste01",
 		"first_name":    "Usuário",
@@ -49,7 +52,7 @@ func (suite *ServiceUserTestSuite) Test00001CreateUser() {
 	assert.Equal(suite.T(), 200, response.Code)
 
 	userValue := reflect.ValueOf(response.Data).Elem()
-	suite.InstanceID = userValue.FieldByName("ID").Interface().(string)
+	suite.UserInstanceID = userValue.FieldByName("ID").Interface().(string)
 }
 
 func (suite *ServiceUserTestSuite) Test00002LoadAllUsers() {
@@ -69,7 +72,7 @@ func (suite *ServiceUserTestSuite) Test00003LoadUser() {
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("user_id", suite.InstanceID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := LoadUser(req)
@@ -90,7 +93,7 @@ func (suite *ServiceUserTestSuite) Test00004UpdateUser() {
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("user_id", suite.InstanceID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := UpdateUser(req)
@@ -98,16 +101,35 @@ func (suite *ServiceUserTestSuite) Test00004UpdateUser() {
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceUserTestSuite) Test00005DeleteUser() {
+func (suite *ServiceUserTestSuite) Test00005LoadAllGroupsByUser() {
+	insertUserInGroup(suite)
+
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/users", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadAllGroupsByUser(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceUserTestSuite) Test00006DeleteUser() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/users", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("user_id", suite.InstanceID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	response := DeleteUser(req)
+
+	deleteGroupToUser(suite)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
@@ -116,4 +138,48 @@ func (suite *ServiceUserTestSuite) Test00005DeleteUser() {
 // a normal test function and pass our suite to suite.Run
 func TestServiceUserSuite(t *testing.T) {
 	suite.Run(t, new(ServiceUserTestSuite))
+}
+
+func createGroupToUser(suite *ServiceUserTestSuite) {
+	data := map[string]interface{}{
+		"name":        "Grupo Teste 01",
+		"description": "Descrição do Grupo Teste 01",
+		"code":        "grupoteste01",
+		"active":      true,
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	response := CreateGroup(req)
+
+	groupValue := reflect.ValueOf(response.Data).Elem()
+	suite.GroupInstanceID = groupValue.FieldByName("ID").Interface().(string)
+}
+
+func insertUserInGroup(suite *ServiceUserTestSuite) {
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	rctx.URLParams.Add("user_id", suite.UserInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	InsertUserInGroup(req)
+}
+
+func deleteGroupToUser(suite *ServiceUserTestSuite) {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("group_id", suite.GroupInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	DeleteGroup(req)
 }

@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE core_config_languages (
+CREATE TABLE core_config_languages (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -27,7 +27,7 @@ VALUES (
   '2019-04-23 15:30:36.480864'
 );
 
-CREATE OR REPLACE TABLE core_users (
+CREATE TABLE core_users (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   username CHARACTER VARYING NOT NULL,
   first_name CHARACTER VARYING NOT NULL,
@@ -71,7 +71,7 @@ VALUES (
   '2019-04-23 15:30:36.480864'
 );
 
-CREATE OR REPLACE TABLE core_groups (
+CREATE TABLE core_groups (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -81,7 +81,7 @@ CREATE OR REPLACE TABLE core_groups (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_grp_permissions (
+CREATE TABLE core_grp_permissions (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   group_id CHARACTER VARYING NOT NULL,
   structure_type CHARACTER VARYING NOT NULL,
@@ -94,7 +94,7 @@ CREATE OR REPLACE TABLE core_grp_permissions (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_groups_users (
+CREATE TABLE core_groups_users (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   user_id CHARACTER VARYING NOT NULL,
   group_id CHARACTER VARYING NOT NULL,
@@ -104,7 +104,7 @@ CREATE OR REPLACE TABLE core_groups_users (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_schemas (
+CREATE TABLE core_schemas (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   module BOOLEAN DEFAULT FALSE NOT NULL,
@@ -115,7 +115,7 @@ CREATE OR REPLACE TABLE core_schemas (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_schemas_modules (
+CREATE TABLE core_schemas_modules (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   module_id CHARACTER VARYING NOT NULL,
@@ -125,7 +125,7 @@ CREATE OR REPLACE TABLE core_schemas_modules (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_lookups (
+CREATE TABLE core_lookups (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   type CHARACTER VARYING NOT NULL,
@@ -140,7 +140,7 @@ CREATE OR REPLACE TABLE core_lookups (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_lkp_options (
+CREATE TABLE core_lkp_options (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   lookup_id CHARACTER VARYING NOT NULL,
@@ -152,7 +152,7 @@ CREATE OR REPLACE TABLE core_lkp_options (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_fields (
+CREATE TABLE core_sch_fields (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
@@ -166,7 +166,7 @@ CREATE OR REPLACE TABLE core_sch_fields (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_fld_validations (
+CREATE TABLE core_sch_fld_validations (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   field_id CHARACTER VARYING NOT NULL,
@@ -178,7 +178,7 @@ CREATE OR REPLACE TABLE core_sch_fld_validations (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_widgets (
+CREATE TABLE core_widgets (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   type CHARACTER VARYING NOT NULL,
@@ -189,7 +189,7 @@ CREATE OR REPLACE TABLE core_widgets (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_pages (
+CREATE TABLE core_sch_pages (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
@@ -201,7 +201,7 @@ CREATE OR REPLACE TABLE core_sch_pages (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_views (
+CREATE TABLE core_sch_views (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
@@ -211,7 +211,7 @@ CREATE OR REPLACE TABLE core_sch_views (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_views_pages (
+CREATE TABLE core_views_pages (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   view_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
@@ -221,7 +221,7 @@ CREATE OR REPLACE TABLE core_views_pages (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_pag_sections (
+CREATE TABLE core_sch_pag_sections (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
@@ -232,7 +232,7 @@ CREATE OR REPLACE TABLE core_sch_pag_sections (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_pag_sec_tabs (
+CREATE TABLE core_sch_pag_sec_tabs (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
@@ -244,7 +244,7 @@ CREATE OR REPLACE TABLE core_sch_pag_sec_tabs (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_sch_pag_sec_structures (
+CREATE TABLE core_sch_pag_cnt_structures (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
@@ -252,8 +252,8 @@ CREATE OR REPLACE TABLE core_sch_pag_sec_structures (
   container_type CHARACTER VARYING NOT NULL,
   structure_type CHARACTER VARYING NOT NULL,
   structure_id CHARACTER VARYING NOT NULL,
-  "row" integer NOT NULL,
-  "column" integer NOT NULL,
+  position_row integer NOT NULL,
+  position_column integer NOT NULL,
   width integer NOT NULL,
   height integer NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -262,7 +262,7 @@ CREATE OR REPLACE TABLE core_sch_pag_sec_structures (
   updated_at TIMESTAMP NOT NULL
 );
 
-CREATE OR REPLACE TABLE core_translations (
+CREATE TABLE core_translations (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   structure_type CHARACTER VARYING NOT NULL,
   structure_id CHARACTER VARYING NOT NULL,

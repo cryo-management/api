@@ -9,8 +9,8 @@ type Tab struct {
 	Name          string    `json:"name" table:"core_translations" alias:"core_translations_name" sql:"value" on:"core_translations_name.structure_id = core_sch_pag_sec_tabs.id and core_translations_name.structure_field = 'name'"`
 	Description   string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_sch_pag_sec_tabs.id and core_translations_description.structure_field = 'description'"`
 	SchemaID      string    `json:"schema_id" sql:"schema_id" fk:"true"`
-	PageID        string    `json:"core_page_id" sql:"core_page_id" fk:"true"`
-	SectionID     string    `json:"core_section_id" sql:"core_section_id" fk:"true"`
+	PageID        string    `json:"page_id" sql:"page_id" fk:"true"`
+	SectionID     string    `json:"section_id" sql:"section_id" fk:"true"`
 	CreatedBy     string    `json:"created_by" sql:"created_by"`
 	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_sch_pag_sec_tabs.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`

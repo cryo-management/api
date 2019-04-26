@@ -109,23 +109,23 @@ func LoadAllPagesByView(r *http.Request) *Response {
 	languageCode := r.Header.Get("languageCode")
 
 	statemant := builder.Select(
-		"core_pages.id",
-		"core_pages.code",
+		"core_sch_pages.id",
+		"core_sch_pages.code",
 		"core_translations_name.value as name",
 		"core_translations_description.value as description",
-		"core_pages.schema_id",
-		"core_pages.type",
-		"core_pages.active",
-		"core_pages.created_by",
-		"core_pages.created_at",
-		"core_pages.updated_by",
-		"core_pages.updated_at",
+		"core_sch_pages.schema_id",
+		"core_sch_pages.type",
+		"core_sch_pages.active",
+		"core_sch_pages.created_by",
+		"core_sch_pages.created_at",
+		"core_sch_pages.updated_by",
+		"core_sch_pages.updated_at",
 	).From(models.TableCoreSchPages).Join(
-		tblTranslationName, "core_translations_name.structure_id = core_pages.id and core_translations_name.structure_field = 'name'",
+		tblTranslationName, "core_translations_name.structure_id = core_sch_pages.id and core_translations_name.structure_field = 'name'",
 	).Join(
-		tblTranslationDescription, "core_translations_description.structure_id = core_pages.id and core_translations_description.structure_field = 'description'",
+		tblTranslationDescription, "core_translations_description.structure_id = core_sch_pages.id and core_translations_description.structure_field = 'description'",
 	).Join(
-		models.TableCoreViewsPages, "core_views_pages.page_id = core_pages.id",
+		models.TableCoreViewsPages, "core_views_pages.page_id = core_sch_pages.id",
 	).Where(
 		builder.And(
 			builder.Equal("core_views_pages.view_id", viewID),
