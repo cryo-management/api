@@ -6,11 +6,12 @@ API:
   Todos:
     ✔ Criar uma tabela core_config_languages para conter todos os idiomas disponíveis. @done(19-04-24 19:26)
     ☐ Incluir o idioma em todos os wheres de Load Data.
-    ☐ Criar uma trigger na tabela core_translations.
+    ☐ Ligar as constraints no Banco de Dados.
+    ✔ Criar uma trigger na tabela core_translations. @done(19-04-26 16:51)
       Toda vez que um registro for incluído, deve ser replicado para todos os idiomas ativos da tabela core_config_languages.
-    ☐ Criar uma trigger na tabela core_config_languages.
+    ✔ Criar uma trigger na tabela core_config_languages. @done(19-04-26 16:51)
       Toda vez que um idioma for ativado, deve replicar todas as traduções do idioma padrão da aplicação para o idioma que está sendo ativado.
-    ☐ Criar uma trigger na tabela core_config_languages.
+    ✔ Criar uma trigger na tabela core_config_languages. @done(19-04-26 16:51)
       Toda vez que um idioma for desativado, deve exluir todas as traduções do mesmo.
 
 Tarefas:
