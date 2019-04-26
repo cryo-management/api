@@ -1,53 +1,22 @@
-CREATE TABLE core_tree (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
-  code CHARACTER VARYING NOT NULL,
-  active BOOLEAN DEFAULT FALSE NOT NULL,
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE core_tree_levels (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE core_tree_units (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
-  parent_id CHARACTER VARYING,
-  code CHARACTER VARYING NOT NULL,
-  active BOOLEAN DEFAULT FALSE NOT NULL,
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE core_currencies (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
-  code CHARACTER VARYING NOT NULL,
-  active BOOLEAN DEFAULT FALSE NOT NULL,
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE core_currency_rates (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
-  currency_id CHARACTER VARYING NOT NULL,
-  value integer NOT NULL,
-  start_at TIMESTAMP NOT NULL,
-  end_at TIMESTAMP NOT NULL, 
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
+DROP TABLE IF EXISTS core_config_languages;
+DROP TABLE IF EXISTS core_users;
+DROP TABLE IF EXISTS core_groups;
+DROP TABLE IF EXISTS core_grp_permissions;
+DROP TABLE IF EXISTS core_groups_users;
+DROP TABLE IF EXISTS core_schemas;
+DROP TABLE IF EXISTS core_schemas_modules;
+DROP TABLE IF EXISTS core_lookups;
+DROP TABLE IF EXISTS core_lkp_options;
+DROP TABLE IF EXISTS core_sch_fields;
+DROP TABLE IF EXISTS core_sch_fld_validations;
+DROP TABLE IF EXISTS core_widgets;
+DROP TABLE IF EXISTS core_sch_pages;
+DROP TABLE IF EXISTS core_sch_views;
+DROP TABLE IF EXISTS core_views_pages;
+DROP TABLE IF EXISTS core_sch_pag_sections;
+DROP TABLE IF EXISTS core_sch_pag_sec_tabs;
+DROP TABLE IF EXISTS core_sch_pag_cnt_structures;
+DROP TABLE IF EXISTS core_translations;
 
 CREATE TABLE core_config_languages (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
@@ -56,7 +25,9 @@ CREATE TABLE core_config_languages (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 INSERT INTO core_config_languages(
@@ -90,7 +61,9 @@ CREATE TABLE core_users (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(username)
 );
 
 INSERT INTO core_users(
@@ -129,7 +102,9 @@ CREATE TABLE core_groups (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_grp_permissions (
@@ -142,7 +117,8 @@ CREATE TABLE core_grp_permissions (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE core_groups_users (
@@ -152,7 +128,9 @@ CREATE TABLE core_groups_users (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(user_id, group_id)
 );
 
 CREATE TABLE core_schemas (
@@ -163,7 +141,9 @@ CREATE TABLE core_schemas (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_schemas_modules (
@@ -173,7 +153,9 @@ CREATE TABLE core_schemas_modules (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(schema_id, module_id)
 );
 
 CREATE TABLE core_lookups (
@@ -188,7 +170,9 @@ CREATE TABLE core_lookups (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_lkp_options (
@@ -200,7 +184,9 @@ CREATE TABLE core_lkp_options (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(id, code)
 );
 
 CREATE TABLE core_sch_fields (
@@ -214,7 +200,9 @@ CREATE TABLE core_sch_fields (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(id, code)
 );
 
 CREATE TABLE core_sch_fld_validations (
@@ -226,7 +214,8 @@ CREATE TABLE core_sch_fld_validations (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE core_widgets (
@@ -237,7 +226,9 @@ CREATE TABLE core_widgets (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_sch_pages (
@@ -249,7 +240,9 @@ CREATE TABLE core_sch_pages (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_sch_views (
@@ -259,7 +252,9 @@ CREATE TABLE core_sch_views (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_views_pages (
@@ -269,7 +264,8 @@ CREATE TABLE core_views_pages (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE core_sch_pag_sections (
@@ -280,7 +276,9 @@ CREATE TABLE core_sch_pag_sections (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_sch_pag_sec_tabs (
@@ -289,10 +287,13 @@ CREATE TABLE core_sch_pag_sec_tabs (
   schema_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
   section_id CHARACTER VARYING NOT NULL,
+  tab_order integer NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_sch_pag_cnt_structures (
@@ -301,8 +302,8 @@ CREATE TABLE core_sch_pag_cnt_structures (
   page_id CHARACTER VARYING NOT NULL,
   container_id CHARACTER VARYING NOT NULL,
   container_type CHARACTER VARYING NOT NULL,
-  structure_type CHARACTER VARYING NOT NULL,
   structure_id CHARACTER VARYING NOT NULL,
+  structure_type CHARACTER VARYING NOT NULL,
   position_row integer NOT NULL,
   position_column integer NOT NULL,
   width integer NOT NULL,
@@ -310,7 +311,9 @@ CREATE TABLE core_sch_pag_cnt_structures (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(schema_id, page_id, container_id, container_type, structure_id, structure_type)
 );
 
 CREATE TABLE core_translations (
@@ -324,7 +327,9 @@ CREATE TABLE core_translations (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(structure_type, structure_id, structure_field, language_code)
 );
 
 INSERT INTO core_translations(
@@ -349,6 +354,66 @@ VALUES (
   '57a97aaf-16da-44ef-a8be-b1caf52becd6',
   '2019-04-23 15:30:36.480864'
 );
+
+ALTER TABLE "core_config_languages" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_config_languages" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_users" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_users" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_groups" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_groups" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_grp_permissions" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_grp_permissions" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_grp_permissions" ADD FOREIGN KEY ("group_id") REFERENCES "core_groups" ("id");
+ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("user_id") REFERENCES "core_users" ("id");
+ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("group_id") REFERENCES "core_groups" ("id");
+ALTER TABLE "core_schemas" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_schemas" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("module_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_lookups" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_lookups" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_lkp_options" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_lkp_options" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_lkp_options" ADD FOREIGN KEY ("lookup_id") REFERENCES "core_lookups" ("id");
+ALTER TABLE "core_sch_fields" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_fields" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_fields" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_fields" ADD FOREIGN KEY ("lookup_id") REFERENCES "core_lookups" ("id");
+ALTER TABLE "core_sch_fld_validations" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_fld_validations" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_fld_validations" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_fld_validations" ADD FOREIGN KEY ("field_id") REFERENCES "core_sch_fields" ("id");
+ALTER TABLE "core_widgets" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_widgets" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pages" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pages" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pages" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_views" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_views" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_views" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_views_pages" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_views_pages" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_views_pages" ADD FOREIGN KEY ("view_id") REFERENCES "core_sch_views" ("id");
+ALTER TABLE "core_views_pages" ADD FOREIGN KEY ("page_id") REFERENCES "core_sch_pages" ("id");
+ALTER TABLE "core_sch_pag_sections" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_sections" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_sections" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_pag_sections" ADD FOREIGN KEY ("page_id") REFERENCES "core_sch_pages" ("id");
+ALTER TABLE "core_sch_pag_sec_tabs" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_sec_tabs" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_sec_tabs" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_pag_sec_tabs" ADD FOREIGN KEY ("page_id") REFERENCES "core_sch_pages" ("id");
+ALTER TABLE "core_sch_pag_sec_tabs" ADD FOREIGN KEY ("section_id") REFERENCES "core_sch_pag_sections" ("id");
+ALTER TABLE "core_sch_pag_cnt_structures" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_cnt_structures" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_sch_pag_cnt_structures" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id");
+ALTER TABLE "core_sch_pag_cnt_structures" ADD FOREIGN KEY ("page_id") REFERENCES "core_sch_pages" ("id");
+ALTER TABLE "core_translations" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id");
+ALTER TABLE "core_translations" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id");
 
 CREATE OR REPLACE FUNCTION trg_func_replic_translations() RETURNS TRIGGER AS $$
   DECLARE
@@ -438,99 +503,8 @@ CREATE OR REPLACE FUNCTION trg_func_replic_new_translation() RETURNS TRIGGER AS 
   END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_replica_translations
+CREATE TRIGGER trg_replica_new_translations
   AFTER INSERT ON core_translations
     FOR EACH ROW
-      WHEN NEW.replicated = false
+      WHEN (NEW.replicated = false)
         EXECUTE PROCEDURE trg_func_replic_new_translation();
-
-INSERT INTO fields (id, code, schema_id, type, multivalue, lookup_id, active) VALUES
-('8a09225d-ab04-49ae-ba7c-e1ecf6025752', 'start_at', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'date', null, null, true),
-('1c10e475-102d-4681-b0eb-45a565603db1', 'finish_at', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'date', null, null, true),
-('e2440f61-ee3c-4e5c-ac0d-1b9442ebf90d', 'value', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'number', null, null, true),
-('ccd8f50c-19b8-49b7-b83c-8e8d63f8f7c6', 'manager', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'text', null, null, true),
-('c32acb58-240c-47bc-ae08-1923a80bbb19', 'title', '68aafe12-bb6d-4ae7-bf75-e0aaf8bfed10', 'text', null, null, true);
-
-INSERT INTO groups (id, code, active) VALUES
-('3aee1c18-2245-4a4f-b499-8457ecb5e169', 'administrator', true),
-('0e489612-b71e-47a1-ab0b-916c37cb5a25', 'pmo', true),
-('b04cc232-b97c-4991-974e-190717afa246', 'view', true);
-
-INSERT INTO groups_permissions (id, group_id, structure_type, structure_id, type, condition_query) VALUES
-('fba4cafa-3a0c-4047-b28c-350a66d748f4', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'field', 'ccd8f50c-19b8-49b7-b83c-8e8d63f8f7c6', 200, null),
-('9f2d0b0a-edda-415b-a296-2975183ea93f', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'field', '8a09225d-ab04-49ae-ba7c-e1ecf6025752', 100, null),
-('97193257-0d8a-4fa9-be97-23f45d61cf34', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'field', '1c10e475-102d-4681-b0eb-45a565603db1', 100, null),
-('76aa7047-4b1c-43ab-a910-5c9f5d1eef18', 'b04cc232-b97c-4991-974e-190717afa246', 'field', 'e2440f61-ee3c-4e5c-ac0d-1b9442ebf90d', 100, null),
-('6b10b054-f33c-4754-80e7-7fd0a359ac13', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'field', 'e2440f61-ee3c-4e5c-ac0d-1b9442ebf90d', 200, null);
-
-INSERT INTO schemas (id, code, module, active, last_modified_at) VALUES
-('ffa7cfb3-5220-4430-800a-c0be84421db6', 'SC016', false, true, '2019-04-05'),
-('68aafe12-bb6d-4ae7-bf75-e0aaf8bfed10', 'tarefas', false, true, null);
-
-INSERT INTO translations (id, structure_type, structure_id, structure_field, value, language_code) VALUES
-('e5f2b783-1e5a-4c93-8094-808cd020c95f', 'schemas', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'name', 'Contrato', 'pt-br'),
-('25aa5a65-7f0a-4473-9d52-1087535ce0b2', 'schemas', 'ffa7cfb3-5220-4430-800a-c0be84421db6', 'description', 'Estrutura para armazenar atributos de contratos', 'pt-br'),
-('a8f4028e-f4de-4534-a4b2-4547795aa200', 'fields', 'ccd8f50c-19b8-49b7-b83c-8e8d63f8f7c6', 'name', 'Gerente', 'pt-br'),
-('617953df-6450-47dc-9cee-bb8f0fdb098d', 'fields', 'ccd8f50c-19b8-49b7-b83c-8e8d63f8f7c6', 'description', 'Descrição do Gerente', 'pt-br'),
-('d2a69c53-1bed-45bc-8684-7ebb4659db6a', 'fields', '8a09225d-ab04-49ae-ba7c-e1ecf6025752', 'name', 'Data de Início', 'pt-br'),
-('e1bc9428-1577-4545-86d1-c84f93ceb385', 'fields', '8a09225d-ab04-49ae-ba7c-e1ecf6025752', 'description', 'Descrição da Data de Início', 'pt-br'),
-('6683555d-eb37-4ec4-a856-0887c2e04072', 'fields', '1c10e475-102d-4681-b0eb-45a565603db1', 'name', 'Data de Término', 'pt-br'),
-('3dc472e6-feeb-423e-977c-ea56c9ba9abc', 'fields', '1c10e475-102d-4681-b0eb-45a565603db1', 'description', 'Descrição da Data de Término', 'pt-br'),
-('7b5b735b-d94e-4732-b34b-a0d4c4c51a80', 'fields', 'e2440f61-ee3c-4e5c-ac0d-1b9442ebf90d', 'name', 'Valor', 'pt-br'),
-('cf05bb82-f080-44ca-a921-6345d8a8424f', 'fields', 'e2440f61-ee3c-4e5c-ac0d-1b9442ebf90d', 'description', 'Descrição do Valor', 'pt-br'),
-('7089afb6-2a1a-43d0-b443-f32ea74979c3', 'schemas', '68aafe12-bb6d-4ae7-bf75-e0aaf8bfed10', 'name', 'Tarefas', 'pt-br'),
-('7156b6fb-9707-463a-b049-44114f3e2aa3', 'schemas', '68aafe12-bb6d-4ae7-bf75-e0aaf8bfed10', 'description', 'Estrutura para armazenar atributos de tarefas', 'pt-br'),
-('cd4f010f-061a-4840-87b9-b7d24ec899dc', 'fields', 'c32acb58-240c-47bc-ae08-1923a80bbb19', 'name', 'Título', 'pt-br'),
-('779a0224-f54f-4b45-881e-17deff073e3f', 'fields', 'c32acb58-240c-47bc-ae08-1923a80bbb19', 'description', 'Descrição do Título', 'pt-br')
-('0d021589-0284-4898-b70b-5574a17274f7', 'groups', '3aee1c18-2245-4a4f-b499-8457ecb5e169', 'name', 'Administradores', 'pt-br'),
-('1fe02a71-f491-43b9-a758-17a2a15665b5', 'groups', '3aee1c18-2245-4a4f-b499-8457ecb5e169', 'description', 'Grupo com permissão em todo o sistema', 'pt-br'),
-('8ae315e3-b8a8-4182-93ca-6639139e8fc4', 'groups', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'name', 'PMO', 'pt-br'),
-('568fb7cc-3a11-4026-9b30-3eb4ccceee20', 'groups', '0e489612-b71e-47a1-ab0b-916c37cb5a25', 'description', 'Grupo com permissão de PMO', 'pt-br'),
-('ca29c2db-c269-45de-aab3-8883288f43c1', 'groups', 'b04cc232-b97c-4991-974e-190717afa246', 'name', 'View', 'pt-br'),
-('168757ef-fe05-419e-963e-1039e1ae535a', 'groups', 'b04cc232-b97c-4991-974e-190717afa246', 'description', 'Grupo com permissão de visualização', 'pt-br');
-
-INSERT INTO groups_users (id, user_id, group_id) VALUES
-('c796884a-a401-406a-9c14-9a7e4d55d62b', '059fa339-025c-4104-ab55-c764d3028f63', '0e489612-b71e-47a1-ab0b-916c37cb5a25'),
-('37bfe49b-8bb8-44dc-aafc-d780e0193c2b', '0625ad35-a49d-440a-9ea0-83f0740717ae', 'b04cc232-b97c-4991-974e-190717afa246'),
-('582d71b2-7f36-47d9-933b-3897f476baf5', '059fa339-025c-4104-ab55-c764d3028f63', 'b04cc232-b97c-4991-974e-190717afa246');
-
-INSERT INTO users (id, first_name, last_name, email, password, active, language) VALUES
-('059fa339-025c-4104-ab55-c764d3028f63', 'Bruno', 'Piaui', 'brunopiaui@gmail.com', '12345', true, 'pt-br'),
-('0625ad35-a49d-440a-9ea0-83f0740717ae', 'Andre', 'Mendonça', 'andreluzz@gmail.com', '12345', true, 'pt-br');
-
-ALTER TABLE
-  "fields"
-ADD
-  FOREIGN KEY ("schema_id") REFERENCES "schemas" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "fields_validations"
-ADD
-  FOREIGN KEY ("field_id") REFERENCES "fields" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "groups_users"
-ADD
-  FOREIGN KEY ("group_id") REFERENCES "groups" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "groups_users"
-ADD
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "groups_permissions"
-ADD
-  FOREIGN KEY ("group_id") REFERENCES "groups" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "lookups_options"
-ADD
-  FOREIGN KEY ("lookup_id") REFERENCES "lookups" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "pages"
-ADD
-  FOREIGN KEY ("view_id") REFERENCES "views" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "sections"
-ADD
-  FOREIGN KEY ("view_id") REFERENCES "views" ("id") ON DELETE CASCADE;
-ALTER TABLE
-  "tabs"
-ADD
-  FOREIGN KEY ("view_id") REFERENCES "views" ("id") ON DELETE CASCADE;

@@ -11,6 +11,7 @@ type Tab struct {
 	SchemaID      string    `json:"schema_id" sql:"schema_id" fk:"true"`
 	PageID        string    `json:"page_id" sql:"page_id" fk:"true"`
 	SectionID     string    `json:"section_id" sql:"section_id" fk:"true"`
+	TabOrder      int       `json:"tab_order" sql:"tab_order"`
 	CreatedBy     string    `json:"created_by" sql:"created_by"`
 	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_sch_pag_sec_tabs.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
