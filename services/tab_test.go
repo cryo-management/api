@@ -42,6 +42,7 @@ func (suite *ServiceTabTestSuite) Test00001CreateTab() {
 		"schema_id":   suite.SchemaInstanceID,
 		"page_id":     suite.PageInstanceID,
 		"section_id":  suite.SectionInstanceID,
+		"tab_order":   1,
 	}
 	jsonData, _ := json.Marshal(data)
 
