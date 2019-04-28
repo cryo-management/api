@@ -1,6 +1,16 @@
 package models
 
 const (
+	// TableCoreTree database table name
+	TableCoreTree string = "core_tree"
+	// TableCoreTreeLevels database table name
+	TableCoreTreeLevels string = "core_tree_levels"
+	// TableCoreTreeUnits database table name
+	TableCoreTreeUnits string = "core_tree_units"
+	// TableCoreCurrencies database table name
+	TableCoreCurrencies string = "core_currencies"
+	// TableCoreCurrencyRates database table name
+	TableCoreCurrencyRates string = "core_currency_rates"
 	// TableCoreConfigLanguages database table name
 	TableCoreConfigLanguages string = "core_config_languages"
 	// TableCoreUsers database table name
@@ -13,8 +23,8 @@ const (
 	TableCoreGroupsUsers string = "core_groups_users"
 	// TableCoreSchemas database table name
 	TableCoreSchemas string = "core_schemas"
-	// TableCoreSchemaModules database table name
-	TableCoreSchemaModules string = "core_schemas_modules"
+	// TableCoreSchemaPlugins database table name
+	TableCoreSchemaPlugins string = "core_schemas_plugins"
 	// TableCoreLookups database table name
 	TableCoreLookups string = "core_lookups"
 	// TableCoreLkpOptions database table name

@@ -57,3 +57,51 @@ func DeleteField(r *http.Request) *Response {
 
 	return remove(r, "DeleteField", models.TableCoreSchFields, condition)
 }
+
+// CreateFieldValidation persists the request body creating a new object in the database
+func CreateFieldValidation(r *http.Request) *Response {
+	fieldValidation := models.FieldValidation{}
+
+	return create(r, &fieldValidation, "CreateFieldValidation", models.TableCoreSchFldValidations)
+}
+
+// LoadAllFieldValidations return all instances from the object
+func LoadAllFieldValidations(r *http.Request) *Response {
+	fieldValidations := []models.FieldValidation{}
+	fieldID := chi.URLParam(r, "field_id")
+	fieldIDColumn := fmt.Sprintf("%s.field_id", models.TableCoreSchFldValidations)
+	condition := builder.Equal(fieldIDColumn, fieldID)
+
+	return load(r, &fieldValidations, "LoadAllFieldValidations", models.TableCoreSchFldValidations, condition)
+}
+
+// LoadFieldValidation return only one object from the database
+func LoadFieldValidation(r *http.Request) *Response {
+	fieldValidation := models.FieldValidation{}
+	fieldValidationID := chi.URLParam(r, "field_validation_id")
+	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
+	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
+
+	return load(r, &fieldValidation, "LoadFieldValidation", models.TableCoreSchFldValidations, condition)
+}
+
+// UpdateFieldValidation updates object data in the database
+func UpdateFieldValidation(r *http.Request) *Response {
+	fieldValidationID := chi.URLParam(r, "field_validation_id")
+	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
+	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
+	fieldValidation := models.FieldValidation{
+		ID: fieldValidationID,
+	}
+
+	return update(r, &fieldValidation, "UpdateFieldValidation", models.TableCoreSchFldValidations, condition)
+}
+
+// DeleteFieldValidation deletes object from the database
+func DeleteFieldValidation(r *http.Request) *Response {
+	fieldValidationID := chi.URLParam(r, "field_validation_id")
+	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
+	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
+
+	return remove(r, "DeleteFieldValidation", models.TableCoreSchFldValidations, condition)
+}

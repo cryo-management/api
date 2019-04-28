@@ -18,7 +18,7 @@ import (
 type ServiceSchemaTestSuite struct {
 	suite.Suite
 	SchemaInstanceID string
-	ModuleInstanceID string
+	PluginInstanceID string
 	UserID           string
 }
 
@@ -29,13 +29,13 @@ func (suite *ServiceSchemaTestSuite) SetupTest() {
 }
 
 func (suite *ServiceSchemaTestSuite) Test00001CreateSchema() {
-	createModuleToSchema(suite)
+	createPluginToSchema(suite)
 
 	data := map[string]interface{}{
 		"name":        "Schema Teste 01",
 		"description": "Descrição do Schema Teste 01",
 		"code":        "schemateste01",
-		"module":      false,
+		"plugin":      false,
 		"active":      true,
 	}
 	jsonData, _ := json.Marshal(data)
@@ -99,22 +99,22 @@ func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceSchemaTestSuite) Test00005InsertModuleInSchema() {
+func (suite *ServiceSchemaTestSuite) Test00005InsertPluginInSchema() {
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("schema_id", suite.SchemaInstanceID)
-	rctx.URLParams.Add("module_id", suite.ModuleInstanceID)
+	rctx.URLParams.Add("plugin_id", suite.PluginInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := InsertModuleInSchema(req)
+	response := InsertPluginInSchema(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceSchemaTestSuite) Test00006LoadAllModulesBySchema() {
+func (suite *ServiceSchemaTestSuite) Test00006LoadAllPluginsBySchema() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -123,23 +123,23 @@ func (suite *ServiceSchemaTestSuite) Test00006LoadAllModulesBySchema() {
 	rctx.URLParams.Add("schema_id", suite.SchemaInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := LoadAllModulesBySchema(req)
+	response := LoadAllPluginsBySchema(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceSchemaTestSuite) Test00007RemoveModuleFromSchema() {
+func (suite *ServiceSchemaTestSuite) Test00007RemovePluginFromSchema() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("schema_id", suite.SchemaInstanceID)
-	rctx.URLParams.Add("module_id", suite.ModuleInstanceID)
+	rctx.URLParams.Add("plugin_id", suite.PluginInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := RemoveModuleFromSchema(req)
+	response := RemovePluginFromSchema(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
@@ -155,7 +155,7 @@ func (suite *ServiceSchemaTestSuite) Test00008DeleteSchema() {
 
 	response := DeleteSchema(req)
 
-	deleteModuleToSchema(suite)
+	deletePluginToSchema(suite)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
@@ -166,12 +166,12 @@ func TestServiceSchemaSuite(t *testing.T) {
 	suite.Run(t, new(ServiceSchemaTestSuite))
 }
 
-func createModuleToSchema(suite *ServiceSchemaTestSuite) {
+func createPluginToSchema(suite *ServiceSchemaTestSuite) {
 	data := map[string]interface{}{
-		"name":        "Module Teste 01",
-		"description": "Descrição do Module Teste 01",
-		"code":        "moduleteste01",
-		"module":      true,
+		"name":        "Plugin Teste 01",
+		"description": "Descrição do Plugin Teste 01",
+		"code":        "pluginteste01",
+		"plugin":      true,
 		"active":      true,
 	}
 	jsonData, _ := json.Marshal(data)
@@ -183,16 +183,16 @@ func createModuleToSchema(suite *ServiceSchemaTestSuite) {
 	response := CreateSchema(req)
 
 	schemaValue := reflect.ValueOf(response.Data).Elem()
-	suite.ModuleInstanceID = schemaValue.FieldByName("ID").Interface().(string)
+	suite.PluginInstanceID = schemaValue.FieldByName("ID").Interface().(string)
 }
 
-func deleteModuleToSchema(suite *ServiceSchemaTestSuite) {
+func deletePluginToSchema(suite *ServiceSchemaTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("schema_id", suite.ModuleInstanceID)
+	rctx.URLParams.Add("schema_id", suite.PluginInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	DeleteSchema(req)

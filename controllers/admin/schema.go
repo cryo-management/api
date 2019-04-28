@@ -48,25 +48,25 @@ func DeleteSchema(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
-// PostSchemaModule sends the request to service creating an association between group and user
-func PostSchemaModule(w http.ResponseWriter, r *http.Request) {
-	response := services.InsertModuleInSchema(r)
+// PostSchemaPlugin sends the request to service creating an association between group and user
+func PostSchemaPlugin(w http.ResponseWriter, r *http.Request) {
+	response := services.InsertPluginInSchema(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
 
-// GetAllModulesBySchema return all user instances by group from the service
-func GetAllModulesBySchema(w http.ResponseWriter, r *http.Request) {
-	response := services.LoadAllModulesBySchema(r)
+// GetAllPluginsBySchema return all user instances by group from the service
+func GetAllPluginsBySchema(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllPluginsBySchema(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
 
-// DeleteSchemaModule sends the request to service deleting a user from a group
-func DeleteSchemaModule(w http.ResponseWriter, r *http.Request) {
-	response := services.RemoveModuleFromSchema(r)
+// DeleteSchemaPlugin sends the request to service deleting a user from a group
+func DeleteSchemaPlugin(w http.ResponseWriter, r *http.Request) {
+	response := services.RemovePluginFromSchema(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)

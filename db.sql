@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS core_groups CASCADE;
 DROP TABLE IF EXISTS core_grp_permissions CASCADE;
 DROP TABLE IF EXISTS core_groups_users CASCADE;
 DROP TABLE IF EXISTS core_schemas CASCADE;
-DROP TABLE IF EXISTS core_schemas_modules CASCADE;
+DROP TABLE IF EXISTS core_schemas_plugins CASCADE;
 DROP TABLE IF EXISTS core_lookups CASCADE;
 DROP TABLE IF EXISTS core_lkp_options CASCADE;
 DROP TABLE IF EXISTS core_sch_fields CASCADE;
@@ -198,7 +198,7 @@ CREATE TABLE core_groups_users (
 CREATE TABLE core_schemas (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   code CHARACTER VARYING NOT NULL,
-  module BOOLEAN DEFAULT FALSE NOT NULL,
+  plugin BOOLEAN DEFAULT FALSE NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
@@ -208,16 +208,16 @@ CREATE TABLE core_schemas (
   UNIQUE(code)
 );
 
-CREATE TABLE core_schemas_modules (
+CREATE TABLE core_schemas_plugins (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
-  module_id CHARACTER VARYING NOT NULL,
+  plugin_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE(schema_id, module_id)
+  UNIQUE(schema_id, plugin_id)
 );
 
 CREATE TABLE core_lookups (
@@ -444,10 +444,10 @@ VALUES (
 -- ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("group_id") REFERENCES "core_groups" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_schemas" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_schemas" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("module_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("plugin_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lookups" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lookups" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lkp_options" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;

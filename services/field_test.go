@@ -17,9 +17,10 @@ import (
 
 type ServiceFieldTestSuite struct {
 	suite.Suite
-	FieldInstanceID  string
-	SchemaInstanceID string
-	UserID           string
+	FieldInstanceID           string
+	FieldValidationInstanceID string
+	SchemaInstanceID          string
+	UserID                    string
 }
 
 func (suite *ServiceFieldTestSuite) SetupTest() {
@@ -104,7 +105,92 @@ func (suite *ServiceFieldTestSuite) Test00004UpdateField() {
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceFieldTestSuite) Test00005DeleteField() {
+func (suite *ServiceFieldTestSuite) Test00005CreateFieldValidation() {
+	data := map[string]interface{}{
+		"code":       "fieldvalidationteste01",
+		"schema_id":  suite.SchemaInstanceID,
+		"field_id":   suite.FieldInstanceID,
+		"validation": "$require$",
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	response := CreateFieldValidation(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+
+	fieldValue := reflect.ValueOf(response.Data).Elem()
+	suite.FieldValidationInstanceID = fieldValue.FieldByName("ID").Interface().(string)
+}
+
+func (suite *ServiceFieldTestSuite) Test00006LoadAllFieldValidations() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("field_id", suite.FieldInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadAllFieldValidations(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceFieldTestSuite) Test00007LoadFieldValidation() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("field_validation_id", suite.FieldValidationInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadFieldValidation(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceFieldTestSuite) Test00008UpdateFieldValidation() {
+	data := map[string]interface{}{
+		"validation": "$readOnly$",
+	}
+	jsonData, _ := json.Marshal(&data)
+
+	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("field_validation_id", suite.FieldValidationInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := UpdateFieldValidation(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceFieldTestSuite) Test00009DeleteFieldValidation() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
+	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("field_validation_id", suite.FieldValidationInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := DeleteFieldValidation(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceFieldTestSuite) Test00010DeleteField() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
 	req.Header.Set("languageCode", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -131,7 +217,7 @@ func createSchemaToField(suite *ServiceFieldTestSuite) {
 		"name":        "Schema Teste 01",
 		"description": "Descrição do Schema Teste 01",
 		"code":        "schemateste01",
-		"module":      false,
+		"plugin":      false,
 		"active":      true,
 	}
 	jsonData, _ := json.Marshal(data)

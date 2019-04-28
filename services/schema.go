@@ -57,27 +57,27 @@ func DeleteSchema(r *http.Request) *Response {
 	return remove(r, "DeleteSchema", models.TableCoreSchemas, condition)
 }
 
-// InsertModuleInSchema persists the request creating a new object in the database
-func InsertModuleInSchema(r *http.Request) *Response {
+// InsertPluginInSchema persists the request creating a new object in the database
+func InsertPluginInSchema(r *http.Request) *Response {
 	response := NewResponse()
 
 	schemaID := chi.URLParam(r, "schema_id")
-	moduleID := chi.URLParam(r, "module_id")
+	pluginID := chi.URLParam(r, "plugin_id")
 
 	userID := r.Header.Get("userID")
 	now := time.Now()
 
 	statemant := builder.Insert(
-		models.TableCoreSchemaModules,
+		models.TableCoreSchemaPlugins,
 		"schema_id",
-		"module_id",
+		"plugin_id",
 		"created_by",
 		"created_at",
 		"updated_by",
 		"updated_at",
 	).Values(
 		schemaID,
-		moduleID,
+		pluginID,
 		userID,
 		now,
 		userID,
@@ -87,7 +87,7 @@ func InsertModuleInSchema(r *http.Request) *Response {
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "InsertModuleInSchema", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "InsertPluginInSchema", err.Error()))
 
 		return response
 	}
@@ -95,11 +95,11 @@ func InsertModuleInSchema(r *http.Request) *Response {
 	return response
 }
 
-// LoadAllModulesBySchema return all instances from the object
-func LoadAllModulesBySchema(r *http.Request) *Response {
+// LoadAllPluginsBySchema return all instances from the object
+func LoadAllPluginsBySchema(r *http.Request) *Response {
 	response := NewResponse()
 
-	module := []models.Schema{}
+	plugin := []models.Schema{}
 	schemaID := chi.URLParam(r, "schema_id")
 	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
 	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
@@ -110,7 +110,7 @@ func LoadAllModulesBySchema(r *http.Request) *Response {
 		"core_schemas.code",
 		"core_translations_name.value as name",
 		"core_translations_description.value as description",
-		"core_schemas.module",
+		"core_schemas.plugin",
 		"core_schemas.active",
 		"core_schemas.created_by",
 		"core_schemas.created_at",
@@ -121,46 +121,46 @@ func LoadAllModulesBySchema(r *http.Request) *Response {
 	).Join(
 		tblTranslationDescription, "core_translations_description.structure_id = core_schemas.id and core_translations_description.structure_field = 'description'",
 	).Join(
-		models.TableCoreSchemaModules, "core_schemas_modules.module_id = core_schemas.id",
+		models.TableCoreSchemaPlugins, "core_schemas_plugins.plugin_id = core_schemas.id",
 	).Where(
 		builder.And(
-			builder.Equal("core_schemas_modules.schema_id", schemaID),
+			builder.Equal("core_schemas_plugins.schema_id", schemaID),
 			builder.Equal("core_translations_name.language_code", languageCode),
 			builder.Equal("core_translations_description.language_code", languageCode),
 		),
 	)
 
-	err := db.QueryStruct(statemant, &module)
+	err := db.QueryStruct(statemant, &plugin)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllModulesBySchema", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllPluginsBySchema", err.Error()))
 
 		return response
 	}
 
-	response.Data = module
+	response.Data = plugin
 
 	return response
 }
 
-// RemoveModuleFromSchema deletes object from the database
-func RemoveModuleFromSchema(r *http.Request) *Response {
+// RemovePluginFromSchema deletes object from the database
+func RemovePluginFromSchema(r *http.Request) *Response {
 	response := NewResponse()
 
 	schemaID := chi.URLParam(r, "schema_id")
-	moduleID := chi.URLParam(r, "module_id")
+	pluginID := chi.URLParam(r, "plugin_id")
 
-	statemant := builder.Delete(models.TableCoreSchemaModules).Where(
+	statemant := builder.Delete(models.TableCoreSchemaPlugins).Where(
 		builder.And(
 			builder.Equal("schema_id", schemaID),
-			builder.Equal("module_id", moduleID),
+			builder.Equal("plugin_id", pluginID),
 		),
 	)
 
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, "RemoveModuleFromSchema", err.Error()))
+		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, "RemovePluginFromSchema", err.Error()))
 
 		return response
 	}

@@ -47,3 +47,43 @@ func DeleteField(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
 }
+
+// PostFieldValidation sends the request to service creating a new field
+func PostFieldValidation(w http.ResponseWriter, r *http.Request) {
+	response := services.CreateFieldValidation(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// GetAllFieldValidations return all field instances from the service
+func GetAllFieldValidations(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllFieldValidations(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// GetFieldValidation return only one field from the service
+func GetFieldValidation(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadFieldValidation(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// UpdateFieldValidation sends the request to service updating a field
+func UpdateFieldValidation(w http.ResponseWriter, r *http.Request) {
+	response := services.UpdateFieldValidation(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// DeleteFieldValidation sends the request to service deleting a field
+func DeleteFieldValidation(w http.ResponseWriter, r *http.Request) {
+	response := services.DeleteFieldValidation(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}

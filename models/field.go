@@ -29,11 +29,10 @@ type FieldValidation struct {
 	FieldID       string    `json:"field_id" sql:"field_id" fk:"true"`
 	Validation    string    `json:"validation" sql:"validation"`
 	ValidWhen     string    `json:"valid_when" sql:"valid_when"`
-	Active        bool      `json:"active" sql:"active"`
 	CreatedBy     string    `json:"created_by" sql:"created_by"`
-	CreatedByUser *User     `json:"created_by_user" table:"core_sch_fid_validations" alias:"created_by_user" on:"created_by_user.id = core_sch_fid_validations.created_by"`
+	CreatedByUser *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_sch_fld_validations.created_by"`
 	CreatedAt     time.Time `json:"created_at" sql:"created_at"`
 	UpdatedBy     string    `json:"updated_by" sql:"updated_by"`
-	UpdatedByUser *User     `json:"updated_by_user" table:"core_sch_fid_validations" alias:"updated_by_user" on:"updated_by_user.id = core_sch_fid_validations.updated_by"`
+	UpdatedByUser *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_sch_fld_validations.updated_by"`
 	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
 }

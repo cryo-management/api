@@ -137,7 +137,7 @@ func createSchemaToTab(suite *ServiceTabTestSuite) {
 		"name":        "Schema Teste 01",
 		"description": "Descrição do Schema Teste 01",
 		"code":        "schemateste01",
-		"module":      false,
+		"plugin":      false,
 		"active":      true,
 	}
 	jsonData, _ := json.Marshal(data)
