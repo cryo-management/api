@@ -1,0 +1,1 @@
+DELETE FROM core_translations WHERE id = 'ff1d2822-69c6-11e9-92d9-06ea2c43bb20';

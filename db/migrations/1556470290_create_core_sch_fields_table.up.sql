@@ -1,0 +1,15 @@
+CREATE TABLE core_sch_fields (
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
+  code CHARACTER VARYING NOT NULL,
+  schema_id CHARACTER VARYING NOT NULL,
+  field_type CHARACTER VARYING NOT NULL,
+  multivalue BOOLEAN,
+  lookup_id CHARACTER VARYING,
+  active BOOLEAN DEFAULT FALSE NOT NULL,
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(id, code)
+);

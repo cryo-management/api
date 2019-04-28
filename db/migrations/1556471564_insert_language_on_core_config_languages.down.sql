@@ -1,0 +1,1 @@
+DELETE FROM core_config_languages WHERE id = '9b09866a-69c5-11e9-96a1-06ea2c43bb20';

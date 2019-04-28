@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/config"
 	"github.com/cryo-management/api/routes"
+	"github.com/mattes/migrate"
+	"github.com/mattes/migrate/database/postgres"
+	_ "github.com/mattes/migrate/source/file" // for postgress migrate from file
 )
 
 // Config is a global variable to the application
@@ -21,12 +25,25 @@ func main() {
 	} else {
 		fmt.Println("[Cryo] Configuration file loaded successfully")
 		fmt.Println("[Cryo] Connecting to the database")
-		err = db.Connect(Config.Host, Config.Port, Config.User, Config.Password, Config.DBName, false)
+		sqlDB, err := db.Connect(Config.Host, Config.Port, Config.User, Config.Password, Config.DBName, false)
 		defer db.Close()
 		if err != nil {
 			fmt.Println("[Cryo] Error while connecting to database")
 		} else {
 			fmt.Println("[Cryo] Database connected successfully")
+
+			driver, err := postgres.WithInstance(sqlDB, &postgres.Config{})
+			m, err := migrate.NewWithDatabaseInstance("file://db/migrations/", "postgres", driver)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "[Cryo] Unable to migrate the db: %v\n", err)
+				os.Exit(1)
+			}
+
+			err = m.Up()
+			if err != nil && err.Error() != "no change" {
+				fmt.Fprintf(os.Stderr, "[Cryo] Unable to run the migrations: %v\n", err)
+				os.Exit(1)
+			}
 			router := routes.Setup()
 
 			fmt.Println("[Cryo] API listening on port 3333")

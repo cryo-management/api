@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS core_sch_pag_sec_tabs CASCADE;

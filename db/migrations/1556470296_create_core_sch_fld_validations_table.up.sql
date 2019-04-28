@@ -1,0 +1,12 @@
+CREATE TABLE core_sch_fld_validations (
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
+  schema_id CHARACTER VARYING NOT NULL,
+  field_id CHARACTER VARYING NOT NULL,
+  validation CHARACTER VARYING NOT NULL,
+  valid_when CHARACTER VARYING,
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id)
+);

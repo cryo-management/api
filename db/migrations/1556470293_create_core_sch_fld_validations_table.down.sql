@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS core_sch_fld_validations CASCADE;

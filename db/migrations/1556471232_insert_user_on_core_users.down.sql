@@ -1,0 +1,1 @@
+DELETE FROM core_users WHERE id = '307e481c-69c5-11e9-96a0-06ea2c43bb20';

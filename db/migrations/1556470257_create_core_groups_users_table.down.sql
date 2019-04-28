@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS core_groups_users CASCADE;

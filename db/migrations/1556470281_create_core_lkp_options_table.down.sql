@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS core_lkp_options CASCADE;

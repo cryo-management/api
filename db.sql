@@ -1,10 +1,10 @@
+DROP TABLE IF EXISTS core_users CASCADE;
 DROP TABLE IF EXISTS core_tree CASCADE;
 DROP TABLE IF EXISTS core_tree_levels CASCADE;
 DROP TABLE IF EXISTS core_tree_units CASCADE;
 DROP TABLE IF EXISTS core_currencies CASCADE;
 DROP TABLE IF EXISTS core_currency_rates CASCADE;
 DROP TABLE IF EXISTS core_config_languages CASCADE;
-DROP TABLE IF EXISTS core_users CASCADE;
 DROP TABLE IF EXISTS core_groups CASCADE;
 DROP TABLE IF EXISTS core_grp_permissions CASCADE;
 DROP TABLE IF EXISTS core_groups_users CASCADE;
@@ -22,6 +22,23 @@ DROP TABLE IF EXISTS core_sch_pag_sections CASCADE;
 DROP TABLE IF EXISTS core_sch_pag_sec_tabs CASCADE;
 DROP TABLE IF EXISTS core_sch_pag_cnt_structures CASCADE;
 DROP TABLE IF EXISTS core_translations CASCADE;
+
+CREATE TABLE core_users (
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
+  username CHARACTER VARYING NOT NULL,
+  first_name CHARACTER VARYING NOT NULL,
+  last_name CHARACTER VARYING NOT NULL,
+  email CHARACTER VARYING NOT NULL,
+  password CHARACTER VARYING NOT NULL,
+  language_code CHARACTER VARYING NOT NULL,
+  active BOOLEAN DEFAULT FALSE NOT NULL,
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(username)
+);
 
 CREATE TABLE core_tree (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
@@ -90,23 +107,6 @@ CREATE TABLE core_config_languages (
   updated_at TIMESTAMP NOT NULL,
   PRIMARY KEY(id),
   UNIQUE(code)
-);
-
-CREATE TABLE core_users (
-  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
-  username CHARACTER VARYING NOT NULL,
-  first_name CHARACTER VARYING NOT NULL,
-  last_name CHARACTER VARYING NOT NULL,
-  email CHARACTER VARYING NOT NULL,
-  password CHARACTER VARYING NOT NULL,
-  language_code CHARACTER VARYING NOT NULL,
-  active BOOLEAN DEFAULT FALSE NOT NULL,
-  created_by CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
-  PRIMARY KEY(id),
-  UNIQUE(username)
 );
 
 CREATE TABLE core_groups (
@@ -395,6 +395,7 @@ VALUES (
 );
 
 INSERT INTO core_translations(
+  id,
   structure_type,
   structure_id,
   structure_field,
@@ -406,6 +407,7 @@ INSERT INTO core_translations(
   updated_at
 )
 VALUES (
+  'ff1d2822-69c6-11e9-92d9-06ea2c43bb20',
   'core_config_languages',
   '8629ddba-f153-482f-ad9b-b7d4fae54d07',
   'name',

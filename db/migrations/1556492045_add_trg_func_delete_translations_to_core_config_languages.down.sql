@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS trg_func_delete_translations;
