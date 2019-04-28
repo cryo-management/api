@@ -22,7 +22,7 @@ func Authorization(next http.Handler) http.Handler {
 		//  		return
 		//  	}
 		//  }
-		r.Header.Add("userID", "57a97aaf-16da-44ef-a8be-b1caf52becd6")
+		r.Header.Add("userID", "307e481c-69c5-11e9-96a0-06ea2c43bb20")
 		r.Header.Add("languageCode", "pt-br")
 
 		next.ServeHTTP(w, r)

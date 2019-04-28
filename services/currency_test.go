@@ -25,7 +25,7 @@ type ServiceCurrencyTestSuite struct {
 func (suite *ServiceCurrencyTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
-	suite.UserID = "57a97aaf-16da-44ef-a8be-b1caf52becd6"
+	suite.UserID = "307e481c-69c5-11e9-96a0-06ea2c43bb20"
 }
 
 func (suite *ServiceCurrencyTestSuite) Test00001CreateCurrency() {

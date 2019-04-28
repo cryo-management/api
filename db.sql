@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS core_sch_pag_cnt_structures CASCADE;
 DROP TABLE IF EXISTS core_translations CASCADE;
 
 CREATE TABLE core_tree (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE core_tree (
 );
 
 CREATE TABLE core_tree_levels (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE core_tree_levels (
 );
 
 CREATE TABLE core_tree_units (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   parent_id CHARACTER VARYING,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE core_tree_units (
 );
 
 CREATE TABLE core_currencies (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE core_currencies (
 );
 
 CREATE TABLE core_currency_rates (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   currency_id CHARACTER VARYING NOT NULL,
   value integer NOT NULL,
   start_at TIMESTAMP NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE core_currency_rates (
 );
 
 CREATE TABLE core_config_languages (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -92,27 +92,8 @@ CREATE TABLE core_config_languages (
   UNIQUE(code)
 );
 
-INSERT INTO core_config_languages(
-  id,
-  code,
-  active,
-  created_by,
-  created_at,
-  updated_by,
-  updated_at
-)
-VALUES (
-  '8629ddba-f153-482f-ad9b-b7d4fae54d07',
-  'pt-br',
-  true,
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
-  '2019-04-23 15:30:36.480864',
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
-  '2019-04-23 15:30:36.480864'
-);
-
 CREATE TABLE core_users (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   username CHARACTER VARYING NOT NULL,
   first_name CHARACTER VARYING NOT NULL,
   last_name CHARACTER VARYING NOT NULL,
@@ -128,37 +109,8 @@ CREATE TABLE core_users (
   UNIQUE(username)
 );
 
-INSERT INTO core_users(
-  id,
-	username,
-  first_name,
-  last_name,
-  email,
-  password,
-  language_code,
-  active,
-  created_by,
-  created_at,
-  updated_by,
-  updated_at
-)
-VALUES (
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
-  'admin',
-  'Administrator',
-  'System',
-  'admin@domain.com',
-  '123456',
-  'pt-br',
-  true,
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
-  '2019-04-23 15:30:36.480864',
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
-  '2019-04-23 15:30:36.480864'
-);
-
 CREATE TABLE core_groups (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -170,7 +122,7 @@ CREATE TABLE core_groups (
 );
 
 CREATE TABLE core_grp_permissions (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   group_id CHARACTER VARYING NOT NULL,
   structure_type CHARACTER VARYING NOT NULL,
   structure_id CHARACTER VARYING NOT NULL,
@@ -184,7 +136,7 @@ CREATE TABLE core_grp_permissions (
 );
 
 CREATE TABLE core_groups_users (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   user_id CHARACTER VARYING NOT NULL,
   group_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -196,7 +148,7 @@ CREATE TABLE core_groups_users (
 );
 
 CREATE TABLE core_schemas (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   plugin BOOLEAN DEFAULT FALSE NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -209,7 +161,7 @@ CREATE TABLE core_schemas (
 );
 
 CREATE TABLE core_schemas_plugins (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   plugin_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -221,7 +173,7 @@ CREATE TABLE core_schemas_plugins (
 );
 
 CREATE TABLE core_lookups (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   type CHARACTER VARYING NOT NULL,
   query CHARACTER VARYING,
@@ -238,7 +190,7 @@ CREATE TABLE core_lookups (
 );
 
 CREATE TABLE core_lkp_options (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   lookup_id CHARACTER VARYING NOT NULL,
   value CHARACTER VARYING NOT NULL,
@@ -252,7 +204,7 @@ CREATE TABLE core_lkp_options (
 );
 
 CREATE TABLE core_sch_fields (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   field_type CHARACTER VARYING NOT NULL,
@@ -268,7 +220,7 @@ CREATE TABLE core_sch_fields (
 );
 
 CREATE TABLE core_sch_fld_validations (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   field_id CHARACTER VARYING NOT NULL,
   validation CHARACTER VARYING NOT NULL,
@@ -281,7 +233,7 @@ CREATE TABLE core_sch_fld_validations (
 );
 
 CREATE TABLE core_widgets (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   type CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -294,7 +246,7 @@ CREATE TABLE core_widgets (
 );
 
 CREATE TABLE core_sch_pages (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   type CHARACTER VARYING NOT NULL,
@@ -308,7 +260,7 @@ CREATE TABLE core_sch_pages (
 );
 
 CREATE TABLE core_sch_views (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -320,7 +272,7 @@ CREATE TABLE core_sch_views (
 );
 
 CREATE TABLE core_views_pages (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   view_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
@@ -331,7 +283,7 @@ CREATE TABLE core_views_pages (
 );
 
 CREATE TABLE core_sch_pag_sections (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
@@ -344,7 +296,7 @@ CREATE TABLE core_sch_pag_sections (
 );
 
 CREATE TABLE core_sch_pag_sec_tabs (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
@@ -359,7 +311,7 @@ CREATE TABLE core_sch_pag_sec_tabs (
 );
 
 CREATE TABLE core_sch_pag_cnt_structures (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
   page_id CHARACTER VARYING NOT NULL,
   container_id CHARACTER VARYING NOT NULL,
@@ -379,7 +331,7 @@ CREATE TABLE core_sch_pag_cnt_structures (
 );
 
 CREATE TABLE core_translations (
-  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   structure_type CHARACTER VARYING NOT NULL,
   structure_id CHARACTER VARYING NOT NULL,
   structure_field CHARACTER VARYING NOT NULL,
@@ -394,8 +346,56 @@ CREATE TABLE core_translations (
   UNIQUE(structure_type, structure_id, structure_field, language_code)
 );
 
+INSERT INTO core_users(
+  id,
+  username,
+  first_name,
+  last_name,
+  email,
+  password,
+  language_code,
+  active,
+  created_by,
+  created_at,
+  updated_by,
+  updated_at
+)
+VALUES (
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
+  'admin',
+  'Administrator',
+  'System',
+  'admin@domain.com',
+  '123456',
+  'pt-br',
+  true,
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
+  '2019-04-23 15:30:36.480864',
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
+  '2019-04-23 15:30:36.480864'
+);
+
+INSERT INTO core_config_languages(
+  id,
+  code,
+  active,
+  created_by,
+  created_at,
+  updated_by,
+  updated_at
+)
+VALUES (
+  '9b09866a-69c5-11e9-96a1-06ea2c43bb20',
+  'pt-br',
+  true,
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
+  '2019-04-23 15:30:36.480864',
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
+  '2019-04-23 15:30:36.480864'
+);
+
 INSERT INTO core_translations(
-	structure_type,
+  structure_type,
   structure_id,
   structure_field,
   value,
@@ -411,9 +411,9 @@ VALUES (
   'name',
   'Português do Brasil',
   'pt-br',
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
   '2019-04-23 15:30:36.480864',
-  '57a97aaf-16da-44ef-a8be-b1caf52becd6',
+  '307e481c-69c5-11e9-96a0-06ea2c43bb20',
   '2019-04-23 15:30:36.480864'
 );
 
