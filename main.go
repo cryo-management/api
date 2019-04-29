@@ -32,6 +32,7 @@ func main() {
 		} else {
 			fmt.Println("[Cryo] Database connected successfully")
 
+			// TODO: Definir qual a melhor solução e um local adequado p/ implementação do processamento de scripts sql.
 			driver, err := postgres.WithInstance(sqlDB, &postgres.Config{})
 			m, err := migrate.NewWithDatabaseInstance("file://db/migrations/", "postgres", driver)
 			if err != nil {

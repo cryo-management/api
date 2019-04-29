@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS core_cry_rates CASCADE;

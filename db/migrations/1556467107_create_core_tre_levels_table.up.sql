@@ -1,11 +1,11 @@
-CREATE TABLE core_tree_units (
+CREATE TABLE core_tre_levels (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
-  parent_id CHARACTER VARYING,
   code CHARACTER VARYING NOT NULL,
-  active BOOLEAN DEFAULT FALSE NOT NULL,
+  tree_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );

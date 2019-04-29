@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS core_tree_units CASCADE;

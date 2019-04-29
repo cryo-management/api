@@ -1,16 +1,16 @@
 package models
 
 const (
-	// TableCoreTree database table name
-	TableCoreTree string = "core_tree"
-	// TableCoreTreeLevels database table name
-	TableCoreTreeLevels string = "core_tree_levels"
-	// TableCoreTreeUnits database table name
-	TableCoreTreeUnits string = "core_tree_units"
+	// TableCoreTrees database table name
+	TableCoreTrees string = "core_trees"
+	// TableCoreTreLevels database table name
+	TableCoreTreLevels string = "core_tre_levels"
+	// TableCoreTreUnits database table name
+	TableCoreTreUnits string = "core_tre_units"
 	// TableCoreCurrencies database table name
 	TableCoreCurrencies string = "core_currencies"
-	// TableCoreCurrencyRates database table name
-	TableCoreCurrencyRates string = "core_currency_rates"
+	// TableCoreCryRates database table name
+	TableCoreCryRates string = "core_cry_rates"
 	// TableCoreConfigLanguages database table name
 	TableCoreConfigLanguages string = "core_config_languages"
 	// TableCoreUsers database table name

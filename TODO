@@ -5,7 +5,7 @@ API:
     se queremos recursos relacionados, também podendo definir as colunas e o body.
   Todos:
     ✔ Criar uma tabela core_config_languages para conter todos os idiomas disponíveis. @done(19-04-24 19:26)
-    ☐ Incluir o idioma em todos os wheres de Load Data.
+    ✔ Incluir o idioma em todos os wheres de Load Data. @done(19-04-29 18:31)
     ☐ Ligar as constraints no Banco de Dados.
     ✔ Criar uma trigger na tabela core_translations. @done(19-04-26 16:51)
       Toda vez que um registro for incluído, deve ser replicado para todos os idiomas ativos da tabela core_config_languages.

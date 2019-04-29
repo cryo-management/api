@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS trg_func_set_end_currency_rate;

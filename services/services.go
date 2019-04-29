@@ -79,22 +79,23 @@ func getUpdateColumnsFromBody(body []byte) []string {
 	return columns
 }
 
-// GetTranslationClumns return translation columns from the object
-func GetTranslationClumns(object interface{}, columns ...string) []string {
+// GetTranslationLanguageCodeColumns return translation columns from the object
+func GetTranslationLanguageCodeColumns(object interface{}, columns ...string) []string {
 	translationColumns := []string{}
 	elementType := reflect.TypeOf(object).Elem()
 	for i := 0; i < elementType.NumField(); i++ {
 		elementField := elementType.Field(i)
 		if elementField.Tag.Get("table") == models.TableCoreTranslations {
 			jsonColumn := elementField.Tag.Get("json")
+			translationTableAlias := elementField.Tag.Get("alias")
 			if len(columns) > 0 {
 				for _, column := range columns {
 					if column == jsonColumn {
-						translationColumns = append(translationColumns, jsonColumn)
+						translationColumns = append(translationColumns, fmt.Sprintf("%s.language_code", translationTableAlias))
 					}
 				}
 			} else {
-				translationColumns = append(translationColumns, jsonColumn)
+				translationColumns = append(translationColumns, fmt.Sprintf("%s.language_code", translationTableAlias))
 			}
 		}
 	}
@@ -138,7 +139,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	elementID := elementValue.FieldByName("ID")
 	elementID.SetString(id)
 
-	translationColumns := GetTranslationClumns(object)
+	translationColumns := GetTranslationLanguageCodeColumns(object)
 
 	if len(translationColumns) > 0 {
 		err = models.CreateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object)
@@ -159,13 +160,28 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
-	// translationColumns := GetTranslationClumns(object)
+	var objectStruct interface{}
+	objectElem := reflect.TypeOf(object).Elem()
+	objectType := objectElem.Kind()
 
-	// if len(translationColumns) > 0 {
-	// 	for _, translationColumn := range translationColumns {
-	// 		conditions
-	// 	}
-	// }
+	if objectType == reflect.Slice {
+		objectStruct = objectElem.Elem()
+	} else {
+		objectStruct = object
+	}
+
+	translationColumns := GetTranslationLanguageCodeColumns(objectStruct)
+
+	if len(translationColumns) > 0 {
+		newCondition := []builder.Builder{}
+		if conditions != nil {
+			newCondition = append(newCondition, conditions)
+		}
+		for _, translationColumn := range translationColumns {
+			newCondition = append(newCondition, builder.Equal(translationColumn, r.Header.Get("languageCode")))
+		}
+		conditions = builder.And(newCondition...)
+	}
 
 	err := db.LoadStruct(table, object, conditions)
 	if err != nil {
@@ -226,7 +242,7 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 		return response
 	}
 
-	translationColumns := GetTranslationClumns(object, columns...)
+	translationColumns := GetTranslationLanguageCodeColumns(object, columns...)
 
 	if len(translationColumns) > 0 {
 		err = models.UpdateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object, columns...)

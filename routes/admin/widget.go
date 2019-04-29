@@ -13,9 +13,9 @@ func WidgetRoutes() *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", controller.PostWidget)
 		r.Get("/", controller.GetAllWidgets)
-		r.Get("/{schema_id}", controller.GetWidget)
-		r.Patch("/{schema_id}", controller.UpdateWidget)
-		r.Delete("/{schema_id}", controller.DeleteWidget)
+		r.Get("/{widget_id}", controller.GetWidget)
+		r.Patch("/{widget_id}", controller.UpdateWidget)
+		r.Delete("/{widget_id}", controller.DeleteWidget)
 	})
 
 	return r

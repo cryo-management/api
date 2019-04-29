@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS core_users CASCADE;
-DROP TABLE IF EXISTS core_tree CASCADE;
-DROP TABLE IF EXISTS core_tree_levels CASCADE;
-DROP TABLE IF EXISTS core_tree_units CASCADE;
+DROP TABLE IF EXISTS core_trees CASCADE;
+DROP TABLE IF EXISTS core_tre_levels CASCADE;
+DROP TABLE IF EXISTS core_tre_units CASCADE;
 DROP TABLE IF EXISTS core_currencies CASCADE;
-DROP TABLE IF EXISTS core_currency_rates CASCADE;
+DROP TABLE IF EXISTS core_cry_rates CASCADE;
 DROP TABLE IF EXISTS core_config_languages CASCADE;
 DROP TABLE IF EXISTS core_groups CASCADE;
 DROP TABLE IF EXISTS core_grp_permissions CASCADE;
@@ -40,7 +40,7 @@ CREATE TABLE core_users (
   UNIQUE(username)
 );
 
-CREATE TABLE core_tree (
+CREATE TABLE core_trees (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
@@ -48,22 +48,27 @@ CREATE TABLE core_tree (
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
-CREATE TABLE core_tree_levels (
+CREATE TABLE core_tre_levels (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
+  code CHARACTER VARYING NOT NULL,
+  tree_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
-CREATE TABLE core_tree_units (
+CREATE TABLE core_tre_units (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
-  parent_id CHARACTER VARYING,
   code CHARACTER VARYING NOT NULL,
+  tree_id CHARACTER VARYING NOT NULL,
+  parent_id CHARACTER VARYING,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
@@ -84,12 +89,15 @@ CREATE TABLE core_currencies (
   UNIQUE(code)
 );
 
-CREATE TABLE core_currency_rates (
+CREATE TABLE core_cry_rates (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
-  currency_id CHARACTER VARYING NOT NULL,
+  from_currency_id CHARACTER VARYING NOT NULL,
+  to_currency_id CHARACTER VARYING NOT NULL,
+  from_currency_code CHARACTER VARYING NOT NULL,
+  to_currency_code CHARACTER VARYING NOT NULL,
   value integer NOT NULL,
   start_at TIMESTAMP NOT NULL,
-  end_at TIMESTAMP NOT NULL, 
+  end_at TIMESTAMP, 
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
@@ -419,18 +427,18 @@ VALUES (
   '2019-04-23 15:30:36.480864'
 );
 
--- ALTER TABLE "core_tree" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree_levels" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree_levels" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree_units" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree_units" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_tree_units" ADD FOREIGN KEY ("parent_id") REFERENCES "core_tree_units" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_trees" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_trees" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_tre_levels" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_tre_levels" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_tre_units" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_tre_units" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_tre_units" ADD FOREIGN KEY ("parent_id") REFERENCES "core_tre_units" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_currencies" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_currencies" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_currency_rates" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_currency_rates" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_currency_rates" ADD FOREIGN KEY ("currency_id") REFERENCES "core_currencies" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_cry_rates" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_cry_rates" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_cry_rates" ADD FOREIGN KEY ("currency_id") REFERENCES "core_currencies" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_config_languages" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_config_languages" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_users" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
@@ -584,3 +592,31 @@ CREATE TRIGGER trg_replica_new_translations
     FOR EACH ROW
       WHEN (NEW.replicated = false)
         EXECUTE PROCEDURE trg_func_replic_new_translation();
+
+CREATE OR REPLACE FUNCTION trg_func_set_end_currency_rate() RETURNS TRIGGER AS $$
+  BEGIN
+    UPDATE core_cry_rates
+    SET
+      end_at = NEW.start_at,
+      updated_by = NEW.created_by,
+      updated_at = NEW.created_at
+    WHERE id = (
+      SELECT
+        id
+      FROM core_cry_rates
+      WHERE
+        id != NEW.id
+        AND from_currency_code = NEW.from_currency_code
+        AND to_currency_code = NEW.to_currency_code
+      ORDER BY
+        id desc
+      LIMIT 1
+    );
+    RETURN NEW;
+  END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_set_end_currency_rate
+  AFTER INSERT ON core_cry_rates
+    FOR EACH ROW
+      EXECUTE PROCEDURE trg_func_set_end_currency_rate();
