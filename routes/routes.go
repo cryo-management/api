@@ -19,6 +19,7 @@ func Setup() *chi.Mux {
 		middleware.RedirectSlashes,
 		middleware.Recoverer,
 		cryo.Authorization,
+		cryo.Cors().Handler,
 	)
 
 	router.Route("/api/v1", func(r chi.Router) {
