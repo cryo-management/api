@@ -142,7 +142,7 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	translationColumns := GetTranslationLanguageCodeColumns(object)
 
 	if len(translationColumns) > 0 {
-		err = models.CreateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object)
+		err = models.CreateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("Content-Language"), object)
 		if err != nil {
 			response.Code = http.StatusInternalServerError
 			response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s create translation", scope), err.Error()))
@@ -178,7 +178,7 @@ func load(r *http.Request, object interface{}, scope, table string, conditions b
 			newCondition = append(newCondition, conditions)
 		}
 		for _, translationColumn := range translationColumns {
-			newCondition = append(newCondition, builder.Equal(translationColumn, r.Header.Get("languageCode")))
+			newCondition = append(newCondition, builder.Equal(translationColumn, r.Header.Get("Content-Language")))
 		}
 		conditions = builder.And(newCondition...)
 	}
@@ -245,7 +245,7 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 	translationColumns := GetTranslationLanguageCodeColumns(object, columns...)
 
 	if len(translationColumns) > 0 {
-		err = models.UpdateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("languageCode"), object, columns...)
+		err = models.UpdateTranslationsFromStruct(table, r.Header.Get("userID"), r.Header.Get("Content-Language"), object, columns...)
 		if err != nil {
 			response.Code = http.StatusInternalServerError
 			response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, fmt.Sprintf("%s update translation", scope), err.Error()))

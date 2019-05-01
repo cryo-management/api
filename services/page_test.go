@@ -42,7 +42,7 @@ func (suite *ServicePageTestSuite) Test00001CreatePage() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreatePage(req)
@@ -56,7 +56,7 @@ func (suite *ServicePageTestSuite) Test00001CreatePage() {
 
 func (suite *ServicePageTestSuite) Test00002LoadAllPages() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -71,7 +71,7 @@ func (suite *ServicePageTestSuite) Test00002LoadAllPages() {
 
 func (suite *ServicePageTestSuite) Test00003LoadPage() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -92,7 +92,7 @@ func (suite *ServicePageTestSuite) Test00004UpdatePage() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -106,7 +106,7 @@ func (suite *ServicePageTestSuite) Test00004UpdatePage() {
 
 func (suite *ServicePageTestSuite) Test00005DeletePage() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -137,7 +137,7 @@ func createSchemaToPage(suite *ServicePageTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -148,7 +148,7 @@ func createSchemaToPage(suite *ServicePageTestSuite) {
 
 func deleteSchemaToPage(suite *ServicePageTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

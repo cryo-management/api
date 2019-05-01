@@ -42,7 +42,7 @@ func (suite *ServiceLookupTestSuite) Test00001CreateLookup() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateLookup(req)
@@ -56,7 +56,7 @@ func (suite *ServiceLookupTestSuite) Test00001CreateLookup() {
 
 func (suite *ServiceLookupTestSuite) Test00002LoadAllLookups() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllLookups(req)
@@ -67,7 +67,7 @@ func (suite *ServiceLookupTestSuite) Test00002LoadAllLookups() {
 
 func (suite *ServiceLookupTestSuite) Test00003LoadLookup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -88,7 +88,7 @@ func (suite *ServiceLookupTestSuite) Test00004UpdateLookup() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -111,7 +111,7 @@ func (suite *ServiceLookupTestSuite) Test00005CreateLookupOption() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -129,7 +129,7 @@ func (suite *ServiceLookupTestSuite) Test00005CreateLookupOption() {
 
 func (suite *ServiceLookupTestSuite) Test00006LoadAllLookupOptions() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -144,7 +144,7 @@ func (suite *ServiceLookupTestSuite) Test00006LoadAllLookupOptions() {
 
 func (suite *ServiceLookupTestSuite) Test00007LoadLookupOption() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -166,7 +166,7 @@ func (suite *ServiceLookupTestSuite) Test00008UpdateLookupOption() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/lookups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -181,7 +181,7 @@ func (suite *ServiceLookupTestSuite) Test00008UpdateLookupOption() {
 
 func (suite *ServiceLookupTestSuite) Test00009DeleteLookupOption() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -196,7 +196,7 @@ func (suite *ServiceLookupTestSuite) Test00009DeleteLookupOption() {
 
 func (suite *ServiceLookupTestSuite) Test00010DeleteLookup() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/lookups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

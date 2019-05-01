@@ -106,7 +106,7 @@ func LoadAllPagesByView(r *http.Request) *Response {
 	viewID := chi.URLParam(r, "view_id")
 	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
 	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
-	languageCode := r.Header.Get("languageCode")
+	languageCode := r.Header.Get("Content-Language")
 
 	statemant := builder.Select(
 		"core_sch_pages.id",

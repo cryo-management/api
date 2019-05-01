@@ -43,7 +43,7 @@ func (suite *ServiceSectionTestSuite) Test00001CreateSection() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSection(req)
@@ -57,7 +57,7 @@ func (suite *ServiceSectionTestSuite) Test00001CreateSection() {
 
 func (suite *ServiceSectionTestSuite) Test00002LoadAllSections() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -72,7 +72,7 @@ func (suite *ServiceSectionTestSuite) Test00002LoadAllSections() {
 
 func (suite *ServiceSectionTestSuite) Test00003LoadSection() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -92,7 +92,7 @@ func (suite *ServiceSectionTestSuite) Test00004UpdateSection() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -106,7 +106,7 @@ func (suite *ServiceSectionTestSuite) Test00004UpdateSection() {
 
 func (suite *ServiceSectionTestSuite) Test00005DeleteSection() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -138,7 +138,7 @@ func createSchemaToSection(suite *ServiceSectionTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -149,7 +149,7 @@ func createSchemaToSection(suite *ServiceSectionTestSuite) {
 
 func deleteSchemaToSection(suite *ServiceSectionTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -171,7 +171,7 @@ func createPageToSection(suite *ServiceSectionTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreatePage(req)
@@ -182,7 +182,7 @@ func createPageToSection(suite *ServiceSectionTestSuite) {
 
 func deletePageToSection(suite *ServiceSectionTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

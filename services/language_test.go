@@ -36,7 +36,7 @@ func (suite *ServiceLanguageTestSuite) Test00001CreateLanguage() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/languages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateLanguage(req)
@@ -50,7 +50,7 @@ func (suite *ServiceLanguageTestSuite) Test00001CreateLanguage() {
 
 func (suite *ServiceLanguageTestSuite) Test00002LoadAllLanguages() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/languages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllLanguages(req)
@@ -61,7 +61,7 @@ func (suite *ServiceLanguageTestSuite) Test00002LoadAllLanguages() {
 
 func (suite *ServiceLanguageTestSuite) Test00003LoadLanguage() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/languages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -81,7 +81,7 @@ func (suite *ServiceLanguageTestSuite) Test00004UpdateLanguage() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/languages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -95,7 +95,7 @@ func (suite *ServiceLanguageTestSuite) Test00004UpdateLanguage() {
 
 func (suite *ServiceLanguageTestSuite) Test00005DeleteLanguage() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/languages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

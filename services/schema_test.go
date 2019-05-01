@@ -41,7 +41,7 @@ func (suite *ServiceSchemaTestSuite) Test00001CreateSchema() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -55,7 +55,7 @@ func (suite *ServiceSchemaTestSuite) Test00001CreateSchema() {
 
 func (suite *ServiceSchemaTestSuite) Test00002LoadAllSchemas() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllSchemas(req)
@@ -66,7 +66,7 @@ func (suite *ServiceSchemaTestSuite) Test00002LoadAllSchemas() {
 
 func (suite *ServiceSchemaTestSuite) Test00003LoadSchema() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -87,7 +87,7 @@ func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -101,7 +101,7 @@ func (suite *ServiceSchemaTestSuite) Test00004UpdateSchema() {
 
 func (suite *ServiceSchemaTestSuite) Test00005InsertPluginInSchema() {
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -116,7 +116,7 @@ func (suite *ServiceSchemaTestSuite) Test00005InsertPluginInSchema() {
 
 func (suite *ServiceSchemaTestSuite) Test00006LoadAllPluginsBySchema() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -131,7 +131,7 @@ func (suite *ServiceSchemaTestSuite) Test00006LoadAllPluginsBySchema() {
 
 func (suite *ServiceSchemaTestSuite) Test00007RemovePluginFromSchema() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -146,7 +146,7 @@ func (suite *ServiceSchemaTestSuite) Test00007RemovePluginFromSchema() {
 
 func (suite *ServiceSchemaTestSuite) Test00008DeleteSchema() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -177,7 +177,7 @@ func createPluginToSchema(suite *ServiceSchemaTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -188,7 +188,7 @@ func createPluginToSchema(suite *ServiceSchemaTestSuite) {
 
 func deletePluginToSchema(suite *ServiceSchemaTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

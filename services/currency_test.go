@@ -38,7 +38,7 @@ func (suite *ServiceCurrencyTestSuite) Test00001CreateCurrency() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/currencies", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateCurrency(req)
@@ -52,7 +52,7 @@ func (suite *ServiceCurrencyTestSuite) Test00001CreateCurrency() {
 
 func (suite *ServiceCurrencyTestSuite) Test00002LoadAllCurrencies() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/currencies", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllCurrencies(req)
@@ -63,7 +63,7 @@ func (suite *ServiceCurrencyTestSuite) Test00002LoadAllCurrencies() {
 
 func (suite *ServiceCurrencyTestSuite) Test00003LoadCurrency() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/currencies", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -83,7 +83,7 @@ func (suite *ServiceCurrencyTestSuite) Test00004UpdateCurrency() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/currencies", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -97,7 +97,7 @@ func (suite *ServiceCurrencyTestSuite) Test00004UpdateCurrency() {
 
 func (suite *ServiceCurrencyTestSuite) Test00005DeleteCurrency() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/currencies", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

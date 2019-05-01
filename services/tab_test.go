@@ -47,7 +47,7 @@ func (suite *ServiceTabTestSuite) Test00001CreateTab() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/tabs", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateTab(req)
@@ -61,7 +61,7 @@ func (suite *ServiceTabTestSuite) Test00001CreateTab() {
 
 func (suite *ServiceTabTestSuite) Test00002LoadAllTabs() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/tabs", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -76,7 +76,7 @@ func (suite *ServiceTabTestSuite) Test00002LoadAllTabs() {
 
 func (suite *ServiceTabTestSuite) Test00003LoadTab() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/tabs", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -96,7 +96,7 @@ func (suite *ServiceTabTestSuite) Test00004UpdateTab() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/tabs", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -110,7 +110,7 @@ func (suite *ServiceTabTestSuite) Test00004UpdateTab() {
 
 func (suite *ServiceTabTestSuite) Test00005DeleteTab() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/tabs", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -143,7 +143,7 @@ func createSchemaToTab(suite *ServiceTabTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -154,7 +154,7 @@ func createSchemaToTab(suite *ServiceTabTestSuite) {
 
 func deleteSchemaToTab(suite *ServiceTabTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -176,7 +176,7 @@ func createPageToTab(suite *ServiceTabTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreatePage(req)
@@ -187,7 +187,7 @@ func createPageToTab(suite *ServiceTabTestSuite) {
 
 func deletePageToTab(suite *ServiceTabTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -208,7 +208,7 @@ func createSectionToTab(suite *ServiceTabTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSection(req)
@@ -219,7 +219,7 @@ func createSectionToTab(suite *ServiceTabTestSuite) {
 
 func deleteSectionToTab(suite *ServiceTabTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

@@ -64,7 +64,7 @@ func LoadAllGroupsByUser(r *http.Request) *Response {
 	userID := chi.URLParam(r, "user_id")
 	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
 	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
-	languageCode := r.Header.Get("languageCode")
+	languageCode := r.Header.Get("Content-Language")
 
 	statemant := builder.Select(
 		"core_groups.id",

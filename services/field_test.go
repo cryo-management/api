@@ -43,7 +43,7 @@ func (suite *ServiceFieldTestSuite) Test00001CreateField() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateField(req)
@@ -57,7 +57,7 @@ func (suite *ServiceFieldTestSuite) Test00001CreateField() {
 
 func (suite *ServiceFieldTestSuite) Test00002LoadAllFields() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -72,7 +72,7 @@ func (suite *ServiceFieldTestSuite) Test00002LoadAllFields() {
 
 func (suite *ServiceFieldTestSuite) Test00003LoadField() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -93,7 +93,7 @@ func (suite *ServiceFieldTestSuite) Test00004UpdateField() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -115,7 +115,7 @@ func (suite *ServiceFieldTestSuite) Test00005CreateFieldValidation() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateFieldValidation(req)
@@ -129,7 +129,7 @@ func (suite *ServiceFieldTestSuite) Test00005CreateFieldValidation() {
 
 func (suite *ServiceFieldTestSuite) Test00006LoadAllFieldValidations() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -144,7 +144,7 @@ func (suite *ServiceFieldTestSuite) Test00006LoadAllFieldValidations() {
 
 func (suite *ServiceFieldTestSuite) Test00007LoadFieldValidation() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -164,7 +164,7 @@ func (suite *ServiceFieldTestSuite) Test00008UpdateFieldValidation() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -178,7 +178,7 @@ func (suite *ServiceFieldTestSuite) Test00008UpdateFieldValidation() {
 
 func (suite *ServiceFieldTestSuite) Test00009DeleteFieldValidation() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -192,7 +192,7 @@ func (suite *ServiceFieldTestSuite) Test00009DeleteFieldValidation() {
 
 func (suite *ServiceFieldTestSuite) Test00010DeleteField() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -223,7 +223,7 @@ func createSchemaToField(suite *ServiceFieldTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -234,7 +234,7 @@ func createSchemaToField(suite *ServiceFieldTestSuite) {
 
 func deleteSchemaToField(suite *ServiceFieldTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

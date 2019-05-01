@@ -54,7 +54,7 @@ func (suite *ServiceContainerStructureTestSuite) Test00001CreateContainerStructu
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/container_structures", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateContainerStructure(req)
@@ -68,7 +68,7 @@ func (suite *ServiceContainerStructureTestSuite) Test00001CreateContainerStructu
 
 func (suite *ServiceContainerStructureTestSuite) Test00002LoadAllContainerStructures() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/container_structures", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -83,7 +83,7 @@ func (suite *ServiceContainerStructureTestSuite) Test00002LoadAllContainerStruct
 
 func (suite *ServiceContainerStructureTestSuite) Test00003LoadContainerStructure() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/container_structures", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -103,7 +103,7 @@ func (suite *ServiceContainerStructureTestSuite) Test00004UpdateContainerStructu
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/container_structures", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -117,7 +117,7 @@ func (suite *ServiceContainerStructureTestSuite) Test00004UpdateContainerStructu
 
 func (suite *ServiceContainerStructureTestSuite) Test00005DeleteContainerStructure() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/container_structures", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -151,7 +151,7 @@ func createSchemaToContainerStructure(suite *ServiceContainerStructureTestSuite)
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -162,7 +162,7 @@ func createSchemaToContainerStructure(suite *ServiceContainerStructureTestSuite)
 
 func deleteSchemaToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -184,7 +184,7 @@ func createPageToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreatePage(req)
@@ -195,7 +195,7 @@ func createPageToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 
 func deletePageToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -216,7 +216,7 @@ func createSectionToContainerStructure(suite *ServiceContainerStructureTestSuite
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSection(req)
@@ -227,7 +227,7 @@ func createSectionToContainerStructure(suite *ServiceContainerStructureTestSuite
 
 func deleteSectionToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -249,7 +249,7 @@ func createFieldToContainerStructure(suite *ServiceContainerStructureTestSuite) 
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateField(req)
@@ -260,7 +260,7 @@ func createFieldToContainerStructure(suite *ServiceContainerStructureTestSuite) 
 
 func deleteFieldToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

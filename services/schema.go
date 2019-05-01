@@ -103,7 +103,7 @@ func LoadAllPluginsBySchema(r *http.Request) *Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
 	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
-	languageCode := r.Header.Get("languageCode")
+	languageCode := r.Header.Get("Content-Language")
 
 	statemant := builder.Select(
 		"core_schemas.id",

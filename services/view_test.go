@@ -42,7 +42,7 @@ func (suite *ServiceViewTestSuite) Test00001CreateView() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/views", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateView(req)
@@ -56,7 +56,7 @@ func (suite *ServiceViewTestSuite) Test00001CreateView() {
 
 func (suite *ServiceViewTestSuite) Test00002LoadAllViews() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -71,7 +71,7 @@ func (suite *ServiceViewTestSuite) Test00002LoadAllViews() {
 
 func (suite *ServiceViewTestSuite) Test00003LoadView() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -91,7 +91,7 @@ func (suite *ServiceViewTestSuite) Test00004UpdateView() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/views", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -105,7 +105,7 @@ func (suite *ServiceViewTestSuite) Test00004UpdateView() {
 
 func (suite *ServiceViewTestSuite) Test00005InsertPageInView() {
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -120,7 +120,7 @@ func (suite *ServiceViewTestSuite) Test00005InsertPageInView() {
 
 func (suite *ServiceViewTestSuite) Test00006LoadAllPagesByView() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -135,7 +135,7 @@ func (suite *ServiceViewTestSuite) Test00006LoadAllPagesByView() {
 
 func (suite *ServiceViewTestSuite) Test00007RemovePageFromView() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -150,7 +150,7 @@ func (suite *ServiceViewTestSuite) Test00007RemovePageFromView() {
 
 func (suite *ServiceViewTestSuite) Test00008DeleteView() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/views", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -182,7 +182,7 @@ func createSchemaToView(suite *ServiceViewTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/schemas", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateSchema(req)
@@ -193,7 +193,7 @@ func createSchemaToView(suite *ServiceViewTestSuite) {
 
 func deleteSchemaToView(suite *ServiceViewTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -215,7 +215,7 @@ func createPageToView(suite *ServiceViewTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/pages", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreatePage(req)
@@ -226,7 +226,7 @@ func createPageToView(suite *ServiceViewTestSuite) {
 
 func deletePageToView(suite *ServiceViewTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

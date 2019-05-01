@@ -34,7 +34,7 @@ func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateWidget(req)
@@ -48,7 +48,7 @@ func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
 
 func (suite *ServiceWidgetTestSuite) Test00002LoadAllWidgets() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllWidgets(req)
@@ -59,7 +59,7 @@ func (suite *ServiceWidgetTestSuite) Test00002LoadAllWidgets() {
 
 func (suite *ServiceWidgetTestSuite) Test00003LoadWidget() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -79,7 +79,7 @@ func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -93,7 +93,7 @@ func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
 
 func (suite *ServiceWidgetTestSuite) Test00005DeleteWidget() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/widgets", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()

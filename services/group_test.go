@@ -41,7 +41,7 @@ func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateGroup(req)
@@ -55,7 +55,7 @@ func (suite *ServiceGroupTestSuite) Test00001CreateGroup() {
 
 func (suite *ServiceGroupTestSuite) Test00002LoadAllGroups() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := LoadAllGroups(req)
@@ -66,7 +66,7 @@ func (suite *ServiceGroupTestSuite) Test00002LoadAllGroups() {
 
 func (suite *ServiceGroupTestSuite) Test00003LoadGroup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -87,7 +87,7 @@ func (suite *ServiceGroupTestSuite) Test00004UpdateGroup() {
 	jsonData, _ := json.Marshal(&data)
 
 	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -101,7 +101,7 @@ func (suite *ServiceGroupTestSuite) Test00004UpdateGroup() {
 
 func (suite *ServiceGroupTestSuite) Test00005InsertUserInGroup() {
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -116,7 +116,7 @@ func (suite *ServiceGroupTestSuite) Test00005InsertUserInGroup() {
 
 func (suite *ServiceGroupTestSuite) Test00006LoadAllUsersByGroup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -131,7 +131,7 @@ func (suite *ServiceGroupTestSuite) Test00006LoadAllUsersByGroup() {
 
 func (suite *ServiceGroupTestSuite) Test00007RemoveUserFromGroup() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -154,7 +154,7 @@ func (suite *ServiceGroupTestSuite) Test00008InsertPermission() {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/groups", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := InsertPermission(req)
@@ -168,7 +168,7 @@ func (suite *ServiceGroupTestSuite) Test00008InsertPermission() {
 
 func (suite *ServiceGroupTestSuite) Test00009LoadAllPermissionsByGroup() {
 	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -183,7 +183,7 @@ func (suite *ServiceGroupTestSuite) Test00009LoadAllPermissionsByGroup() {
 
 func (suite *ServiceGroupTestSuite) Test00010RemovePermission() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -197,7 +197,7 @@ func (suite *ServiceGroupTestSuite) Test00010RemovePermission() {
 
 func (suite *ServiceGroupTestSuite) Test00011DeleteGroup() {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/groups", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
@@ -230,7 +230,7 @@ func createUserToGroup(suite *ServiceGroupTestSuite) {
 	jsonData, _ := json.Marshal(data)
 
 	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/users", bytes.NewBuffer(jsonData))
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	response := CreateUser(req)
@@ -241,7 +241,7 @@ func createUserToGroup(suite *ServiceGroupTestSuite) {
 
 func deleteUserToGroup(suite *ServiceGroupTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/users", nil)
-	req.Header.Set("languageCode", "pt-br")
+	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
