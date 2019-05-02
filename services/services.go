@@ -160,17 +160,15 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
-	var objectStruct interface{}
+	translationColumns := []string{}
 	objectElem := reflect.TypeOf(object).Elem()
 	objectType := objectElem.Kind()
 
 	if objectType == reflect.Slice {
-		objectStruct = objectElem.Elem()
+		translationColumns = GetTranslationLanguageCodeColumns(objectElem.Elem())
 	} else {
-		objectStruct = object
+		translationColumns = GetTranslationLanguageCodeColumns(object)
 	}
-
-	translationColumns := GetTranslationLanguageCodeColumns(objectStruct)
 
 	if len(translationColumns) > 0 {
 		newCondition := []builder.Builder{}

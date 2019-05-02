@@ -13,7 +13,7 @@ INSERT INTO core_translations(
 VALUES (
   'ff1d2822-69c6-11e9-92d9-06ea2c43bb20',
   'core_config_languages',
-  '8629ddba-f153-482f-ad9b-b7d4fae54d07',
+  '9b09866a-69c5-11e9-96a1-06ea2c43bb20',
   'name',
   'Português do Brasil',
   'pt-br',

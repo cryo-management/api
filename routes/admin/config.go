@@ -10,7 +10,7 @@ func ConfigRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
 	// v1/api/admin/configs
-	r.Route("/", func(r chi.Router) {
+	r.Route("/languages", func(r chi.Router) {
 		r.Post("/", controller.PostLanguage)
 		r.Get("/", controller.GetAllLanguages)
 		r.Get("/{language_id}", controller.GetLanguage)
