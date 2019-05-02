@@ -3,7 +3,7 @@ package admin
 import (
 	"net/http"
 
-	"github.com/cryo-management/api/services"
+	services "github.com/cryo-management/api/services/resources"
 
 	"github.com/go-chi/render"
 )

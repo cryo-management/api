@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"bytes"
@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/cryo-management/api/models"
+
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/config"
 	"github.com/go-chi/chi"
@@ -15,124 +17,130 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type ServiceTabTestSuite struct {
+type ServiceContainerStructureTestSuite struct {
 	suite.Suite
-	TabInstanceID     string
-	SchemaInstanceID  string
-	PageInstanceID    string
-	SectionInstanceID string
-	UserID            string
+	ContainerStructureInstanceID string
+	SchemaInstanceID             string
+	PageInstanceID               string
+	SectionInstanceID            string
+	FieldInstanceID              string
+	UserID                       string
 }
 
-func (suite *ServiceTabTestSuite) SetupTest() {
+func (suite *ServiceContainerStructureTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 	suite.UserID = "307e481c-69c5-11e9-96a0-06ea2c43bb20"
 }
 
-func (suite *ServiceTabTestSuite) Test00001CreateTab() {
-	createSchemaToTab(suite)
-	createPageToTab(suite)
-	createSectionToTab(suite)
+func (suite *ServiceContainerStructureTestSuite) Test00001CreateContainerStructure() {
+	createSchemaToContainerStructure(suite)
+	createPageToContainerStructure(suite)
+	createSectionToContainerStructure(suite)
+	createFieldToContainerStructure(suite)
 
 	data := map[string]interface{}{
-		"code":        "tabteste01",
-		"name":        "Tab Teste 01",
-		"description": "Descrição do Tab Teste 01",
-		"schema_id":   suite.SchemaInstanceID,
-		"page_id":     suite.PageInstanceID,
-		"section_id":  suite.SectionInstanceID,
-		"tab_order":   1,
+		"schema_id":       suite.SchemaInstanceID,
+		"page_id":         suite.PageInstanceID,
+		"container_id":    suite.SectionInstanceID,
+		"container_type":  models.TableCoreSchPagSections,
+		"structure_id":    suite.FieldInstanceID,
+		"structure_type":  models.TableCoreSchFields,
+		"position_row":    1,
+		"position_column": 1,
+		"width":           200,
+		"height":          10,
 	}
 	jsonData, _ := json.Marshal(data)
 
-	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/tabs", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/container_structures", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
-	response := CreateTab(req)
+	response := CreateContainerStructure(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 
-	tabValue := reflect.ValueOf(response.Data).Elem()
-	suite.TabInstanceID = tabValue.FieldByName("ID").Interface().(string)
+	containerStructureValue := reflect.ValueOf(response.Data).Elem()
+	suite.ContainerStructureInstanceID = containerStructureValue.FieldByName("ID").Interface().(string)
 }
 
-func (suite *ServiceTabTestSuite) Test00002LoadAllTabs() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/tabs", nil)
-	req.Header.Set("Content-Language", "pt-br")
-	req.Header.Set("userID", suite.UserID)
-
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("section_id", suite.SectionInstanceID)
-	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-	response := LoadAllTabs(req)
-
-	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
-	assert.Equal(suite.T(), 200, response.Code)
-}
-
-func (suite *ServiceTabTestSuite) Test00003LoadTab() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/tabs", nil)
+func (suite *ServiceContainerStructureTestSuite) Test00002LoadAllContainerStructures() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/container_structures", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("tab_id", suite.TabInstanceID)
+	rctx.URLParams.Add("container_id", suite.SectionInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := LoadTab(req)
+	response := LoadAllContainerStructures(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceTabTestSuite) Test00004UpdateTab() {
+func (suite *ServiceContainerStructureTestSuite) Test00003LoadContainerStructure() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/container_structures", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("container_structure_id", suite.ContainerStructureInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadContainerStructure(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceContainerStructureTestSuite) Test00004UpdateContainerStructure() {
 	data := map[string]interface{}{
 		"type": "chart",
 	}
 	jsonData, _ := json.Marshal(&data)
 
-	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/tabs", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/container_structures", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("tab_id", suite.TabInstanceID)
+	rctx.URLParams.Add("container_structure_id", suite.ContainerStructureInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := UpdateTab(req)
+	response := UpdateContainerStructure(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceTabTestSuite) Test00005DeleteTab() {
-	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/tabs", nil)
+func (suite *ServiceContainerStructureTestSuite) Test00005DeleteContainerStructure() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/container_structures", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("tab_id", suite.TabInstanceID)
+	rctx.URLParams.Add("container_structure_id", suite.ContainerStructureInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := DeleteTab(req)
+	response := DeleteContainerStructure(req)
 
-	deleteSectionToTab(suite)
-	deletePageToTab(suite)
-	deleteSchemaToTab(suite)
+	deleteFieldToContainerStructure(suite)
+	deleteSectionToContainerStructure(suite)
+	deletePageToContainerStructure(suite)
+	deleteSchemaToContainerStructure(suite)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
-func TestServiceTabSuite(t *testing.T) {
-	suite.Run(t, new(ServiceTabTestSuite))
+func TestServiceContainerStructureSuite(t *testing.T) {
+	suite.Run(t, new(ServiceContainerStructureTestSuite))
 }
 
-func createSchemaToTab(suite *ServiceTabTestSuite) {
+func createSchemaToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	data := map[string]interface{}{
 		"name":        "Schema Teste 01",
 		"description": "Descrição do Schema Teste 01",
@@ -152,7 +160,7 @@ func createSchemaToTab(suite *ServiceTabTestSuite) {
 	suite.SchemaInstanceID = schemaValue.FieldByName("ID").Interface().(string)
 }
 
-func deleteSchemaToTab(suite *ServiceTabTestSuite) {
+func deleteSchemaToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -164,7 +172,7 @@ func deleteSchemaToTab(suite *ServiceTabTestSuite) {
 	DeleteSchema(req)
 }
 
-func createPageToTab(suite *ServiceTabTestSuite) {
+func createPageToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	data := map[string]interface{}{
 		"code":        "pageteste01",
 		"name":        "Page Teste 01",
@@ -185,7 +193,7 @@ func createPageToTab(suite *ServiceTabTestSuite) {
 	suite.PageInstanceID = pageValue.FieldByName("ID").Interface().(string)
 }
 
-func deletePageToTab(suite *ServiceTabTestSuite) {
+func deletePageToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -197,7 +205,7 @@ func deletePageToTab(suite *ServiceTabTestSuite) {
 	DeletePage(req)
 }
 
-func createSectionToTab(suite *ServiceTabTestSuite) {
+func createSectionToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	data := map[string]interface{}{
 		"code":        "sectionteste01",
 		"name":        "Section Teste 01",
@@ -217,7 +225,7 @@ func createSectionToTab(suite *ServiceTabTestSuite) {
 	suite.SectionInstanceID = sectionValue.FieldByName("ID").Interface().(string)
 }
 
-func deleteSectionToTab(suite *ServiceTabTestSuite) {
+func deleteSectionToContainerStructure(suite *ServiceContainerStructureTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/sections", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -227,4 +235,37 @@ func deleteSectionToTab(suite *ServiceTabTestSuite) {
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	DeleteSection(req)
+}
+
+func createFieldToContainerStructure(suite *ServiceContainerStructureTestSuite) {
+	data := map[string]interface{}{
+		"code":        "fieldteste01",
+		"schema_id":   suite.SchemaInstanceID,
+		"name":        "Field Teste 01",
+		"description": "Descrição do Field Teste 01",
+		"field_type":  "text",
+		"active":      true,
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/fields", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	response := CreateField(req)
+
+	fieldValue := reflect.ValueOf(response.Data).Elem()
+	suite.FieldInstanceID = fieldValue.FieldByName("ID").Interface().(string)
+}
+
+func deleteFieldToContainerStructure(suite *ServiceContainerStructureTestSuite) {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/fields", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("field_id", suite.FieldInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	DeleteField(req)
 }

@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"bytes"
@@ -15,98 +15,102 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type ServiceWidgetTestSuite struct {
+type ServiceCurrencyTestSuite struct {
 	suite.Suite
-	InstanceID string
-	UserID     string
+	CurrencyInstanceID string
+	pluginInstanceID   string
+	UserID             string
 }
 
-func (suite *ServiceWidgetTestSuite) SetupTest() {
+func (suite *ServiceCurrencyTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 	suite.UserID = "307e481c-69c5-11e9-96a0-06ea2c43bb20"
 }
 
-func (suite *ServiceWidgetTestSuite) Test00001CreateWidget() {
+func (suite *ServiceCurrencyTestSuite) Test00001CreateCurrency() {
+
 	data := map[string]interface{}{
-		"type": "table",
+		"name":   "Currency Teste 01",
+		"code":   "currencyteste01",
+		"active": true,
 	}
 	jsonData, _ := json.Marshal(data)
 
-	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/currencies", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
-	response := CreateWidget(req)
+	response := CreateCurrency(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 
-	widgetValue := reflect.ValueOf(response.Data).Elem()
-	suite.InstanceID = widgetValue.FieldByName("ID").Interface().(string)
+	currencyValue := reflect.ValueOf(response.Data).Elem()
+	suite.CurrencyInstanceID = currencyValue.FieldByName("ID").Interface().(string)
 }
 
-func (suite *ServiceWidgetTestSuite) Test00002LoadAllWidgets() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
+func (suite *ServiceCurrencyTestSuite) Test00002LoadAllCurrencies() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/currencies", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
-	response := LoadAllWidgets(req)
+	response := LoadAllCurrencies(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceWidgetTestSuite) Test00003LoadWidget() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/widgets", nil)
+func (suite *ServiceCurrencyTestSuite) Test00003LoadCurrency() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/currencies", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("widget_id", suite.InstanceID)
+	rctx.URLParams.Add("currency_id", suite.CurrencyInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := LoadWidget(req)
+	response := LoadCurrency(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceWidgetTestSuite) Test00004UpdateWidget() {
+func (suite *ServiceCurrencyTestSuite) Test00004UpdateCurrency() {
 	data := map[string]interface{}{
-		"type": "chart",
+		"active": false,
 	}
 	jsonData, _ := json.Marshal(&data)
 
-	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/widgets", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/currencies", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("widget_id", suite.InstanceID)
+	rctx.URLParams.Add("currency_id", suite.CurrencyInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := UpdateWidget(req)
+	response := UpdateCurrency(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceWidgetTestSuite) Test00005DeleteWidget() {
-	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/widgets", nil)
+func (suite *ServiceCurrencyTestSuite) Test00005DeleteCurrency() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/currencies", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("widget_id", suite.InstanceID)
+	rctx.URLParams.Add("currency_id", suite.CurrencyInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := DeleteWidget(req)
+	response := DeleteCurrency(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
-func TestServiceWidgetSuite(t *testing.T) {
-	suite.Run(t, new(ServiceWidgetTestSuite))
+func TestServiceCurrencySuite(t *testing.T) {
+	suite.Run(t, new(ServiceCurrencyTestSuite))
 }

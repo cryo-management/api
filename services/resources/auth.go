@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"encoding/json"
@@ -10,19 +10,20 @@ import (
 	"github.com/andreluzz/go-sql-builder/builder"
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 	"github.com/dgrijalva/jwt-go"
 )
 
 // Login validate credentials and return user token
-func Login(r *http.Request) *Response {
-	response := NewResponse()
+func Login(r *http.Request) *services.Response {
+	response := services.NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
 
 	jsonMap := make(map[string]interface{})
 	err := json.Unmarshal(body, &jsonMap)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "Login unmarshal body", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorParsingRequest, "Login unmarshal body", err.Error()))
 		return response
 	}
 
@@ -31,7 +32,7 @@ func Login(r *http.Request) *Response {
 	if !emailOk || !passwordOk {
 		err = errors.New("Invalid credentials body")
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorParsingRequest, "Login parsing body", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorParsingRequest, "Login parsing body", err.Error()))
 		return response
 	}
 
@@ -40,7 +41,7 @@ func Login(r *http.Request) *Response {
 	err = db.LoadStruct(models.TableCoreUsers, &user, builder.Equal(emailColumn, jsonMap["email"]))
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "Login load user", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "Login load user", err.Error()))
 
 		return response
 	}
@@ -48,14 +49,14 @@ func Login(r *http.Request) *Response {
 	if user.ID == "" {
 		err = errors.New("Invalid user email")
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLogin, "Login validation", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLogin, "Login validation", err.Error()))
 		return response
 	}
 
 	if user.Password != jsonMap["password"].(string) {
 		err = errors.New("Invalid user password")
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLogin, "Login validation", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLogin, "Login validation", err.Error()))
 		return response
 	}
 

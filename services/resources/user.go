@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"fmt"
@@ -9,34 +9,35 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 )
 
 // CreateUser persists the request body creating a new object in the database
-func CreateUser(r *http.Request) *Response {
+func CreateUser(r *http.Request) *services.Response {
 	user := models.User{}
 
-	return create(r, &user, "CreateUser", models.TableCoreUsers)
+	return services.Create(r, &user, "CreateUser", models.TableCoreUsers)
 }
 
 // LoadAllUsers return all instances from the object
-func LoadAllUsers(r *http.Request) *Response {
+func LoadAllUsers(r *http.Request) *services.Response {
 	users := []models.User{}
 
-	return load(r, &users, "LoadAllUsers", models.TableCoreUsers, nil)
+	return services.Load(r, &users, "LoadAllUsers", models.TableCoreUsers, nil)
 }
 
 // LoadUser return only one object from the database
-func LoadUser(r *http.Request) *Response {
+func LoadUser(r *http.Request) *services.Response {
 	user := models.User{}
 	userID := chi.URLParam(r, "user_id")
 	userIDColumn := fmt.Sprintf("%s.id", models.TableCoreUsers)
 	condition := builder.Equal(userIDColumn, userID)
 
-	return load(r, &user, "LoadUser", models.TableCoreUsers, condition)
+	return services.Load(r, &user, "LoadUser", models.TableCoreUsers, condition)
 }
 
 // UpdateUser updates object data in the database
-func UpdateUser(r *http.Request) *Response {
+func UpdateUser(r *http.Request) *services.Response {
 	userID := chi.URLParam(r, "user_id")
 	userIDColumn := fmt.Sprintf("%s.id", models.TableCoreUsers)
 	condition := builder.Equal(userIDColumn, userID)
@@ -44,21 +45,21 @@ func UpdateUser(r *http.Request) *Response {
 		ID: userID,
 	}
 
-	return update(r, &user, "UpdateUser", models.TableCoreUsers, condition)
+	return services.Update(r, &user, "UpdateUser", models.TableCoreUsers, condition)
 }
 
 // DeleteUser deletes object from the database
-func DeleteUser(r *http.Request) *Response {
+func DeleteUser(r *http.Request) *services.Response {
 	userID := chi.URLParam(r, "user_id")
 	userIDColumn := fmt.Sprintf("%s.id", models.TableCoreUsers)
 	condition := builder.Equal(userIDColumn, userID)
 
-	return remove(r, "DeleteUser", models.TableCoreUsers, condition)
+	return services.Remove(r, "DeleteUser", models.TableCoreUsers, condition)
 }
 
 // LoadAllGroupsByUser return all instances from the object
-func LoadAllGroupsByUser(r *http.Request) *Response {
-	response := NewResponse()
+func LoadAllGroupsByUser(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	group := []models.Group{}
 	userID := chi.URLParam(r, "user_id")
@@ -88,7 +89,7 @@ func LoadAllGroupsByUser(r *http.Request) *Response {
 	err := db.QueryStruct(statemant, &group)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllGroupsByUser", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "LoadAllGroupsByUser", err.Error()))
 
 		return response
 	}

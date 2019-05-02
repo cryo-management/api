@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"fmt"
@@ -8,34 +8,35 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 )
 
 // CreateLookup persists the request body creating a new object in the database
-func CreateLookup(r *http.Request) *Response {
+func CreateLookup(r *http.Request) *services.Response {
 	lookup := models.Lookup{}
 
-	return create(r, &lookup, "CreateLookup", models.TableCoreLookups)
+	return services.Create(r, &lookup, "CreateLookup", models.TableCoreLookups)
 }
 
 // LoadAllLookups return all instances from the object
-func LoadAllLookups(r *http.Request) *Response {
+func LoadAllLookups(r *http.Request) *services.Response {
 	lookups := []models.Lookup{}
 
-	return load(r, &lookups, "LoadAllLookups", models.TableCoreLookups, nil)
+	return services.Load(r, &lookups, "LoadAllLookups", models.TableCoreLookups, nil)
 }
 
 // LoadLookup return only one object from the database
-func LoadLookup(r *http.Request) *Response {
+func LoadLookup(r *http.Request) *services.Response {
 	lookup := models.Lookup{}
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookupIDColumn := fmt.Sprintf("%s.id", models.TableCoreLookups)
 	condition := builder.Equal(lookupIDColumn, lookupID)
 
-	return load(r, &lookup, "LoadLookup", models.TableCoreLookups, condition)
+	return services.Load(r, &lookup, "LoadLookup", models.TableCoreLookups, condition)
 }
 
 // UpdateLookup updates object data in the database
-func UpdateLookup(r *http.Request) *Response {
+func UpdateLookup(r *http.Request) *services.Response {
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookupIDColumn := fmt.Sprintf("%s.id", models.TableCoreLookups)
 	condition := builder.Equal(lookupIDColumn, lookupID)
@@ -43,47 +44,47 @@ func UpdateLookup(r *http.Request) *Response {
 		ID: lookupID,
 	}
 
-	return update(r, &lookup, "UpdateLookup", models.TableCoreLookups, condition)
+	return services.Update(r, &lookup, "UpdateLookup", models.TableCoreLookups, condition)
 }
 
 // DeleteLookup deletes object from the database
-func DeleteLookup(r *http.Request) *Response {
+func DeleteLookup(r *http.Request) *services.Response {
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookupIDColumn := fmt.Sprintf("%s.id", models.TableCoreLookups)
 	condition := builder.Equal(lookupIDColumn, lookupID)
 
-	return remove(r, "DeleteLookup", models.TableCoreLookups, condition)
+	return services.Remove(r, "DeleteLookup", models.TableCoreLookups, condition)
 }
 
 // CreateLookupOption persists the request body creating a new object in the database
-func CreateLookupOption(r *http.Request) *Response {
+func CreateLookupOption(r *http.Request) *services.Response {
 	lookupOption := models.LookupOption{}
 
-	return create(r, &lookupOption, "CreateLookupOption", models.TableCoreLkpOptions)
+	return services.Create(r, &lookupOption, "CreateLookupOption", models.TableCoreLkpOptions)
 }
 
 // LoadAllLookupOptions return all instances from the object
-func LoadAllLookupOptions(r *http.Request) *Response {
+func LoadAllLookupOptions(r *http.Request) *services.Response {
 	lookupOptions := []models.LookupOption{}
 	lookupID := chi.URLParam(r, "lookup_id")
 	lookupIDColumn := fmt.Sprintf("%s.lookup_id", models.TableCoreLkpOptions)
 	condition := builder.Equal(lookupIDColumn, lookupID)
 
-	return load(r, &lookupOptions, "LoadAllLookupOptions", models.TableCoreLkpOptions, condition)
+	return services.Load(r, &lookupOptions, "LoadAllLookupOptions", models.TableCoreLkpOptions, condition)
 }
 
 // LoadLookupOption return only one object from the database
-func LoadLookupOption(r *http.Request) *Response {
+func LoadLookupOption(r *http.Request) *services.Response {
 	lookupOption := models.LookupOption{}
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	lookupOptionIDColumn := fmt.Sprintf("%s.id", models.TableCoreLkpOptions)
 	condition := builder.Equal(lookupOptionIDColumn, lookupOptionID)
 
-	return load(r, &lookupOption, "LoadLookupOption", models.TableCoreLkpOptions, condition)
+	return services.Load(r, &lookupOption, "LoadLookupOption", models.TableCoreLkpOptions, condition)
 }
 
 // UpdateLookupOption updates object data in the database
-func UpdateLookupOption(r *http.Request) *Response {
+func UpdateLookupOption(r *http.Request) *services.Response {
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	lookupOptionIDColumn := fmt.Sprintf("%s.id", models.TableCoreLkpOptions)
 	condition := builder.Equal(lookupOptionIDColumn, lookupOptionID)
@@ -91,14 +92,14 @@ func UpdateLookupOption(r *http.Request) *Response {
 		ID: lookupOptionID,
 	}
 
-	return update(r, &lookupOption, "UpdateLookupOption", models.TableCoreLkpOptions, condition)
+	return services.Update(r, &lookupOption, "UpdateLookupOption", models.TableCoreLkpOptions, condition)
 }
 
 // DeleteLookupOption deletes object from the database
-func DeleteLookupOption(r *http.Request) *Response {
+func DeleteLookupOption(r *http.Request) *services.Response {
 	lookupOptionID := chi.URLParam(r, "lookup_option_id")
 	lookupOptionIDColumn := fmt.Sprintf("%s.id", models.TableCoreLkpOptions)
 	condition := builder.Equal(lookupOptionIDColumn, lookupOptionID)
 
-	return remove(r, "DeleteLookupOption", models.TableCoreLkpOptions, condition)
+	return services.Remove(r, "DeleteLookupOption", models.TableCoreLkpOptions, condition)
 }

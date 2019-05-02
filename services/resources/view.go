@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"fmt"
@@ -10,37 +10,38 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 )
 
 // CreateView persists the request body creating a new object in the database
-func CreateView(r *http.Request) *Response {
+func CreateView(r *http.Request) *services.Response {
 	view := models.View{}
 
-	return create(r, &view, "CreateView", models.TableCoreSchViews)
+	return services.Create(r, &view, "CreateView", models.TableCoreSchViews)
 }
 
 // LoadAllViews return all instances from the object
-func LoadAllViews(r *http.Request) *Response {
+func LoadAllViews(r *http.Request) *services.Response {
 	views := []models.View{}
 	schemaID := chi.URLParam(r, "schema_id")
 	schemaIDColumn := fmt.Sprintf("%s.schema_id", models.TableCoreSchViews)
 	condition := builder.Equal(schemaIDColumn, schemaID)
 
-	return load(r, &views, "LoadAllViews", models.TableCoreSchViews, condition)
+	return services.Load(r, &views, "LoadAllViews", models.TableCoreSchViews, condition)
 }
 
 // LoadView return only one object from the database
-func LoadView(r *http.Request) *Response {
+func LoadView(r *http.Request) *services.Response {
 	view := models.View{}
 	viewID := chi.URLParam(r, "view_id")
 	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
 	condition := builder.Equal(viewIDColumn, viewID)
 
-	return load(r, &view, "LoadView", models.TableCoreSchViews, condition)
+	return services.Load(r, &view, "LoadView", models.TableCoreSchViews, condition)
 }
 
 // UpdateView updates object data in the database
-func UpdateView(r *http.Request) *Response {
+func UpdateView(r *http.Request) *services.Response {
 	viewID := chi.URLParam(r, "view_id")
 	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
 	condition := builder.Equal(viewIDColumn, viewID)
@@ -48,21 +49,21 @@ func UpdateView(r *http.Request) *Response {
 		ID: viewID,
 	}
 
-	return update(r, &view, "UpdateView", models.TableCoreSchViews, condition)
+	return services.Update(r, &view, "UpdateView", models.TableCoreSchViews, condition)
 }
 
 // DeleteView deletes object from the database
-func DeleteView(r *http.Request) *Response {
+func DeleteView(r *http.Request) *services.Response {
 	viewID := chi.URLParam(r, "view_id")
 	viewIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchViews)
 	condition := builder.Equal(viewIDColumn, viewID)
 
-	return remove(r, "DeleteView", models.TableCoreSchViews, condition)
+	return services.Remove(r, "DeleteView", models.TableCoreSchViews, condition)
 }
 
 // InsertPageInView persists the request creating a new object in the database
-func InsertPageInView(r *http.Request) *Response {
-	response := NewResponse()
+func InsertPageInView(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	viewID := chi.URLParam(r, "view_id")
 	pageID := chi.URLParam(r, "page_id")
@@ -90,7 +91,7 @@ func InsertPageInView(r *http.Request) *Response {
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "InsertPageInView", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorInsertingRecord, "InsertPageInView", err.Error()))
 
 		return response
 	}
@@ -99,8 +100,8 @@ func InsertPageInView(r *http.Request) *Response {
 }
 
 // LoadAllPagesByView return all instances from the object
-func LoadAllPagesByView(r *http.Request) *Response {
-	response := NewResponse()
+func LoadAllPagesByView(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	page := []models.Page{}
 	viewID := chi.URLParam(r, "view_id")
@@ -137,7 +138,7 @@ func LoadAllPagesByView(r *http.Request) *Response {
 	err := db.QueryStruct(statemant, &page)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllPagesByView", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "LoadAllPagesByView", err.Error()))
 
 		return response
 	}
@@ -148,8 +149,8 @@ func LoadAllPagesByView(r *http.Request) *Response {
 }
 
 // RemovePageFromView deletes object from the database
-func RemovePageFromView(r *http.Request) *Response {
-	response := NewResponse()
+func RemovePageFromView(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	viewID := chi.URLParam(r, "view_id")
 	pageID := chi.URLParam(r, "page_id")
@@ -164,7 +165,7 @@ func RemovePageFromView(r *http.Request) *Response {
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, "RemovePageFromView", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorDeletingData, "RemovePageFromView", err.Error()))
 
 		return response
 	}

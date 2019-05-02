@@ -63,8 +63,8 @@ func NewResponseError(code string, scope, err string) ResponseError {
 	}
 }
 
-// getUpdateColumnsFromBody get request body and return an string array with columns from the body
-func getUpdateColumnsFromBody(body []byte) []string {
+// GetUpdateColumnsFromBody get request body and return an string array with columns from the body
+func GetUpdateColumnsFromBody(body []byte) []string {
 	jsonMap := make(map[string]interface{})
 	json.Unmarshal(body, &jsonMap)
 	columns := []string{}
@@ -79,10 +79,52 @@ func getUpdateColumnsFromBody(body []byte) []string {
 	return columns
 }
 
+// GetFilterColumns return translation columns from the object
+func GetFilterColumns(r *http.Request, object interface{}, table string) (map[string]interface{}, error) {
+	query := r.URL.Query()
+	jsonFilters := query.Get("filter")
+	filterColumns := make(map[string]interface{})
+
+	if jsonFilters != "" {
+		data := []byte(jsonFilters)
+		filterMap := make(map[string]interface{})
+		err := json.Unmarshal(data, &filterMap)
+
+		if err != nil {
+			return nil, err
+		}
+
+		elementType := reflect.TypeOf(object).Elem()
+
+		if elementType.Kind() == reflect.Slice {
+			elementType = elementType.Elem()
+		}
+
+		for filter, value := range filterMap {
+			column := fmt.Sprintf("%s.%s", table, filter)
+			for i := 0; i < elementType.NumField(); i++ {
+				elementField := elementType.Field(i)
+				if filter == elementField.Tag.Get("json") && elementField.Tag.Get("table") == models.TableCoreTranslations {
+					column = fmt.Sprintf("%s.%s", elementField.Tag.Get("alias"), "value")
+					break
+				}
+			}
+			filterColumns[column] = value
+		}
+	}
+
+	return filterColumns, nil
+}
+
 // GetTranslationLanguageCodeColumns return translation columns from the object
 func GetTranslationLanguageCodeColumns(object interface{}, columns ...string) []string {
 	translationColumns := []string{}
 	elementType := reflect.TypeOf(object).Elem()
+
+	if elementType.Kind() == reflect.Slice {
+		elementType = elementType.Elem()
+	}
+
 	for i := 0; i < elementType.NumField(); i++ {
 		elementField := elementType.Field(i)
 		if elementField.Tag.Get("table") == models.TableCoreTranslations {
@@ -103,8 +145,8 @@ func GetTranslationLanguageCodeColumns(object interface{}, columns ...string) []
 	return translationColumns
 }
 
-// create object data in the database
-func create(r *http.Request, object interface{}, scope, table string) *Response {
+// Create object data in the database
+func Create(r *http.Request, object interface{}, scope, table string) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
 
@@ -156,19 +198,24 @@ func create(r *http.Request, object interface{}, scope, table string) *Response 
 	return response
 }
 
-// load object data from the database
-func load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
+// Load object data from the database
+func Load(r *http.Request, object interface{}, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
-	translationColumns := []string{}
-	objectElem := reflect.TypeOf(object).Elem()
-	objectType := objectElem.Kind()
+	filterColumns, _ := GetFilterColumns(r, object, table)
 
-	if objectType == reflect.Slice {
-		translationColumns = GetTranslationLanguageCodeColumns(objectElem.Elem())
-	} else {
-		translationColumns = GetTranslationLanguageCodeColumns(object)
+	if len(filterColumns) > 0 {
+		newCondition := []builder.Builder{}
+		if conditions != nil {
+			newCondition = append(newCondition, conditions)
+		}
+		for column, value := range filterColumns {
+			newCondition = append(newCondition, builder.Equal(column, value))
+		}
+		conditions = builder.And(newCondition...)
 	}
+
+	translationColumns := GetTranslationLanguageCodeColumns(object)
 
 	if len(translationColumns) > 0 {
 		newCondition := []builder.Builder{}
@@ -194,8 +241,8 @@ func load(r *http.Request, object interface{}, scope, table string, conditions b
 	return response
 }
 
-// remove object data from the database
-func remove(r *http.Request, scope, table string, conditions builder.Builder) *Response {
+// Remove object data from the database
+func Remove(r *http.Request, scope, table string, conditions builder.Builder) *Response {
 	response := NewResponse()
 
 	err := db.DeleteStruct(table, conditions)
@@ -209,8 +256,8 @@ func remove(r *http.Request, scope, table string, conditions builder.Builder) *R
 	return response
 }
 
-// update object data in the database
-func update(r *http.Request, object interface{}, scope, table string, condition builder.Builder) *Response {
+// Update object data in the database
+func Update(r *http.Request, object interface{}, scope, table string, condition builder.Builder) *Response {
 	response := NewResponse()
 	body, _ := ioutil.ReadAll(r.Body)
 
@@ -222,7 +269,7 @@ func update(r *http.Request, object interface{}, scope, table string, condition 
 		return response
 	}
 
-	columns := getUpdateColumnsFromBody(body)
+	columns := GetUpdateColumnsFromBody(body)
 
 	userID := r.Header.Get("userID")
 	now := time.Now()

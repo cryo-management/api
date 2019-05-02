@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"bytes"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/cryo-management/api/config"
+	"github.com/cryo-management/api/services"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -45,7 +46,7 @@ func (suite *ServiceAuthTestSuite) Test00002LoginErrorUnmarshal() {
 
 	res := Login(req)
 
-	response := Response{}
+	response := services.Response{}
 	jsonMap, _ := json.Marshal(res)
 	json.Unmarshal(jsonMap, &response)
 
@@ -62,7 +63,7 @@ func (suite *ServiceAuthTestSuite) Test00002LoginErrorParsing() {
 
 	res := Login(req)
 
-	response := Response{}
+	response := services.Response{}
 	jsonMap, _ := json.Marshal(res)
 	json.Unmarshal(jsonMap, &response)
 
@@ -71,7 +72,7 @@ func (suite *ServiceAuthTestSuite) Test00002LoginErrorParsing() {
 
 func (suite *ServiceAuthTestSuite) Test00003LoginErrorEmailInvalid() {
 	data := map[string]interface{}{
-		"email": "admin@domain",
+		"email":    "admin@domain",
 		"password": "123456",
 	}
 	jsonData, _ := json.Marshal(data)
@@ -80,7 +81,7 @@ func (suite *ServiceAuthTestSuite) Test00003LoginErrorEmailInvalid() {
 
 	res := Login(req)
 
-	response := Response{}
+	response := services.Response{}
 	jsonMap, _ := json.Marshal(res)
 	json.Unmarshal(jsonMap, &response)
 
@@ -89,7 +90,7 @@ func (suite *ServiceAuthTestSuite) Test00003LoginErrorEmailInvalid() {
 
 func (suite *ServiceAuthTestSuite) Test00004LoginErrorPasswordInvalid() {
 	data := map[string]interface{}{
-		"email": "admin@domain.com",
+		"email":    "admin@domain.com",
 		"password": "1234567",
 	}
 	jsonData, _ := json.Marshal(data)
@@ -98,7 +99,7 @@ func (suite *ServiceAuthTestSuite) Test00004LoginErrorPasswordInvalid() {
 
 	res := Login(req)
 
-	response := Response{}
+	response := services.Response{}
 	jsonMap, _ := json.Marshal(res)
 	json.Unmarshal(jsonMap, &response)
 

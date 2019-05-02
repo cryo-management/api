@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"bytes"
@@ -15,119 +15,163 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type ServiceSectionTestSuite struct {
+type ServiceViewTestSuite struct {
 	suite.Suite
-	SectionInstanceID string
-	SchemaInstanceID  string
-	PageInstanceID    string
-	UserID            string
+	SchemaInstanceID string
+	PageInstanceID   string
+	ViewInstanceID   string
+	UserID           string
 }
 
-func (suite *ServiceSectionTestSuite) SetupTest() {
+func (suite *ServiceViewTestSuite) SetupTest() {
 	config, _ := config.NewConfig("..\\config.toml")
 	db.Connect(config.Host, config.Port, config.User, config.Password, config.DBName, false)
 	suite.UserID = "307e481c-69c5-11e9-96a0-06ea2c43bb20"
 }
 
-func (suite *ServiceSectionTestSuite) Test00001CreateSection() {
-	createSchemaToSection(suite)
-	createPageToSection(suite)
+func (suite *ServiceViewTestSuite) Test00001CreateView() {
+	createSchemaToView(suite)
+	createPageToView(suite)
 
 	data := map[string]interface{}{
-		"code":        "sectionteste01",
-		"name":        "Section Teste 01",
-		"description": "Descrição do Section Teste 01",
+		"code":        "viewteste01",
+		"name":        "View Teste 01",
+		"description": "Descrição do View Teste 01",
 		"schema_id":   suite.SchemaInstanceID,
-		"page_id":     suite.PageInstanceID,
 	}
 	jsonData, _ := json.Marshal(data)
 
-	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/views", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
-	response := CreateSection(req)
+	response := CreateView(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 
-	sectionValue := reflect.ValueOf(response.Data).Elem()
-	suite.SectionInstanceID = sectionValue.FieldByName("ID").Interface().(string)
+	viewValue := reflect.ValueOf(response.Data).Elem()
+	suite.ViewInstanceID = viewValue.FieldByName("ID").Interface().(string)
 }
 
-func (suite *ServiceSectionTestSuite) Test00002LoadAllSections() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/sections", nil)
-	req.Header.Set("Content-Language", "pt-br")
-	req.Header.Set("userID", suite.UserID)
-
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("page_id", suite.PageInstanceID)
-	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-
-	response := LoadAllSections(req)
-
-	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
-	assert.Equal(suite.T(), 200, response.Code)
-}
-
-func (suite *ServiceSectionTestSuite) Test00003LoadSection() {
-	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/sections", nil)
+func (suite *ServiceViewTestSuite) Test00002LoadAllViews() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("section_id", suite.SectionInstanceID)
+	rctx.URLParams.Add("schema_id", suite.SchemaInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := LoadSection(req)
+	response := LoadAllViews(req)
 
 	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceSectionTestSuite) Test00004UpdateSection() {
+func (suite *ServiceViewTestSuite) Test00003LoadView() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadView(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceViewTestSuite) Test00004UpdateView() {
 	data := map[string]interface{}{
-		"description": "Descrição do Section Teste 01 Updated",
+		"description": "Descrição do View Teste 01 Updated",
 	}
 	jsonData, _ := json.Marshal(&data)
 
-	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/sections", bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PATCH", "http://localhost:3333/api/v1/admin/views", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("section_id", suite.SectionInstanceID)
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := UpdateSection(req)
+	response := UpdateView(req)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
-func (suite *ServiceSectionTestSuite) Test00005DeleteSection() {
-	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/sections", nil)
+func (suite *ServiceViewTestSuite) Test00005InsertPageInView() {
+	req, _ := http.NewRequest("POST", "http://localhost:3333/api/v1/admin/views", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
 
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("section_id", suite.SectionInstanceID)
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
+	rctx.URLParams.Add("page_id", suite.PageInstanceID)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
-	response := DeleteSection(req)
+	response := InsertPageInView(req)
 
-	deletePageToSection(suite)
-	deleteSchemaToSection(suite)
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceViewTestSuite) Test00006LoadAllPagesByView() {
+	req, _ := http.NewRequest("GET", "http://localhost:3333/api/v1/admin/views", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := LoadAllPagesByView(req)
+
+	assert.NotNil(suite.T(), response.Data != nil, "response.Data should not be null")
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceViewTestSuite) Test00007RemovePageFromView() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/views", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
+	rctx.URLParams.Add("page_id", suite.PageInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := RemovePageFromView(req)
+
+	assert.Equal(suite.T(), 200, response.Code)
+}
+
+func (suite *ServiceViewTestSuite) Test00008DeleteView() {
+	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/views", nil)
+	req.Header.Set("Content-Language", "pt-br")
+	req.Header.Set("userID", suite.UserID)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("view_id", suite.ViewInstanceID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	response := DeleteView(req)
+
+	deletePageToView(suite)
+	deleteSchemaToView(suite)
 
 	assert.Equal(suite.T(), 200, response.Code)
 }
 
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
-func TestServiceSectionSuite(t *testing.T) {
-	suite.Run(t, new(ServiceSectionTestSuite))
+func TestServiceViewSuite(t *testing.T) {
+	suite.Run(t, new(ServiceViewTestSuite))
 }
 
-func createSchemaToSection(suite *ServiceSectionTestSuite) {
+func createSchemaToView(suite *ServiceViewTestSuite) {
 	data := map[string]interface{}{
 		"name":        "Schema Teste 01",
 		"description": "Descrição do Schema Teste 01",
@@ -147,7 +191,7 @@ func createSchemaToSection(suite *ServiceSectionTestSuite) {
 	suite.SchemaInstanceID = schemaValue.FieldByName("ID").Interface().(string)
 }
 
-func deleteSchemaToSection(suite *ServiceSectionTestSuite) {
+func deleteSchemaToView(suite *ServiceViewTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/schemas", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)
@@ -159,7 +203,7 @@ func deleteSchemaToSection(suite *ServiceSectionTestSuite) {
 	DeleteSchema(req)
 }
 
-func createPageToSection(suite *ServiceSectionTestSuite) {
+func createPageToView(suite *ServiceViewTestSuite) {
 	data := map[string]interface{}{
 		"code":        "pageteste01",
 		"name":        "Page Teste 01",
@@ -180,7 +224,7 @@ func createPageToSection(suite *ServiceSectionTestSuite) {
 	suite.PageInstanceID = pageValue.FieldByName("ID").Interface().(string)
 }
 
-func deletePageToSection(suite *ServiceSectionTestSuite) {
+func deletePageToView(suite *ServiceViewTestSuite) {
 	req, _ := http.NewRequest("DELETE", "http://localhost:3333/api/v1/admin/pages", nil)
 	req.Header.Set("Content-Language", "pt-br")
 	req.Header.Set("userID", suite.UserID)

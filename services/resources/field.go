@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"fmt"
@@ -8,37 +8,38 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 )
 
 // CreateField persists the request body creating a new object in the database
-func CreateField(r *http.Request) *Response {
+func CreateField(r *http.Request) *services.Response {
 	field := models.Field{}
 
-	return create(r, &field, "CreateField", models.TableCoreSchFields)
+	return services.Create(r, &field, "CreateField", models.TableCoreSchFields)
 }
 
 // LoadAllFields return all instances from the object
-func LoadAllFields(r *http.Request) *Response {
+func LoadAllFields(r *http.Request) *services.Response {
 	fields := []models.Field{}
 	schemaID := chi.URLParam(r, "schema_id")
 	schemaIDColumn := fmt.Sprintf("%s.schema_id", models.TableCoreSchFields)
 	condition := builder.Equal(schemaIDColumn, schemaID)
 
-	return load(r, &fields, "LoadAllFields", models.TableCoreSchFields, condition)
+	return services.Load(r, &fields, "LoadAllFields", models.TableCoreSchFields, condition)
 }
 
 // LoadField return only one object from the database
-func LoadField(r *http.Request) *Response {
+func LoadField(r *http.Request) *services.Response {
 	field := models.Field{}
 	fieldID := chi.URLParam(r, "field_id")
 	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
 	condition := builder.Equal(fieldIDColumn, fieldID)
 
-	return load(r, &field, "LoadField", models.TableCoreSchFields, condition)
+	return services.Load(r, &field, "LoadField", models.TableCoreSchFields, condition)
 }
 
 // UpdateField updates object data in the database
-func UpdateField(r *http.Request) *Response {
+func UpdateField(r *http.Request) *services.Response {
 	fieldID := chi.URLParam(r, "field_id")
 	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
 	condition := builder.Equal(fieldIDColumn, fieldID)
@@ -46,47 +47,47 @@ func UpdateField(r *http.Request) *Response {
 		ID: fieldID,
 	}
 
-	return update(r, &field, "UpdateField", models.TableCoreSchFields, condition)
+	return services.Update(r, &field, "UpdateField", models.TableCoreSchFields, condition)
 }
 
 // DeleteField deletes object from the database
-func DeleteField(r *http.Request) *Response {
+func DeleteField(r *http.Request) *services.Response {
 	fieldID := chi.URLParam(r, "field_id")
 	fieldIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFields)
 	condition := builder.Equal(fieldIDColumn, fieldID)
 
-	return remove(r, "DeleteField", models.TableCoreSchFields, condition)
+	return services.Remove(r, "DeleteField", models.TableCoreSchFields, condition)
 }
 
 // CreateFieldValidation persists the request body creating a new object in the database
-func CreateFieldValidation(r *http.Request) *Response {
+func CreateFieldValidation(r *http.Request) *services.Response {
 	fieldValidation := models.FieldValidation{}
 
-	return create(r, &fieldValidation, "CreateFieldValidation", models.TableCoreSchFldValidations)
+	return services.Create(r, &fieldValidation, "CreateFieldValidation", models.TableCoreSchFldValidations)
 }
 
 // LoadAllFieldValidations return all instances from the object
-func LoadAllFieldValidations(r *http.Request) *Response {
+func LoadAllFieldValidations(r *http.Request) *services.Response {
 	fieldValidations := []models.FieldValidation{}
 	fieldID := chi.URLParam(r, "field_id")
 	fieldIDColumn := fmt.Sprintf("%s.field_id", models.TableCoreSchFldValidations)
 	condition := builder.Equal(fieldIDColumn, fieldID)
 
-	return load(r, &fieldValidations, "LoadAllFieldValidations", models.TableCoreSchFldValidations, condition)
+	return services.Load(r, &fieldValidations, "LoadAllFieldValidations", models.TableCoreSchFldValidations, condition)
 }
 
 // LoadFieldValidation return only one object from the database
-func LoadFieldValidation(r *http.Request) *Response {
+func LoadFieldValidation(r *http.Request) *services.Response {
 	fieldValidation := models.FieldValidation{}
 	fieldValidationID := chi.URLParam(r, "field_validation_id")
 	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
 	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
 
-	return load(r, &fieldValidation, "LoadFieldValidation", models.TableCoreSchFldValidations, condition)
+	return services.Load(r, &fieldValidation, "LoadFieldValidation", models.TableCoreSchFldValidations, condition)
 }
 
 // UpdateFieldValidation updates object data in the database
-func UpdateFieldValidation(r *http.Request) *Response {
+func UpdateFieldValidation(r *http.Request) *services.Response {
 	fieldValidationID := chi.URLParam(r, "field_validation_id")
 	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
 	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
@@ -94,14 +95,14 @@ func UpdateFieldValidation(r *http.Request) *Response {
 		ID: fieldValidationID,
 	}
 
-	return update(r, &fieldValidation, "UpdateFieldValidation", models.TableCoreSchFldValidations, condition)
+	return services.Update(r, &fieldValidation, "UpdateFieldValidation", models.TableCoreSchFldValidations, condition)
 }
 
 // DeleteFieldValidation deletes object from the database
-func DeleteFieldValidation(r *http.Request) *Response {
+func DeleteFieldValidation(r *http.Request) *services.Response {
 	fieldValidationID := chi.URLParam(r, "field_validation_id")
 	fieldValidationIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchFldValidations)
 	condition := builder.Equal(fieldValidationIDColumn, fieldValidationID)
 
-	return remove(r, "DeleteFieldValidation", models.TableCoreSchFldValidations, condition)
+	return services.Remove(r, "DeleteFieldValidation", models.TableCoreSchFldValidations, condition)
 }

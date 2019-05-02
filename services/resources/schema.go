@@ -1,4 +1,4 @@
-package services
+package resources
 
 import (
 	"fmt"
@@ -10,34 +10,35 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
+	"github.com/cryo-management/api/services"
 )
 
 // CreateSchema persists the request body creating a new object in the database
-func CreateSchema(r *http.Request) *Response {
+func CreateSchema(r *http.Request) *services.Response {
 	schema := models.Schema{}
 
-	return create(r, &schema, "CreateSchema", models.TableCoreSchemas)
+	return services.Create(r, &schema, "CreateSchema", models.TableCoreSchemas)
 }
 
 // LoadAllSchemas return all instances from the object
-func LoadAllSchemas(r *http.Request) *Response {
+func LoadAllSchemas(r *http.Request) *services.Response {
 	schemas := []models.Schema{}
 
-	return load(r, &schemas, "LoadAllSchemas", models.TableCoreSchemas, nil)
+	return services.Load(r, &schemas, "LoadAllSchemas", models.TableCoreSchemas, nil)
 }
 
 // LoadSchema return only one object from the database
-func LoadSchema(r *http.Request) *Response {
+func LoadSchema(r *http.Request) *services.Response {
 	schema := models.Schema{}
 	schemaID := chi.URLParam(r, "schema_id")
 	schemaIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchemas)
 	condition := builder.Equal(schemaIDColumn, schemaID)
 
-	return load(r, &schema, "LoadSchema", models.TableCoreSchemas, condition)
+	return services.Load(r, &schema, "LoadSchema", models.TableCoreSchemas, condition)
 }
 
 // UpdateSchema updates object data in the database
-func UpdateSchema(r *http.Request) *Response {
+func UpdateSchema(r *http.Request) *services.Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	schemaIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchemas)
 	condition := builder.Equal(schemaIDColumn, schemaID)
@@ -45,21 +46,21 @@ func UpdateSchema(r *http.Request) *Response {
 		ID: schemaID,
 	}
 
-	return update(r, &schema, "UpdateSchema", models.TableCoreSchemas, condition)
+	return services.Update(r, &schema, "UpdateSchema", models.TableCoreSchemas, condition)
 }
 
 // DeleteSchema deletes object from the database
-func DeleteSchema(r *http.Request) *Response {
+func DeleteSchema(r *http.Request) *services.Response {
 	schemaID := chi.URLParam(r, "schema_id")
 	schemaIDColumn := fmt.Sprintf("%s.id", models.TableCoreSchemas)
 	condition := builder.Equal(schemaIDColumn, schemaID)
 
-	return remove(r, "DeleteSchema", models.TableCoreSchemas, condition)
+	return services.Remove(r, "DeleteSchema", models.TableCoreSchemas, condition)
 }
 
 // InsertPluginInSchema persists the request creating a new object in the database
-func InsertPluginInSchema(r *http.Request) *Response {
-	response := NewResponse()
+func InsertPluginInSchema(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	schemaID := chi.URLParam(r, "schema_id")
 	pluginID := chi.URLParam(r, "plugin_id")
@@ -87,7 +88,7 @@ func InsertPluginInSchema(r *http.Request) *Response {
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorInsertingRecord, "InsertPluginInSchema", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorInsertingRecord, "InsertPluginInSchema", err.Error()))
 
 		return response
 	}
@@ -96,8 +97,8 @@ func InsertPluginInSchema(r *http.Request) *Response {
 }
 
 // LoadAllPluginsBySchema return all instances from the object
-func LoadAllPluginsBySchema(r *http.Request) *Response {
-	response := NewResponse()
+func LoadAllPluginsBySchema(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	plugin := []models.Schema{}
 	schemaID := chi.URLParam(r, "schema_id")
@@ -133,7 +134,7 @@ func LoadAllPluginsBySchema(r *http.Request) *Response {
 	err := db.QueryStruct(statemant, &plugin)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorLoadingData, "LoadAllPluginsBySchema", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "LoadAllPluginsBySchema", err.Error()))
 
 		return response
 	}
@@ -144,8 +145,8 @@ func LoadAllPluginsBySchema(r *http.Request) *Response {
 }
 
 // RemovePluginFromSchema deletes object from the database
-func RemovePluginFromSchema(r *http.Request) *Response {
-	response := NewResponse()
+func RemovePluginFromSchema(r *http.Request) *services.Response {
+	response := services.NewResponse()
 
 	schemaID := chi.URLParam(r, "schema_id")
 	pluginID := chi.URLParam(r, "plugin_id")
@@ -160,7 +161,7 @@ func RemovePluginFromSchema(r *http.Request) *Response {
 	err := db.Exec(statemant)
 	if err != nil {
 		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, NewResponseError(ErrorDeletingData, "RemovePluginFromSchema", err.Error()))
+		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorDeletingData, "RemovePluginFromSchema", err.Error()))
 
 		return response
 	}
