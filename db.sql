@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS core_groups CASCADE;
 DROP TABLE IF EXISTS core_grp_permissions CASCADE;
 DROP TABLE IF EXISTS core_groups_users CASCADE;
 DROP TABLE IF EXISTS core_schemas CASCADE;
-DROP TABLE IF EXISTS core_schemas_plugins CASCADE;
+DROP TABLE IF EXISTS core_schemas_modules CASCADE;
 DROP TABLE IF EXISTS core_lookups CASCADE;
 DROP TABLE IF EXISTS core_lkp_options CASCADE;
 DROP TABLE IF EXISTS core_sch_fields CASCADE;
@@ -22,6 +22,11 @@ DROP TABLE IF EXISTS core_sch_pag_sections CASCADE;
 DROP TABLE IF EXISTS core_sch_pag_sec_tabs CASCADE;
 DROP TABLE IF EXISTS core_sch_pag_cnt_structures CASCADE;
 DROP TABLE IF EXISTS core_translations CASCADE;
+DROP TABLE IF EXISTS core_jobs CASCADE;
+DROP TABLE IF EXISTS core_jobs_followers CASCADE;
+DROP TABLE IF EXISTS core_job_task CASCADE;
+DROP VIEW IF EXISTS core_v_job_followers;
+DROP VIEW IF EXISTS core_v_users_and_groups;
 
 CREATE TABLE core_users (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
@@ -158,7 +163,7 @@ CREATE TABLE core_groups_users (
 CREATE TABLE core_schemas (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   code CHARACTER VARYING NOT NULL,
-  plugin BOOLEAN DEFAULT FALSE NOT NULL,
+  module BOOLEAN DEFAULT FALSE NOT NULL,
   active BOOLEAN DEFAULT FALSE NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
@@ -168,16 +173,16 @@ CREATE TABLE core_schemas (
   UNIQUE(code)
 );
 
-CREATE TABLE core_schemas_plugins (
+CREATE TABLE core_schemas_modules (
   id CHARACTER VARYING DEFAULT uuid_generate_v1() NOT NULL,
   schema_id CHARACTER VARYING NOT NULL,
-  plugin_id CHARACTER VARYING NOT NULL,
+  module_id CHARACTER VARYING NOT NULL,
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE(schema_id, plugin_id)
+  UNIQUE(schema_id, module_id)
 );
 
 CREATE TABLE core_lookups (
@@ -354,6 +359,96 @@ CREATE TABLE core_translations (
   UNIQUE(structure_type, structure_id, structure_field, language_code)
 );
 
+CREATE TABLE core_jobs (
+  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  code CHARACTER VARYING,
+  job_type CHARACTER VARYING NOT NULL, --system, user
+  active BOOLEAN DEFAULT FALSE NOT NULL,
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE core_jobs_followers (
+  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,	
+  job_id CHARACTER VARYING NOT NULL,
+  follower_id CHARACTER VARYING NOT NULL,
+  follower_type CHARACTER VARYING NOT NULL, --group, user
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE core_job_tasks (
+  id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  job_id CHARACTER VARYING NOT NULL,
+  task_sequence INTEGER NOT NULL DEFAULT 0,
+  parent_id CHARACTER VARYING NOT NULL,
+  exec_action CHARACTER VARYING NOT NULL, --exec_query, api_post, api_get, api_delete, api_patch
+  exec_address CHARACTER VARYING, --/api/v1/schema/{parent_id}/page
+  exec_payload CHARACTER VARYING NOT NULL,
+  action_on_fail CHARACTER VARYING NOT NULL, --continue, retry_and_continue, cancel, retry_and_cancel, rollback, retry_and_rollback
+  max_retry_attempts INTEGER DEFAULT 2,
+  rollback_action CHARACTER VARYING NOT NULL, --drop table, api_delete
+  rollback_address CHARACTER VARYING, --/api/v1/schema/{parent_id}/fields/{field_id}
+  rollback_payload CHARACTER VARYING NOT NULL,
+  created_by CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_by CHARACTER VARYING NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE VIEW core_v_users_and_groups AS 
+  SELECT * FROM (
+    SELECT
+      core_users.id AS id,
+      core_users.first_name || ' ' || core_users.last_name AS name,
+      null AS language_code,
+      'user' AS ug_type,
+      core_users.active AS active,
+      core_users.created_by AS created_by,
+      core_users.created_at AS created_at,
+      core_users.updated_by AS updated_by,
+      core_users.updated_at AS updated_at  
+    FROM core_users
+  ) AS users
+  UNION ALL
+  SELECT * FROM (
+    SELECT
+      core_groups.id AS id,
+      core_translations_name.value AS name,
+      core_translations_name.language_code AS language_code,
+      'group' AS ug_type,
+      core_groups.active AS active,
+      core_groups.created_by AS created_by,
+      core_groups.created_at AS created_at,
+      core_groups.updated_by AS updated_by,
+      core_groups.updated_at AS updated_at
+    FROM core_groups
+    JOIN core_translations core_translations_name
+    ON core_translations_name.structure_id = core_groups.id
+    AND core_translations_name.structure_field = 'name'
+  ) AS groups;
+
+CREATE VIEW core_v_job_followers AS 
+  SELECT
+    ug.id AS id,
+    followers.job_id AS job_id,
+    ug.name AS name,
+    ug.language_code AS language_code,
+    ug.ug_type AS follower_type,
+    ug.active AS active,
+    followers.created_by AS created_by,
+    followers.created_at AS created_at,
+    followers.updated_by AS updated_by,
+    followers.updated_at AS updated_at
+  FROM core_jobs_followers AS followers
+  JOIN core_v_users_and_groups AS ug
+  ON ug.id = followers.follower_id
+  AND ug.ug_type = followers.follower_type;
+
 INSERT INTO core_users(
   id,
   username,
@@ -454,10 +549,10 @@ VALUES (
 -- ALTER TABLE "core_groups_users" ADD FOREIGN KEY ("group_id") REFERENCES "core_groups" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_schemas" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_schemas" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
--- ALTER TABLE "core_schemas_plugins" ADD FOREIGN KEY ("plugin_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("schema_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
+-- ALTER TABLE "core_schemas_modules" ADD FOREIGN KEY ("module_id") REFERENCES "core_schemas" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lookups" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lookups" ADD FOREIGN KEY ("updated_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;
 -- ALTER TABLE "core_lkp_options" ADD FOREIGN KEY ("created_by") REFERENCES "core_users" ("id") ON DELETE CASCADE;

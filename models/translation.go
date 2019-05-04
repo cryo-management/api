@@ -83,9 +83,11 @@ func UpdateTranslationsFromStruct(structureType, userID, languageCode string, ob
 
 					structureIDColumn := fmt.Sprintf("%s.structure_id", TableCoreTranslations)
 					structureFieldColumn := fmt.Sprintf("%s.structure_field", TableCoreTranslations)
+					languageCodeColumn := fmt.Sprintf("%s.language_code", TableCoreTranslations)
 					condition := builder.And(
 						builder.Equal(structureIDColumn, structureID),
 						builder.Equal(structureFieldColumn, structureField),
+						builder.Equal(languageCodeColumn, languageCode),
 					)
 
 					err := db.UpdateStruct(

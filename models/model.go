@@ -23,8 +23,8 @@ const (
 	TableCoreGroupsUsers string = "core_groups_users"
 	// TableCoreSchemas database table name
 	TableCoreSchemas string = "core_schemas"
-	// TableCoreSchemaPlugins database table name
-	TableCoreSchemaPlugins string = "core_schemas_plugins"
+	// TableCoreSchemasModels database table name
+	TableCoreSchemasModels string = "core_schemas_models"
 	// TableCoreLookups database table name
 	TableCoreLookups string = "core_lookups"
 	// TableCoreLkpOptions database table name
@@ -49,4 +49,12 @@ const (
 	TableCoreSchPagCntStructures string = "core_sch_pag_cnt_structures"
 	// TableCoreTranslations database table name
 	TableCoreTranslations string = "core_translations"
+	// TableCoreJobs database table name
+	TableCoreJobs string = "core_jobs"
+	// TableCoreJobsFollowers database table name
+	TableCoreJobsFollowers string = "core_jobs_followers"
+	// TableCoreJobTasks database table name
+	TableCoreJobTasks string = "core_job_tasks"
+	// ViewCoreJobFollowers database table name
+	ViewCoreJobFollowers string = "core_v_job_followers"
 )

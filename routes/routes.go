@@ -31,6 +31,7 @@ func Setup() *chi.Mux {
 		r.Mount("/admin/lookups", admin.LookupRoutes())
 		r.Mount("/admin/groups", admin.GroupRoutes())
 		r.Mount("/admin/currencies", admin.CurrencyRoutes())
+		r.Mount("/admin/jobs", admin.JobRoutes())
 		r.Mount("/auth", auth.Routes())
 	})
 
