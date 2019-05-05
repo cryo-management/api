@@ -22,8 +22,8 @@ type Job struct {
 type JobTask struct {
 	ID               string    `json:"id" sql:"id" pk:"true"`
 	Code             string    `json:"code" sql:"code"`
-	Name             string    `json:"name" table:"core_translations" alias:"core_translations_name" sql:"value" on:"core_translations_name.structure_id = core_jobs.id and core_translations_name.structure_field = 'name'"`
-	Description      string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_jobs.id and core_translations_description.structure_field = 'description'"`
+	Name             string    `json:"name" table:"core_translations" alias:"core_translations_name" sql:"value" on:"core_translations_name.structure_id = core_job_tasks.id and core_translations_name.structure_field = 'name'"`
+	Description      string    `json:"description" table:"core_translations" alias:"core_translations_description" sql:"value" on:"core_translations_description.structure_id = core_job_tasks.id and core_translations_description.structure_field = 'description'"`
 	JobID            string    `json:"job_id" sql:"job_id" fk:"true"`
 	TaskSequence     int       `json:"task_sequence" sql:"task_sequence"`
 	ParentID         string    `json:"parent_id" sql:"parent_id" fk:"true"`
@@ -36,10 +36,10 @@ type JobTask struct {
 	RollbackAddress  string    `json:"rollback_address" sql:"rollback_address"`
 	RollbackPayload  string    `json:"rollback_payload" sql:"rollback_payload"`
 	CreatedBy        string    `json:"created_by" sql:"created_by"`
-	CreatedByUser    *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_jobs.created_by"`
+	CreatedByUser    *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_job_tasks.created_by"`
 	CreatedAt        time.Time `json:"created_at" sql:"created_at"`
 	UpdatedBy        string    `json:"updated_by" sql:"updated_by"`
-	UpdatedByUser    *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_jobs.updated_by"`
+	UpdatedByUser    *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_job_tasks.updated_by"`
 	UpdatedAt        time.Time `json:"updated_at" sql:"updated_at"`
 }
 

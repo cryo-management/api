@@ -383,6 +383,7 @@ CREATE TABLE core_jobs_followers (
 
 CREATE TABLE core_job_tasks (
   id CHARACTER VARYING DEFAULT uuid_generate_v4() NOT NULL,
+  code CHARACTER VARYING,
   job_id CHARACTER VARYING NOT NULL,
   task_sequence INTEGER NOT NULL DEFAULT 0,
   parent_id CHARACTER VARYING NOT NULL,

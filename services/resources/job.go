@@ -68,8 +68,8 @@ func CreateJobTask(r *http.Request) *services.Response {
 // LoadAllJobTasks return all instances from the object
 func LoadAllJobTasks(r *http.Request) *services.Response {
 	jobTasks := []models.JobTask{}
-	jobTaskID := chi.URLParam(r, "job_task_id")
-	jobTaskIDColumn := fmt.Sprintf("%s.job_task_id", models.TableCoreJobTasks)
+	jobTaskID := chi.URLParam(r, "job_id")
+	jobTaskIDColumn := fmt.Sprintf("%s.job_id", models.TableCoreJobTasks)
 	condition := builder.Equal(jobTaskIDColumn, jobTaskID)
 
 	return services.Load(r, &jobTasks, "LoadAllJobTasks", models.TableCoreJobTasks, condition)
