@@ -46,7 +46,6 @@ type JobTask struct {
 // JobFollowers defines the struct of this object
 type JobFollowers struct {
 	ID            string    `json:"id" sql:"id" pk:"true"`
-	Code          string    `json:"code" sql:"code"`
 	JobID         string    `json:"job_id" sql:"job_id" fk:"true"`
 	Name          string    `json:"name" sql:"name"`
 	LanguageCode  string    `json:"language_code" sql:"language_code"`
@@ -58,4 +57,19 @@ type JobFollowers struct {
 	UpdatedBy     string    `json:"updated_by" sql:"updated_by"`
 	UpdatedByUser *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_v_job_followers.updated_by"`
 	UpdatedAt     time.Time `json:"updated_at" sql:"updated_at"`
+}
+
+// ViewFollowerAvailable defines the struct of this object
+type ViewFollowerAvailable struct {
+	ID                    string    `json:"id" sql:"id" pk:"true"`
+	Name                  string    `json:"name" sql:"name"`
+	LanguageCode          string    `json:"language_code" sql:"language_code"`
+	FollowerAvailableType string    `json:"ug_type" sql:"ug_type"`
+	Active                bool      `json:"active" sql:"active"`
+	CreatedBy             string    `json:"created_by" sql:"created_by"`
+	CreatedByUser         *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_v_users_and_groups.created_by"`
+	CreatedAt             time.Time `json:"created_at" sql:"created_at"`
+	UpdatedBy             string    `json:"updated_by" sql:"updated_by"`
+	UpdatedByUser         *User     `json:"updated_by_user" table:"core_users" alias:"updated_by_user" on:"updated_by_user.id = core_v_users_and_groups.updated_by"`
+	UpdatedAt             time.Time `json:"updated_at" sql:"updated_at"`
 }

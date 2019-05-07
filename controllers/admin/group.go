@@ -48,17 +48,9 @@ func DeleteGroup(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
-// PostGroupUser sends the request to service creating an association between group and user
-func PostGroupUser(w http.ResponseWriter, r *http.Request) {
+// AddUserInGroup sends the request to service deleting an user
+func AddUserInGroup(w http.ResponseWriter, r *http.Request) {
 	response := services.InsertUserInGroup(r)
-
-	render.Status(r, response.Code)
-	render.JSON(w, r, response)
-}
-
-// GetAllUsersByGroup return all user instances by group from the service
-func GetAllUsersByGroup(w http.ResponseWriter, r *http.Request) {
-	response := services.LoadAllUsersByGroup(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
@@ -91,6 +83,14 @@ func GetAllPermissionsByGroup(w http.ResponseWriter, r *http.Request) {
 // DeleteGroupPermission sends the request to service deleting a permission from a group
 func DeleteGroupPermission(w http.ResponseWriter, r *http.Request) {
 	response := services.RemovePermission(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// GetAllGroupsByUser sends the request to service deleting a permission from a group
+func GetAllGroupsByUser(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllGroupsByUser(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)

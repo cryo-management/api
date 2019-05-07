@@ -367,7 +367,9 @@ CREATE TABLE core_jobs (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
 
 CREATE TABLE core_jobs_followers (
@@ -378,7 +380,9 @@ CREATE TABLE core_jobs_followers (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(follower_id, follower_type)
 );
 
 CREATE TABLE core_job_tasks (
@@ -398,8 +402,53 @@ CREATE TABLE core_job_tasks (
   created_by CHARACTER VARYING NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_by CHARACTER VARYING NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  updated_at TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(code)
 );
+
+CREATE VIEW core_v_user_groups AS
+  SELECT
+    core_groups.id AS id,
+    core_groups_users.user_id AS user_id,
+    core_groups.code AS code,
+    core_translations_name.value AS name,
+    core_translations_description.value AS description,
+    core_translations_name.language_code AS language_code,
+    core_groups.active AS active,
+    core_groups.created_by AS created_by,
+    core_groups.created_at AS created_at,
+    core_groups.updated_by AS updated_by,
+    core_groups.updated_at AS updated_at
+  FROM core_groups
+  JOIN core_groups_users
+  ON core_groups_users.group_id = core_groups.id
+  JOIN core_translations core_translations_name
+  ON core_translations_name.structure_id = core_groups.id
+  AND core_translations_name.structure_field = 'name'
+  JOIN core_translations core_translations_description
+  ON core_translations_description.structure_id = core_groups.id
+  AND core_translations_description.structure_field = 'description'
+  WHERE core_translations_name.language_code =  core_translations_description.language_code;
+
+CREATE VIEW core_v_group_users AS
+  SELECT
+    core_users.id as id,
+    core_groups_users.group_id AS group_id,
+    core_users.username as username,
+    core_users.first_name as first_name,
+    core_users.last_name as last_name,
+    core_users.email as email,
+    core_users.password as password,
+    core_users.language_code as language_code,
+    core_users.active as active,
+    core_users.created_by as created_by,
+    core_users.created_at as created_at,
+    core_users.updated_by as updated_by,
+    core_users.updated_at as updated_at
+  FROM core_users
+  JOIN core_groups_users
+  ON core_groups_users.user_id = core_users.id;
 
 CREATE VIEW core_v_users_and_groups AS 
   SELECT * FROM (

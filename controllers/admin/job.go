@@ -88,6 +88,14 @@ func DeleteJobTask(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+// LoadAllJobFollowersAvaible sends the request to service deleting a schema
+func LoadAllJobFollowersAvaible(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllJobFollowersAvaible(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
 // InsertFollowerInJob sends the request to service deleting a schema
 func InsertFollowerInJob(w http.ResponseWriter, r *http.Request) {
 	response := services.InsertFollowerInJob(r)

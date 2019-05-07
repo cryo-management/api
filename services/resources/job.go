@@ -106,6 +106,23 @@ func DeleteJobTask(r *http.Request) *services.Response {
 	return services.Remove(r, "DeleteJobTask", models.TableCoreJobTasks, condition)
 }
 
+// LoadAllJobFollowersAvaible return all instances from the object
+func LoadAllJobFollowersAvaible(r *http.Request) *services.Response {
+	viewFollowersAvailable := []models.ViewFollowerAvailable{}
+	activeColumn := fmt.Sprintf("%s.active", models.ViewCoreUsersAndGroups)
+	languageCode := r.Header.Get("Content-Language")
+	languageCodeColumn := fmt.Sprintf("%s.language_code", models.ViewCoreUsersAndGroups)
+	condition := builder.And(
+		builder.Equal(activeColumn, true),
+		builder.Or(
+			builder.Equal(languageCodeColumn, languageCode),
+			builder.Equal(languageCodeColumn, nil),
+		),
+	)
+
+	return services.Load(r, &viewFollowersAvailable, "LoadAllJobFollowersAvaible", models.ViewCoreUsersAndGroups, condition)
+}
+
 // InsertFollowerInJob persists the request creating a new object in the database
 func InsertFollowerInJob(r *http.Request) *services.Response {
 	response := services.NewResponse()

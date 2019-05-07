@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/andreluzz/go-sql-builder/builder"
-	"github.com/andreluzz/go-sql-builder/db"
 	"github.com/go-chi/chi"
 
 	"github.com/cryo-management/api/models"
@@ -57,44 +56,12 @@ func DeleteUser(r *http.Request) *services.Response {
 	return services.Remove(r, "DeleteUser", models.TableCoreUsers, condition)
 }
 
-// LoadAllGroupsByUser return all instances from the object
-func LoadAllGroupsByUser(r *http.Request) *services.Response {
-	response := services.NewResponse()
+// LoadAllUsersByGroup return all instances from the object
+func LoadAllUsersByGroup(r *http.Request) *services.Response {
+	viewGroupUsers := []models.ViewGroupUser{}
+	groupID := chi.URLParam(r, "group_id")
+	groupIDColumn := fmt.Sprintf("%s.group_id", models.ViewCoreGroupUsers)
+	condition := builder.Equal(groupIDColumn, groupID)
 
-	group := []models.Group{}
-	userID := chi.URLParam(r, "user_id")
-	tblTranslationName := fmt.Sprintf("%s as %s_name", models.TableCoreTranslations, models.TableCoreTranslations)
-	tblTranslationDescription := fmt.Sprintf("%s as %s_description", models.TableCoreTranslations, models.TableCoreTranslations)
-	languageCode := r.Header.Get("Content-Language")
-
-	statemant := builder.Select(
-		"core_groups.id",
-		"core_translations_name.value as name",
-		"core_translations_description.value as description",
-		"core_groups.code",
-	).From(models.TableCoreGroups).Join(
-		tblTranslationName, "core_translations_name.structure_id = core_groups.id and core_translations_name.structure_field = 'name'",
-	).Join(
-		tblTranslationDescription, "core_translations_description.structure_id = core_groups.id and core_translations_description.structure_field = 'description'",
-	).Join(
-		models.TableCoreGroupsUsers, "core_groups_users.group_id = core_groups.id",
-	).Where(
-		builder.And(
-			builder.Equal("core_groups_users.user_id", userID),
-			builder.Equal("core_translations_name.language_code", languageCode),
-			builder.Equal("core_translations_description.language_code", languageCode),
-		),
-	)
-
-	err := db.QueryStruct(statemant, &group)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "LoadAllGroupsByUser", err.Error()))
-
-		return response
-	}
-
-	response.Data = group
-
-	return response
+	return services.Load(r, &viewGroupUsers, "LoadAllUsersByGroup", models.ViewCoreGroupUsers, condition)
 }

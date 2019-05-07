@@ -57,4 +57,10 @@ const (
 	TableCoreJobTasks string = "core_job_tasks"
 	// ViewCoreJobFollowers database table name
 	ViewCoreJobFollowers string = "core_v_job_followers"
+	// ViewCoreUsersAndGroups database table name
+	ViewCoreUsersAndGroups string = "core_v_users_and_groups"
+	// ViewCoreUserGroups database table name
+	ViewCoreUserGroups string = "core_v_user_groups"
+	// ViewCoreGroupUsers database table name
+	ViewCoreGroupUsers string = "core_v_group_users"
 )

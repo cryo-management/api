@@ -14,9 +14,11 @@ func UserRoutes() *chi.Mux {
 		r.Post("/", controller.PostUser)
 		r.Get("/", controller.GetAllUsers)
 		r.Get("/{user_id}", controller.GetUser)
-		r.Get("/{user_id}/groups", controller.GetAllGroupsByUser)
 		r.Patch("/{user_id}", controller.UpdateUser)
 		r.Delete("/{user_id}", controller.DeleteUser)
+		r.Get("/{user_id}/groups", controller.GetAllGroupsByUser)
+		r.Post("/{user_id}/groups/{group_id}", controller.AddGroupInUser)
+		r.Delete("/{user_id}/groups/{group_id}", controller.RemoveGroupFromUser)
 	})
 
 	return r

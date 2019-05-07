@@ -96,39 +96,6 @@ func InsertUserInGroup(r *http.Request) *services.Response {
 	return response
 }
 
-// LoadAllUsersByGroup return all instances from the object
-func LoadAllUsersByGroup(r *http.Request) *services.Response {
-	response := services.NewResponse()
-
-	user := []models.User{}
-	groupID := chi.URLParam(r, "group_id")
-
-	statemant := builder.Select(
-		"core_users.id",
-		"core_users.first_name",
-		"core_users.last_name",
-		"core_users.email",
-		"core_users.language_code",
-		"core_users.active",
-	).From(models.TableCoreUsers).Join(
-		models.TableCoreGroupsUsers, "core_groups_users.user_id = core_users.id",
-	).Where(
-		builder.Equal("core_groups_users.group_id", groupID),
-	)
-
-	err := db.QueryStruct(statemant, &user)
-	if err != nil {
-		response.Code = http.StatusInternalServerError
-		response.Errors = append(response.Errors, services.NewResponseError(services.ErrorLoadingData, "LoadAllUsersByGroup", err.Error()))
-
-		return response
-	}
-
-	response.Data = user
-
-	return response
-}
-
 // RemoveUserFromGroup deletes object from the database
 func RemoveUserFromGroup(r *http.Request) *services.Response {
 	response := services.NewResponse()
@@ -178,4 +145,19 @@ func RemovePermission(r *http.Request) *services.Response {
 	condition := builder.Equal(permissionIDColumn, permissionID)
 
 	return services.Remove(r, "RemovePermission", models.TableCoreGrpPermissions, condition)
+}
+
+// LoadAllGroupsByUser return all instances from the object
+func LoadAllGroupsByUser(r *http.Request) *services.Response {
+	viewUserGroups := []models.ViewUserGroup{}
+	userID := chi.URLParam(r, "user_id")
+	userIDColumn := fmt.Sprintf("%s.user_id", models.ViewCoreUserGroups)
+	languageCode := r.Header.Get("Content-Language")
+	languageCodeColumn := fmt.Sprintf("%s.language_code", models.ViewCoreUserGroups)
+	condition := builder.And(
+		builder.Equal(userIDColumn, userID),
+		builder.Equal(languageCodeColumn, languageCode),
+	)
+
+	return services.Load(r, &viewUserGroups, "LoadAllGroupsByUser", models.ViewCoreUserGroups, condition)
 }

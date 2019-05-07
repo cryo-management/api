@@ -48,9 +48,25 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
-// GetAllGroupsByUser return all group instances by user from the service
-func GetAllGroupsByUser(w http.ResponseWriter, r *http.Request) {
-	response := services.LoadAllGroupsByUser(r)
+// AddGroupInUser sends the request to service deleting an user
+func AddGroupInUser(w http.ResponseWriter, r *http.Request) {
+	response := services.InsertUserInGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// RemoveGroupFromUser sends the request to service deleting an user
+func RemoveGroupFromUser(w http.ResponseWriter, r *http.Request) {
+	response := services.RemoveUserFromGroup(r)
+
+	render.Status(r, response.Code)
+	render.JSON(w, r, response)
+}
+
+// GetAllUsersByGroup return all user instances by group from the service
+func GetAllUsersByGroup(w http.ResponseWriter, r *http.Request) {
+	response := services.LoadAllUsersByGroup(r)
 
 	render.Status(r, response.Code)
 	render.JSON(w, r, response)
