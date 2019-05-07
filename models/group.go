@@ -23,7 +23,7 @@ type Permission struct {
 	GroupID        string    `json:"group_id" sql:"group_id" fk:"true"`
 	StructureType  string    `json:"structure_type" sql:"structure_type"`
 	StructureID    string    `json:"structure_id" sql:"structure_id" fk:"true"`
-	Type           int       `json:"type" sql:"type"`
+	PermissionType int       `json:"permission_type" sql:"permission_type"`
 	ConditionQuery string    `json:"condition_query" sql:"condition_query"`
 	CreatedBy      string    `json:"created_by" sql:"created_by"`
 	CreatedByUser  *User     `json:"created_by_user" table:"core_users" alias:"created_by_user" on:"created_by_user.id = core_grp_permissions.created_by"`
