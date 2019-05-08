@@ -66,8 +66,8 @@ func CreateCurrencyRate(r *http.Request) *services.Response {
 // LoadAllCurrencyRates return all instances from the object
 func LoadAllCurrencyRates(r *http.Request) *services.Response {
 	currencies := []models.CurrencyRate{}
-	fromCurrencyCode := chi.URLParam(r, "currency_code")
-	fromCurrencyCodeColumn := fmt.Sprintf("%s.from_currency_code", models.TableCoreCryRates)
+	fromCurrencyCode := chi.URLParam(r, "currency_id")
+	fromCurrencyCodeColumn := fmt.Sprintf("%s.from_currency_id", models.TableCoreCryRates)
 	condition := builder.Equal(fromCurrencyCodeColumn, fromCurrencyCode)
 
 	return services.Load(r, &currencies, "LoadAllCurrencyRates", models.TableCoreCryRates, condition)
